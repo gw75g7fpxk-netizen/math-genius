@@ -14,10 +14,51 @@ const TIMEOUT_ANSWER           = null; // sentinel value meaning no answer was g
 const MAX_PLAYER_NAME_LENGTH   = 20;   // must match maxlength on #add-player-input in HTML
 const NEWLY_UNLOCKED_TOAST_DELAY_MS = 400;
 
+// ── Characters ────────────────────────────────────────────────
+const CHARACTERS = [
+  {
+    id: 'kiki',
+    name: 'Kiki the Mad Scientist',
+    emoji: '🔬',
+    image: 'assets/images/kiki.png',
+    description: 'A brilliant bunny scientist who loves wild experiments!',
+  },
+  {
+    id: 'humphrey',
+    name: 'Humphrey the Heffalump',
+    emoji: '🐘',
+    image: 'assets/images/humphrey.png',
+    description: 'A friendly, strong heffalump who walks the neighborhood each morning with high-tech laser glasses!',
+  },
+  {
+    id: 'fluffy',
+    name: 'Fluffy',
+    emoji: '🧸',
+    image: 'assets/images/fluffy.png',
+    description: 'A round, soft Tiger squish-mallow who hops down the street and accidentally bumps into everyone — but so gently everyone just giggles!',
+  },
+  {
+    id: 'roo',
+    name: 'Roo',
+    emoji: '🦘',
+    image: 'assets/images/roo.png',
+    description: 'A kangaroo with a seemingly endless pouch and a special blanket called "Blanket" — perfect for lassoing things from a distance!',
+  },
+  {
+    id: 'margret',
+    name: 'Margret',
+    emoji: '🐯',
+    description: 'A tiger with a backyard swimming pool — mermaid friends visit through a magic portal that opens to any water large enough for them!',
+  },
+];
+
 // ── Story chapters ────────────────────────────────────────────
 const CHAPTERS = [
+  // ── Kiki ─────────────────────────────────────────────────────
   {
     id: 0,
+    character: 'kiki',
+    charIdx: 0,
     title: "Chapter 1: Shrink-a-tron Calibration",
     emoji: "🔬",
     story: "Kiki's Shrink-a-tron-5000 went haywire and shrank her entire toy collection to microscopic size! She needs to multiply the shrink factor by each toy's original size to restore them. Help Kiki solve 20 multiplication problems to rescue her toys!",
@@ -27,6 +68,8 @@ const CHAPTERS = [
   },
   {
     id: 1,
+    character: 'kiki',
+    charIdx: 1,
     title: "Chapter 2: Gigant-a-tron Overflow",
     emoji: "🐟",
     story: "Uh oh! The Gigant-a-tron-3000 made Kiki's goldfish WAY too big — it's now splashing around the whole living room! Kiki needs division to calculate exactly how much Anti-Grow Formula to use. Help her solve 20 division problems!",
@@ -36,6 +79,8 @@ const CHAPTERS = [
   },
   {
     id: 2,
+    character: 'kiki',
+    charIdx: 2,
     title: "Chapter 3: Rainbow Bubble Portal",
     emoji: "🫧",
     story: "Kiki discovered that mixing Shrink and Gigant formulas creates rainbow bubbles that can teleport objects! But the bubble formula needs precise mixed calculations to stay stable. Help Kiki solve 20 problems to open the portal!",
@@ -45,6 +90,8 @@ const CHAPTERS = [
   },
   {
     id: 3,
+    character: 'kiki',
+    charIdx: 3,
     title: "Chapter 4: Bermione's Missing Sammich",
     emoji: "🥪",
     story: "Kiki's Rainbow Bubble Portal accidentally zapped the sammich belonging to her neighbour Bermione — and Bermione is NOT happy about it. \"That was MY sammich!\" she fumes, crossing her arms. Kiki must use the portal's return calculations to bring the sammich back before Bermione gets any grumpier. Help Kiki solve 20 problems to rescue the sammich and restore the peace!",
@@ -54,9 +101,235 @@ const CHAPTERS = [
   },
   {
     id: 4,
+    character: 'kiki',
+    charIdx: 4,
     title: "Chapter 5: The Grand Science Fair",
     emoji: "🏆",
     story: "It's the day of the BIG Science Fair! Kiki is presenting ALL her inventions — the Shrink-a-tron-5000, Gigant-a-tron-3000, and the Rainbow Bubble Portal. The judges need the final calculation worksheet. Help Kiki ace it and win the Golden Bunsen Burner Trophy!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+  // ── Humphrey ─────────────────────────────────────────────────
+  {
+    id: 5,
+    character: 'humphrey',
+    charIdx: 0,
+    title: "Chapter 1: Morning Walk Count",
+    emoji: "🚶",
+    story: "Humphrey starts every morning by walking down the street to visit his friends! He passes Roo, Lulu, Maggie and Margret, Tigey and Tigey Avinia — but to work out the best route he needs multiplication. Help Humphrey calculate how many steps he takes between each house and get his morning walk just right!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 6,
+    character: 'humphrey',
+    charIdx: 1,
+    title: "Chapter 2: Laser Blast Budget",
+    emoji: "🔭",
+    story: "Humphrey's high-tech glasses from Kiki can fire exactly 3 powerful laser blasts a day — no more! After a busy week of adventures, Humphrey needs division to figure out how many blasts are left and how to share them wisely. Help Humphrey manage his laser budget before the glasses run dry!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 7,
+    character: 'humphrey',
+    charIdx: 2,
+    title: "Chapter 3: Mom Heffalump's Recipe",
+    emoji: "🍪",
+    story: "Mom Heffalump is baking her famous giant chocolate cookies for the whole neighborhood! The recipe is written for one batch, but with so many friends to feed she needs to multiply every ingredient. Help Humphrey assist Mom Heffalump with the baking math before the first batch burns!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 8,
+    character: 'humphrey',
+    charIdx: 3,
+    title: "Chapter 4: Hailey's Homework Help",
+    emoji: "📚",
+    story: "Humphrey's twin sister Hailey needs help with her math homework before their afternoon adventure. They've got multiplication AND division problems to solve — and Humphrey's laser glasses keep zooming in on the wrong page! Help Humphrey and Hailey power through the homework so the fun can begin!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 9,
+    character: 'humphrey',
+    charIdx: 4,
+    title: "Chapter 5: The Grand Neighborhood Party",
+    emoji: "🎉",
+    story: "Humphrey is organising the biggest neighborhood party ever — with all his friends: Roo, Lulu, Margret, Maggie, Tigey, Tigey Avinia, Fluffy, Kiki, Hermione, and even Bermione (who showed up grumbling but secretly excited)! Help Humphrey calculate food, seats, and activities so everyone has the most amazing time!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+  // ── Fluffy ───────────────────────────────────────────────────
+  {
+    id: 10,
+    character: 'fluffy',
+    charIdx: 0,
+    title: "Chapter 1: Hop, Hop, Hooray!",
+    emoji: "🌸",
+    story: "Fluffy starts her day by hopping down the street, like she always does. Boing! Boing! Boing! But today she needs to calculate exactly how many hops it takes to reach each friend's house. Help Fluffy multiply her way through the morning — and watch out, she might accidentally bump into someone along the way!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 11,
+    character: 'fluffy',
+    charIdx: 1,
+    title: "Chapter 2: The Accidental Bounce Parade",
+    emoji: "😄",
+    story: "Oops! Fluffy accidentally rolled into Kiki's lab and sent experiment bottles flying everywhere! Kiki needs division to re-sort all the bottles back onto the shelves. Luckily, because Fluffy is so soft and squishy, everyone just giggled. Help Fluffy and Kiki divide everything back into the right groups!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 12,
+    character: 'fluffy',
+    charIdx: 2,
+    title: "Chapter 3: Squish-mallow Snack Share",
+    emoji: "🍉",
+    story: "Fluffy has a big bag of fruit snacks and wants to share them equally with all the neighborhood friends. She keeps losing count of how many friends there are — she bumped into a lamppost and got a little confused! Help Fluffy use multiplication to figure out exactly how many snacks to pack for everyone.",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 13,
+    character: 'fluffy',
+    charIdx: 3,
+    title: "Chapter 4: The Bumper Giggle Game",
+    emoji: "🎮",
+    story: "Fluffy invented a brand-new game: bounce gently into a friend and make them giggle! (Fluffy is so soft and squishy it never hurts — it just tickles.) To keep score fairly she needs both multiplication and division. Help Fluffy track all the giggles and declare a winner!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 14,
+    character: 'fluffy',
+    charIdx: 4,
+    title: "Chapter 5: Fluffy's Biggest Adventure",
+    emoji: "🌟",
+    story: "Fluffy is going on her biggest adventure yet — all the way to Giri's Chocolate Shop at the end of the street! She's so excited she keeps boing-ing off fences and accidentally bumping into signposts. Help Fluffy calculate distances, chocolate amounts, and make it to Giri's shop in one very soft, very giggly piece!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+  // ── Roo ──────────────────────────────────────────────────────
+  {
+    id: 15,
+    character: 'roo',
+    charIdx: 0,
+    title: "Chapter 1: Packing the Endless Pouch",
+    emoji: "🎒",
+    story: "Roo's pouch can hold a seemingly endless number of things — snacks, toys, her trusty Blanket, and backup supplies for the whole crew! Before heading out, she needs multiplication to figure out exactly how many items to pack. Help Roo fill her legendary pouch so every friend has what they need!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 16,
+    character: 'roo',
+    charIdx: 1,
+    title: "Chapter 2: Blanket Lasso Training",
+    emoji: "🤠",
+    story: "Roo's special blanket — simply called \"Blanket\" — doubles as the best lasso in the neighborhood! To land it perfectly on a faraway target, Roo needs to divide the distance by her throwing strength. Help Roo practice her division skills so Blanket lands exactly on target every time!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 17,
+    character: 'roo',
+    charIdx: 2,
+    title: "Chapter 3: Pouch Snack Supply",
+    emoji: "🍎",
+    story: "A big adventure day means a big snack day! Roo is packing backup food for the whole crew and needs multiplication to make sure there are enough snacks for everyone for every hour of the outing. Help Roo stock her pouch so no friend goes hungry — not even Bermione, who always wants an extra sammich!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 18,
+    character: 'roo',
+    charIdx: 3,
+    title: "Chapter 4: The Big Jump Contest",
+    emoji: "🏅",
+    story: "Roo is competing in the Neighborhood Big Jump Contest! To calculate her best jump distances and see how she compares to the competition, she needs both multiplication and division. Help Roo leap to the top of the leaderboard and bring home the gold!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 19,
+    character: 'roo',
+    charIdx: 4,
+    title: "Chapter 5: Roo's Rescue Mission",
+    emoji: "🦸",
+    story: "Bermione's magical daily sammich went too far when it appeared — it landed right in the deep end of Margret's swimming pool! Roo springs into action: pouch loaded, Blanket at the ready. She needs both multiplication and division to plan the perfect retrieval mission. Help Roo save the day (and Bermione's sammich)!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+  // ── Margret ──────────────────────────────────────────────────
+  {
+    id: 20,
+    character: 'margret',
+    charIdx: 0,
+    title: "Chapter 1: Pool Party Prep",
+    emoji: "🏊",
+    story: "Margret is getting her famous backyard swimming pool ready for a neighborhood get-together! She needs to calculate how many towels, pool floaties, and snacks to bring out for all her friends. Help Margret use multiplication to make sure everyone has exactly what they need for the best pool party ever!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 21,
+    character: 'margret',
+    charIdx: 1,
+    title: "Chapter 2: Mermaid Visit!",
+    emoji: "🧜",
+    story: "Margret's mermaid friends are coming through their magical portal! The portal only connects to water large enough for the mermaids to fit, so Margret needs division to calculate how the pool space should be divided so every mermaid has plenty of room. Help Margret welcome her ocean friends to the neighborhood!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 22,
+    character: 'margret',
+    charIdx: 2,
+    title: "Chapter 3: Portal Power Calculations",
+    emoji: "🌀",
+    story: "The mermaids are using their own magic to hold the portal open, but they need the numbers to be exactly right before they channel their power! Maggie the ninja baby keeps 'helping' by doing flips nearby, which is not helping. Help Margret use multiplication to calculate the precise figures the mermaids need so everyone crosses through safely!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 23,
+    character: 'margret',
+    charIdx: 3,
+    title: "Chapter 4: The Big Swim Challenge",
+    emoji: "🏆",
+    story: "It's time for the Annual Backyard Swim Challenge! Margret is setting up races and relay teams for all the neighborhood friends. She needs both multiplication and division to build fair teams and calculate race distances. Help Margret make sure every swimmer — mermaid and land-friend alike — gets a fair shot at the trophy!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 24,
+    character: 'margret',
+    charIdx: 4,
+    title: "Chapter 5: The Grand Pool Gala",
+    emoji: "🎊",
+    story: "It's the biggest event of the year — the Grand Pool Gala! The pool is packed with friends, mermaids have arrived through the portal, and even Bermione showed up (grumbling, but taking very loud bites of her sammich and secretly having a wonderful time). Giri brought chocolate treats from the shop. Help Margret calculate all the supplies and seating for the most magical evening the neighborhood has ever seen!",
     mode: "both",
     unlockAt: 3,
     passPct: 80,
@@ -78,7 +351,9 @@ let state = {
   answered:             false,
   storyMode:            false,      // true when playing from a story chapter
   chapterId:            null,       // which chapter (0-4) is being played
+  selectedCharacter:    null,       // character id chosen on the character screen
   newlyUnlockedChapter: null,       // chapter id unlocked after last completion
+  newlyUnlockedCharacter: null,     // character id unlocked after last completion
 };
 
 // ── LocalStorage helpers ──────────────────────────────────────
@@ -101,12 +376,15 @@ function getUserProgress(userName) {
   const user = users.find(u => u.name === userName);
   if (!user) return null;
   user.storyProgress = user.storyProgress || {};
-  user.storyProgress.kiki = user.storyProgress.kiki || { chapters: [] };
-  while (user.storyProgress.kiki.chapters.length < CHAPTERS.length) {
-    user.storyProgress.kiki.chapters.push({
-      completed: false, stars: 0, bestScore: null, bestPct: null,
-    });
-  }
+  CHARACTERS.forEach(char => {
+    user.storyProgress[char.id] = user.storyProgress[char.id] || { chapters: [] };
+    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
+    while (user.storyProgress[char.id].chapters.length < charChapters.length) {
+      user.storyProgress[char.id].chapters.push({
+        completed: false, stars: 0, bestScore: null, bestPct: null,
+      });
+    }
+  });
   return user;
 }
 
@@ -117,10 +395,23 @@ function saveUserProgress(user) {
   saveUsers(users);
 }
 
-function isChapterUnlocked(chapterId, kikiProgress) {
-  if (chapterId === 0) return true;
-  const prev = kikiProgress.chapters[chapterId - 1];
+function isChapterUnlocked(ch, progress) {
+  if (ch.charIdx === 0) return true;
+  const charProgress = progress[ch.character];
+  if (!charProgress) return false;
+  const prev = charProgress.chapters[ch.charIdx - 1];
   return prev && prev.completed;
+}
+
+/** Returns true when all chapters of character at CHARACTERS[charIndex-1] are done. */
+function isCharacterUnlocked(charIndex, progress) {
+  if (charIndex === 0) return true;
+  const prevChar = CHARACTERS[charIndex - 1];
+  const prevProgress = progress[prevChar.id];
+  if (!prevProgress) return false;
+  const prevChapters = CHAPTERS.filter(ch => ch.character === prevChar.id);
+  return prevChapters.length > 0 &&
+    prevChapters.every((ch, i) => prevProgress.chapters[i] && prevProgress.chapters[i].completed);
 }
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -289,8 +580,10 @@ function loginUser(name) {
     user.lastPlayed = Date.now();
     saveUsers(users);
   }
-  renderStoryScreen(null);
-  showScreen('#story-screen');
+  state.selectedCharacter = null;
+  state.newlyUnlockedCharacter = null;
+  renderCharacterScreen(null);
+  showScreen('#character-screen');
 }
 
 function addPlayer(rawName) {
@@ -309,26 +602,156 @@ function addPlayer(rawName) {
   loginUser(name);
 }
 
+// ── Character select screen ───────────────────────────────────
+function renderCharacterScreen(newlyUnlockedCharacterId) {
+  const userName = getCurrentUser();
+  const user = getUserProgress(userName);
+  const progress = user ? user.storyProgress : {};
+
+  // Ensure progress slots exist for all characters
+  CHARACTERS.forEach(char => {
+    progress[char.id] = progress[char.id] || { chapters: [] };
+    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
+    while (progress[char.id].chapters.length < charChapters.length) {
+      progress[char.id].chapters.push({ completed: false, stars: 0, bestScore: null, bestPct: null });
+    }
+  });
+
+  $('#char-screen-username').textContent = userName || '';
+
+  const grid = $('#character-grid');
+  grid.textContent = '';
+
+  CHARACTERS.forEach((char, charIndex) => {
+    const unlocked = isCharacterUnlocked(charIndex, progress);
+    const charProgress = progress[char.id];
+    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
+    const completedCount = charChapters.filter((ch, i) =>
+      charProgress.chapters[i] && charProgress.chapters[i].completed
+    ).length;
+    const allDone = completedCount === charChapters.length;
+
+    const card = document.createElement('button');
+    card.className = 'character-card';
+    card.classList.toggle('unlocked', unlocked);
+    card.classList.toggle('locked', !unlocked);
+    if (allDone) card.classList.add('completed');
+    if (char.id === newlyUnlockedCharacterId) card.classList.add('newly-unlocked');
+    card.setAttribute('type', 'button');
+    card.disabled = !unlocked;
+
+    // Image or emoji
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'character-card-img-wrap';
+    if (char.image) {
+      const img = document.createElement('img');
+      img.src = char.image;
+      img.alt = char.name;
+      img.className = 'character-card-img';
+      imgWrap.appendChild(img);
+    } else {
+      const emo = document.createElement('span');
+      emo.className = 'character-card-emoji';
+      emo.textContent = unlocked ? char.emoji : '🔒';
+      imgWrap.appendChild(emo);
+    }
+
+    const body = document.createElement('div');
+    body.className = 'character-card-body';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'character-card-name';
+    nameEl.textContent = char.name;
+
+    const descEl = document.createElement('div');
+    descEl.className = 'character-card-desc';
+    descEl.textContent = unlocked
+      ? char.description
+      : charIndex > 0
+        ? `Complete ${CHARACTERS[charIndex - 1].name}'s story to unlock!`
+        : 'Locked';
+
+    const progressEl = document.createElement('div');
+    progressEl.className = 'character-card-progress';
+    if (!unlocked) {
+      progressEl.textContent = '🔒 Locked';
+    } else if (allDone) {
+      progressEl.textContent = '✅ All chapters complete!';
+    } else {
+      progressEl.textContent = `${completedCount} / ${charChapters.length} chapters complete`;
+    }
+
+    body.append(nameEl, descEl, progressEl);
+    card.append(imgWrap, body);
+
+    if (unlocked) {
+      card.addEventListener('click', () => selectCharacter(char.id));
+    }
+
+    grid.appendChild(card);
+  });
+
+  if (newlyUnlockedCharacterId) {
+    const char = CHARACTERS.find(c => c.id === newlyUnlockedCharacterId);
+    setTimeout(() => {
+      if (char) showToast(`🎉 ${char.emoji} ${char.name} unlocked!`);
+    }, NEWLY_UNLOCKED_TOAST_DELAY_MS);
+  }
+}
+
+function selectCharacter(charId) {
+  state.selectedCharacter = charId;
+  renderStoryScreen(null);
+  showScreen('#story-screen');
+}
+
 // ── Story map screen ──────────────────────────────────────────
 function renderStoryScreen(newlyUnlockedChapter) {
   const userName = getCurrentUser();
   const user = getUserProgress(userName);
+  const charId = state.selectedCharacter;
+  const char = CHARACTERS.find(c => c.id === charId);
 
-  const usernameEl = $('#story-username');
-  usernameEl.textContent = userName || '';
+  $('#story-character-title').textContent = char ? char.name : '';
+
+  // ── Character hero image / emoji at top of screen
+  const heroEl = $('#story-char-hero');
+  heroEl.textContent = '';
+  if (char) {
+    if (char.image) {
+      const heroImg = document.createElement('img');
+      heroImg.src = char.image;
+      heroImg.alt = char.name;
+      heroImg.className = 'story-char-hero-img';
+      heroEl.appendChild(heroImg);
+    } else {
+      const heroEmoji = document.createElement('span');
+      heroEmoji.className = 'story-char-hero-emoji';
+      heroEmoji.textContent = char.emoji;
+      heroEl.appendChild(heroEmoji);
+    }
+  }
 
   const list = $('#chapters-list');
   list.textContent = '';
 
-  const kikiProgress = user ? user.storyProgress.kiki : { chapters: [] };
-  // Ensure enough slots if user is fresh
-  while (kikiProgress.chapters.length < CHAPTERS.length) {
-    kikiProgress.chapters.push({ completed: false, stars: 0, bestScore: null, bestPct: null });
+  const progress = user ? user.storyProgress : {};
+
+  // Ensure progress for this character is initialized
+  if (char) {
+    progress[char.id] = progress[char.id] || { chapters: [] };
+    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
+    while (progress[char.id].chapters.length < charChapters.length) {
+      progress[char.id].chapters.push({ completed: false, stars: 0, bestScore: null, bestPct: null });
+    }
   }
 
-  CHAPTERS.forEach(ch => {
-    const unlocked = isChapterUnlocked(ch.id, kikiProgress);
-    const chProgress = kikiProgress.chapters[ch.id];
+  const charChapters = char ? CHAPTERS.filter(ch => ch.character === char.id) : [];
+  const charProgress = char ? (progress[char.id] || { chapters: [] }) : { chapters: [] };
+
+  charChapters.forEach(ch => {
+    const unlocked = isChapterUnlocked(ch, progress);
+    const chProgress = charProgress.chapters[ch.charIdx];
 
     const card = document.createElement('div');
     card.className = 'chapter-card';
@@ -403,7 +826,7 @@ function renderStoryScreen(newlyUnlockedChapter) {
   if (newlyUnlockedChapter !== null) {
     const ch = CHAPTERS[newlyUnlockedChapter];
     // Delay slightly so the screen transition completes first
-    setTimeout(() => showToast(`🎉 ${ch.emoji} Chapter ${newlyUnlockedChapter + 1} unlocked!`), NEWLY_UNLOCKED_TOAST_DELAY_MS);
+    setTimeout(() => showToast(`🎉 ${ch.emoji} Chapter ${ch.charIdx + 1} unlocked!`), NEWLY_UNLOCKED_TOAST_DELAY_MS);
   }
 }
 
@@ -432,8 +855,8 @@ function handleStoryCompletion(pct) {
   const user = getUserProgress(userName);
   if (!user) return { passed, newlyUnlockedChapter: null };
 
-  const kikiProgress = user.storyProgress.kiki;
-  const chProgress   = kikiProgress.chapters[state.chapterId];
+  const charProgress = user.storyProgress[ch.character];
+  const chProgress   = charProgress.chapters[ch.charIdx];
   const wasCompleted = chProgress.completed;
 
   if (passed) {
@@ -447,14 +870,21 @@ function handleStoryCompletion(pct) {
 
   // Detect if completing this chapter unlocks the next one for the first time
   let newlyUnlockedChapter = null;
+  let newlyUnlockedCharacter = null;
   if (passed && !wasCompleted) {
-    const nextId = state.chapterId + 1;
-    if (nextId < CHAPTERS.length) {
-      newlyUnlockedChapter = nextId;
+    const nextChapter = CHAPTERS.find(c => c.character === ch.character && c.charIdx === ch.charIdx + 1);
+    if (nextChapter) {
+      newlyUnlockedChapter = nextChapter.id;
+    } else {
+      // This was the last chapter — check if the next character is now unlocked
+      const currentCharIdx = CHARACTERS.findIndex(c => c.id === ch.character);
+      if (currentCharIdx >= 0 && currentCharIdx + 1 < CHARACTERS.length) {
+        newlyUnlockedCharacter = CHARACTERS[currentCharIdx + 1].id;
+      }
     }
   }
 
-  return { passed, newlyUnlockedChapter };
+  return { passed, newlyUnlockedChapter, newlyUnlockedCharacter };
 }
 
 // ── Game flow ─────────────────────────────────────────────────
@@ -635,8 +1065,9 @@ function showResults() {
 
   if (state.storyMode) {
     const ch = CHAPTERS[state.chapterId];
-    const { passed, newlyUnlockedChapter } = handleStoryCompletion(pct);
+    const { passed, newlyUnlockedChapter, newlyUnlockedCharacter } = handleStoryCompletion(pct);
     state.newlyUnlockedChapter = newlyUnlockedChapter;
+    state.newlyUnlockedCharacter = newlyUnlockedCharacter;
 
     // Build chapter result banner with DOM methods (no innerHTML for user data)
     banner.textContent = '';
@@ -682,10 +1113,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ── Story screen
-  $('#switch-user-btn').addEventListener('click', () => {
+  // ── Character screen
+  $('#char-switch-user-btn').addEventListener('click', () => {
     renderLoginScreen();
     showScreen('#login-screen');
+  });
+
+  // ── Story screen
+  $('#back-to-characters-btn').addEventListener('click', () => {
+    renderCharacterScreen(state.newlyUnlockedCharacter);
+    state.newlyUnlockedCharacter = null;
+    showScreen('#character-screen');
   });
 
   // ── Start screen: mode selection
@@ -722,8 +1160,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('#back-to-story-btn').addEventListener('click', () => {
-    renderStoryScreen(state.newlyUnlockedChapter);
-    showScreen('#story-screen');
+    // If the last play unlocked a new character, go back to character screen to show it
+    if (state.newlyUnlockedCharacter) {
+      const unlockedId = state.newlyUnlockedCharacter;
+      state.newlyUnlockedCharacter = null;
+      renderCharacterScreen(unlockedId);
+      showScreen('#character-screen');
+    } else {
+      renderStoryScreen(state.newlyUnlockedChapter);
+      showScreen('#story-screen');
+    }
   });
 });
 

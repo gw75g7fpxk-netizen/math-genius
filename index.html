@@ -41,18 +41,37 @@
 
 
   <!-- ═══════════════════════════════════════════════════════
+       CHARACTER SELECT SCREEN
+  ══════════════════════════════════════════════════════════ -->
+  <div id="character-screen" class="screen">
+
+    <div class="card story-map-header">
+      <div class="story-map-title-row">
+        <span class="story-map-icon">🌟</span>
+        <h2 class="story-adventure-title">Story Adventures</h2>
+      </div>
+      <div class="story-user-row">
+        <span id="char-screen-username" class="story-username-text"></span>
+        <button id="char-switch-user-btn" class="btn-switch-user">Switch User</button>
+      </div>
+    </div>
+
+    <div id="character-grid" class="character-grid"></div>
+
+  </div><!-- /character-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
        STORY MAP SCREEN
   ══════════════════════════════════════════════════════════ -->
   <div id="story-screen" class="screen">
 
-    <div class="card kiki-story-header">
-      <img src="assets/images/kiki.png" alt="Kiki the bunny scientist" class="kiki-story-img"
-           onerror="this.onerror=null;this.src='assets/images/kiki.svg'" />
-      <h2 class="story-adventure-title">Kiki's Lab Adventure</h2>
-      <div class="story-user-row">
-        <span id="story-username" class="story-username-text"></span>
-        <button id="switch-user-btn" class="btn-switch-user">Switch User</button>
+    <div class="card story-map-header">
+      <div class="story-map-topbar">
+        <button id="back-to-characters-btn" class="btn-back-characters">← Characters</button>
       </div>
+      <div id="story-char-hero" class="story-char-hero"></div>
+      <h2 id="story-character-title" class="story-adventure-title"></h2>
     </div>
 
     <div id="chapters-list" class="chapters-list"></div>
