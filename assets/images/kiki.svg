@@ -1,48 +1,89 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240">
-  <!-- Left ear -->
-  <ellipse cx="68" cy="50" rx="18" ry="44" fill="#7c5cbf" stroke="#1a1a2e" stroke-width="3"/>
-  <ellipse cx="68" cy="52" rx="10" ry="32" fill="#e8d5f0"/>
-  <!-- Right ear -->
-  <ellipse cx="132" cy="50" rx="18" ry="44" fill="#7c5cbf" stroke="#1a1a2e" stroke-width="3"/>
-  <ellipse cx="132" cy="52" rx="10" ry="32" fill="#e8d5f0"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 265">
+  <!-- ── Ears (drawn first so body sits on top) ── -->
 
-  <!-- Body (egg shape) -->
-  <ellipse cx="100" cy="158" rx="72" ry="78" fill="#7c5cbf" stroke="#1a1a2e" stroke-width="3.5"/>
+  <!-- Left ear outer -->
+  <path d="M 58 92 C 54 60, 60 28, 74 14 C 84 4, 96 8, 100 28 C 104 50, 96 76, 86 92 Z"
+        fill="#9478c8" stroke="#1a1a2e" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Left ear inner -->
+  <path d="M 68 86 C 65 62, 70 36, 80 24 C 86 16, 94 20, 94 36 C 94 56, 88 74, 80 86 Z"
+        fill="#e6d5f5"/>
 
-  <!-- Face area (lighter oval) -->
-  <ellipse cx="100" cy="125" rx="40" ry="42" fill="#e8d5f0"/>
+  <!-- Right ear outer -->
+  <path d="M 162 92 C 166 60, 160 28, 146 14 C 136 4, 124 8, 120 28 C 116 50, 124 76, 134 92 Z"
+        fill="#9478c8" stroke="#1a1a2e" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Right ear inner -->
+  <path d="M 152 86 C 155 62, 150 36, 140 24 C 134 16, 126 20, 126 36 C 126 56, 132 74, 140 86 Z"
+        fill="#e6d5f5"/>
 
-  <!-- Lab coat body -->
-  <path d="M 42 175 Q 38 230 100 235 Q 162 230 158 175 L 148 148 Q 130 170 100 172 Q 70 170 52 148 Z" fill="#f0f0f0" stroke="#b0b0b0" stroke-width="2"/>
-  <!-- Lab coat left lapel -->
-  <path d="M 70 148 L 58 170 L 78 182 L 85 158 Z" fill="#f8f8f8" stroke="#b0b0b0" stroke-width="1.5"/>
-  <!-- Lab coat right lapel -->
-  <path d="M 130 148 L 142 170 L 122 182 L 115 158 Z" fill="#f8f8f8" stroke="#b0b0b0" stroke-width="1.5"/>
-  <!-- Lab coat center line -->
-  <line x1="100" y1="172" x2="100" y2="235" stroke="#b0b0b0" stroke-width="1.5"/>
-  <!-- Lab coat pocket -->
-  <rect x="118" y="188" width="22" height="16" rx="3" fill="none" stroke="#b0b0b0" stroke-width="1.5"/>
-  <!-- Pocket line -->
-  <line x1="118" y1="194" x2="140" y2="194" stroke="#b0b0b0" stroke-width="1"/>
-  <!-- Buttons -->
-  <circle cx="100" cy="195" r="4" fill="none" stroke="#9090a0" stroke-width="1.5"/>
-  <circle cx="100" cy="212" r="4" fill="none" stroke="#9090a0" stroke-width="1.5"/>
-  <!-- Button dashes -->
-  <line x1="103" y1="195" x2="109" y2="196" stroke="#9090a0" stroke-width="1"/>
-  <line x1="103" y1="212" x2="109" y2="213" stroke="#9090a0" stroke-width="1"/>
+  <!-- ── Main body blob ── -->
+  <path d="M 110 76
+           C 148 76, 178 92, 198 118
+           C 216 142, 216 172, 208 198
+           C 200 224, 180 248, 152 256
+           C 138 262, 124 264, 110 264
+           C 96 264, 82 262, 68 256
+           C 40 248, 20 224, 12 198
+           C 4 172, 4 142, 22 118
+           C 42 92, 72 76, 110 76 Z"
+        fill="#9478c8" stroke="#1a1a2e" stroke-width="4.5"/>
 
-  <!-- Eyes -->
-  <circle cx="83" cy="115" r="9" fill="#1a1a2e"/>
-  <circle cx="117" cy="115" r="9" fill="#1a1a2e"/>
-  <circle cx="86" cy="112" r="3" fill="#fff"/>
-  <circle cx="120" cy="112" r="3" fill="#fff"/>
+  <!-- ── Face oval (cream) ── -->
+  <ellipse cx="110" cy="155" rx="56" ry="60" fill="#e6d5f5"/>
 
-  <!-- Nose -->
-  <ellipse cx="100" cy="130" rx="7" ry="5" fill="#e88fa0"/>
+  <!-- ── Lab coat (lower portion) ── -->
+  <!-- Coat body -->
+  <path d="M 14 200
+           Q 12 256, 110 264
+           Q 208 256, 206 200
+           L 192 178
+           Q 158 206, 110 208
+           Q 62 206, 28 178 Z"
+        fill="#eeecec"/>
 
-  <!-- Mouth (smile) -->
-  <path d="M 92 138 Q 100 146 108 138" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Left lapel (viewer's left) -->
+  <path d="M 78 170 L 56 194 L 80 206 L 96 180 Z"
+        fill="#f8f7f7" stroke="#c0bfbf" stroke-width="1.5" stroke-linejoin="round"/>
 
-  <!-- Outline on top of everything -->
-  <ellipse cx="100" cy="158" rx="72" ry="78" fill="none" stroke="#1a1a2e" stroke-width="3.5"/>
+  <!-- Right lapel (viewer's right) -->
+  <path d="M 142 170 L 164 194 L 140 206 L 124 180 Z"
+        fill="#f8f7f7" stroke="#c0bfbf" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- Coat outline over body seam -->
+  <path d="M 14 200
+           Q 12 256, 110 264
+           Q 208 256, 206 200
+           L 192 178
+           Q 158 206, 110 208
+           Q 62 206, 28 178 Z"
+        fill="none" stroke="#aaa" stroke-width="1.8"/>
+
+  <!-- Center seam line -->
+  <line x1="110" y1="208" x2="110" y2="264" stroke="#bbb" stroke-width="1.5"/>
+
+  <!-- Pocket (viewer's LEFT side of coat) -->
+  <rect x="60" y="220" width="30" height="22" rx="3" fill="none" stroke="#c0bfbf" stroke-width="1.5"/>
+  <line x1="60" y1="228" x2="90" y2="228" stroke="#c0bfbf" stroke-width="1"/>
+
+  <!-- Circular buttons (left of center seam) -->
+  <circle cx="100" cy="224" r="5.5" fill="none" stroke="#aaa" stroke-width="1.5"/>
+  <circle cx="100" cy="242" r="5.5" fill="none" stroke="#aaa" stroke-width="1.5"/>
+
+  <!-- Horizontal dash details (right of center seam) -->
+  <line x1="116" y1="224" x2="130" y2="224" stroke="#bbb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="116" y1="242" x2="130" y2="242" stroke="#bbb" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- ── Eyes ── -->
+  <circle cx="86" cy="140" r="13" fill="#1a1a2e"/>
+  <circle cx="134" cy="140" r="13" fill="#1a1a2e"/>
+  <!-- Eye highlights -->
+  <circle cx="91" cy="135" r="4.5" fill="#ffffff"/>
+  <circle cx="139" cy="135" r="4.5" fill="#ffffff"/>
+
+  <!-- ── Nose ── -->
+  <ellipse cx="110" cy="161" rx="11" ry="9" fill="#e888a2"/>
+  <ellipse cx="110" cy="159" rx="8"  ry="6" fill="#f5aabb" opacity="0.7"/>
+
+  <!-- ── Mouth (two-bump smile) ── -->
+  <path d="M 97 172 Q 104 180, 110 177 Q 116 180, 123 172"
+        fill="none" stroke="#1a1a2e" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
