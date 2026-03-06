@@ -566,6 +566,7 @@ function setCurrentUser(name) {
 
 // ── User settings helpers ─────────────────────────────────────
 function getUserSettings(userName) {
+  if (!userName) return { ...DEFAULT_SETTINGS };
   const users = getUsers();
   const user = users.find(u => u.name === userName);
   if (!user || !user.settings) return { ...DEFAULT_SETTINGS };
@@ -573,6 +574,7 @@ function getUserSettings(userName) {
 }
 
 function saveUserSettings(userName, settings) {
+  if (!userName) return;
   const users = getUsers();
   const user = users.find(u => u.name === userName);
   if (!user) return;
