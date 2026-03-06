@@ -714,6 +714,24 @@ function renderStoryScreen(newlyUnlockedChapter) {
   $('#story-username').textContent = userName || '';
   $('#story-character-title').textContent = char ? char.name : '';
 
+  // ── Character hero image / emoji at top of screen
+  const heroEl = $('#story-char-hero');
+  heroEl.textContent = '';
+  if (char) {
+    if (char.image) {
+      const heroImg = document.createElement('img');
+      heroImg.src = char.image;
+      heroImg.alt = char.name;
+      heroImg.className = 'story-char-hero-img';
+      heroEl.appendChild(heroImg);
+    } else {
+      const heroEmoji = document.createElement('span');
+      heroEmoji.className = 'story-char-hero-emoji';
+      heroEmoji.textContent = char.emoji;
+      heroEl.appendChild(heroEmoji);
+    }
+  }
+
   const list = $('#chapters-list');
   list.textContent = '';
 

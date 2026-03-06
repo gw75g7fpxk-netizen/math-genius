@@ -561,6 +561,25 @@ input[type="text"]:focus {
   border-bottom: 3px solid var(--kiki-border);
 }
 
+.story-char-hero {
+  margin-bottom: 14px;
+}
+
+.story-char-hero-img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--kiki-border);
+  filter: drop-shadow(0 6px 18px rgba(124, 92, 191, 0.3));
+}
+
+.story-char-hero-emoji {
+  font-size: 5rem;
+  line-height: 1;
+  display: block;
+}
+
 .story-map-title-row {
   display: flex;
   align-items: center;
