@@ -412,16 +412,14 @@ function startChapter(chapterId) {
   state.storyMode  = true;
   state.chapterId  = chapterId;
 
-  // Pre-fill player name from current user
-  const nameInput = $('#name-input');
-  nameInput.value = getCurrentUser() || '';
-
-  // Pre-select mode for this chapter
+  // Set player name and mode in the DOM so startGame() can read them,
+  // then launch directly into the game without showing the start screen.
+  $('#name-input').value = getCurrentUser() || '';
   $$('.mode-btn').forEach(b => b.classList.remove('selected'));
   const modeBtn = $(`.mode-btn[data-mode="${ch.mode}"]`);
   if (modeBtn) modeBtn.classList.add('selected');
 
-  showScreen('#start-screen');
+  startGame();
 }
 
 // ── Story completion ──────────────────────────────────────────
