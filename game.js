@@ -666,7 +666,9 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
     descEl.className = 'character-card-desc';
     descEl.textContent = unlocked
       ? char.description
-      : `Complete ${CHARACTERS[charIndex - 1].name}'s story to unlock!`;
+      : charIndex > 0
+        ? `Complete ${CHARACTERS[charIndex - 1].name}'s story to unlock!`
+        : 'Locked';
 
     const progressEl = document.createElement('div');
     progressEl.className = 'character-card-progress';
