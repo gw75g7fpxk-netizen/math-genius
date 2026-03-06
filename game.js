@@ -350,7 +350,9 @@ let state = {
   answered:             false,
   storyMode:            false,      // true when playing from a story chapter
   chapterId:            null,       // which chapter (0-4) is being played
+  selectedCharacter:    null,       // character id chosen on the character screen
   newlyUnlockedChapter: null,       // chapter id unlocked after last completion
+  newlyUnlockedCharacter: null,     // character id unlocked after last completion
 };
 
 // ── LocalStorage helpers ──────────────────────────────────────
@@ -398,6 +400,17 @@ function isChapterUnlocked(ch, progress) {
   if (!charProgress) return false;
   const prev = charProgress.chapters[ch.charIdx - 1];
   return prev && prev.completed;
+}
+
+/** Returns true when all chapters of character at CHARACTERS[charIndex-1] are done. */
+function isCharacterUnlocked(charIndex, progress) {
+  if (charIndex === 0) return true;
+  const prevChar = CHARACTERS[charIndex - 1];
+  const prevProgress = progress[prevChar.id];
+  if (!prevProgress) return false;
+  const prevChapters = CHAPTERS.filter(ch => ch.character === prevChar.id);
+  return prevChapters.length > 0 &&
+    prevChapters.every((ch, i) => prevProgress.chapters[i] && prevProgress.chapters[i].completed);
 }
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -566,8 +579,10 @@ function loginUser(name) {
     user.lastPlayed = Date.now();
     saveUsers(users);
   }
-  renderStoryScreen(null);
-  showScreen('#story-screen');
+  state.selectedCharacter = null;
+  state.newlyUnlockedCharacter = null;
+  renderCharacterScreen(null);
+  showScreen('#character-screen');
 }
 
 function addPlayer(rawName) {
@@ -586,20 +601,13 @@ function addPlayer(rawName) {
   loginUser(name);
 }
 
-// ── Story map screen ──────────────────────────────────────────
-function renderStoryScreen(newlyUnlockedChapter) {
+// ── Character select screen ───────────────────────────────────
+function renderCharacterScreen(newlyUnlockedCharacterId) {
   const userName = getCurrentUser();
   const user = getUserProgress(userName);
-
-  const usernameEl = $('#story-username');
-  usernameEl.textContent = userName || '';
-
-  const list = $('#chapters-list');
-  list.textContent = '';
-
   const progress = user ? user.storyProgress : {};
 
-  // Ensure progress slots exist for all characters (handles fresh/missing data)
+  // Ensure progress slots exist for all characters
   CHARACTERS.forEach(char => {
     progress[char.id] = progress[char.id] || { chapters: [] };
     const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
@@ -608,109 +616,191 @@ function renderStoryScreen(newlyUnlockedChapter) {
     }
   });
 
-  CHARACTERS.forEach(char => {
-    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
+  $('#char-screen-username').textContent = userName || '';
+
+  const grid = $('#character-grid');
+  grid.textContent = '';
+
+  CHARACTERS.forEach((char, charIndex) => {
+    const unlocked = isCharacterUnlocked(charIndex, progress);
     const charProgress = progress[char.id];
+    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
+    const completedCount = charChapters.filter((ch, i) =>
+      charProgress.chapters[i] && charProgress.chapters[i].completed
+    ).length;
+    const allDone = completedCount === charChapters.length;
 
-    // ── Character section wrapper
-    const section = document.createElement('div');
-    section.className = 'character-section';
+    const card = document.createElement('button');
+    card.className = 'character-card';
+    card.classList.toggle('unlocked', unlocked);
+    card.classList.toggle('locked', !unlocked);
+    if (allDone) card.classList.add('completed');
+    if (char.id === newlyUnlockedCharacterId) card.classList.add('newly-unlocked');
+    card.setAttribute('type', 'button');
+    card.disabled = !unlocked;
 
-    // ── Character section header
-    const sectionHeader = document.createElement('div');
-    sectionHeader.className = 'character-section-header';
+    // Image or emoji
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'character-card-img-wrap';
     if (char.image) {
       const img = document.createElement('img');
       img.src = char.image;
       img.alt = char.name;
-      img.className = 'character-section-img';
-      sectionHeader.appendChild(img);
+      img.className = 'character-card-img';
+      imgWrap.appendChild(img);
     } else {
-      const emojiSpan = document.createElement('span');
-      emojiSpan.className = 'character-section-emoji';
-      emojiSpan.textContent = char.emoji;
-      sectionHeader.appendChild(emojiSpan);
+      const emo = document.createElement('span');
+      emo.className = 'character-card-emoji';
+      emo.textContent = unlocked ? char.emoji : '🔒';
+      imgWrap.appendChild(emo);
     }
-    const nameSpan = document.createElement('span');
-    nameSpan.textContent = char.name;
-    sectionHeader.appendChild(nameSpan);
-    section.appendChild(sectionHeader);
 
-    charChapters.forEach(ch => {
-      const unlocked = isChapterUnlocked(ch, progress);
-      const chProgress = charProgress.chapters[ch.charIdx];
+    const body = document.createElement('div');
+    body.className = 'character-card-body';
 
-      const card = document.createElement('div');
-      card.className = 'chapter-card';
-      card.classList.add(unlocked ? 'unlocked' : 'locked');
-      if (chProgress.completed) card.classList.add('completed');
-      if (ch.id === newlyUnlockedChapter) card.classList.add('newly-unlocked');
+    const nameEl = document.createElement('div');
+    nameEl.className = 'character-card-name';
+    nameEl.textContent = char.name;
 
-      // ── Header row
-      const header = document.createElement('div');
-      header.className = 'chapter-header';
+    const descEl = document.createElement('div');
+    descEl.className = 'character-card-desc';
+    descEl.textContent = unlocked
+      ? char.description
+      : `Complete ${CHARACTERS[charIndex - 1].name}'s story to unlock!`;
 
-      const emojiEl = document.createElement('span');
-      emojiEl.className = 'chapter-emoji';
-      emojiEl.textContent = ch.emoji;
+    const progressEl = document.createElement('div');
+    progressEl.className = 'character-card-progress';
+    if (!unlocked) {
+      progressEl.textContent = '🔒 Locked';
+    } else if (allDone) {
+      progressEl.textContent = '✅ All chapters complete!';
+    } else {
+      progressEl.textContent = `${completedCount} / ${charChapters.length} chapters complete`;
+    }
 
-      const titleEl = document.createElement('div');
-      titleEl.className = 'chapter-title';
-      titleEl.textContent = ch.title;
+    body.append(nameEl, descEl, progressEl);
+    card.append(imgWrap, body);
 
-      const badgeEl = document.createElement('div');
-      badgeEl.className = 'chapter-status-badge';
-      if (!unlocked) {
-        badgeEl.textContent = '🔒';
-      } else if (chProgress.completed) {
-        badgeEl.textContent = '✅';
+    if (unlocked) {
+      card.addEventListener('click', () => selectCharacter(char.id));
+    }
+
+    grid.appendChild(card);
+  });
+
+  if (newlyUnlockedCharacterId) {
+    const char = CHARACTERS.find(c => c.id === newlyUnlockedCharacterId);
+    setTimeout(() => {
+      if (char) showToast(`🎉 ${char.emoji} ${char.name} unlocked!`);
+    }, NEWLY_UNLOCKED_TOAST_DELAY_MS);
+  }
+}
+
+function selectCharacter(charId) {
+  state.selectedCharacter = charId;
+  renderStoryScreen(null);
+  showScreen('#story-screen');
+}
+
+// ── Story map screen ──────────────────────────────────────────
+function renderStoryScreen(newlyUnlockedChapter) {
+  const userName = getCurrentUser();
+  const user = getUserProgress(userName);
+  const charId = state.selectedCharacter;
+  const char = CHARACTERS.find(c => c.id === charId);
+
+  $('#story-username').textContent = userName || '';
+  $('#story-character-title').textContent = char ? char.name : '';
+
+  const list = $('#chapters-list');
+  list.textContent = '';
+
+  const progress = user ? user.storyProgress : {};
+
+  // Ensure progress for this character is initialized
+  if (char) {
+    progress[char.id] = progress[char.id] || { chapters: [] };
+    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
+    while (progress[char.id].chapters.length < charChapters.length) {
+      progress[char.id].chapters.push({ completed: false, stars: 0, bestScore: null, bestPct: null });
+    }
+  }
+
+  const charChapters = char ? CHAPTERS.filter(ch => ch.character === char.id) : [];
+  const charProgress = char ? (progress[char.id] || { chapters: [] }) : { chapters: [] };
+
+  charChapters.forEach(ch => {
+    const unlocked = isChapterUnlocked(ch, progress);
+    const chProgress = charProgress.chapters[ch.charIdx];
+
+    const card = document.createElement('div');
+    card.className = 'chapter-card';
+    card.classList.add(unlocked ? 'unlocked' : 'locked');
+    if (chProgress.completed) card.classList.add('completed');
+    if (ch.id === newlyUnlockedChapter) card.classList.add('newly-unlocked');
+
+    // ── Header row
+    const header = document.createElement('div');
+    header.className = 'chapter-header';
+
+    const emojiEl = document.createElement('span');
+    emojiEl.className = 'chapter-emoji';
+    emojiEl.textContent = ch.emoji;
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'chapter-title';
+    titleEl.textContent = ch.title;
+
+    const badgeEl = document.createElement('div');
+    badgeEl.className = 'chapter-status-badge';
+    if (!unlocked) {
+      badgeEl.textContent = '🔒';
+    } else if (chProgress.completed) {
+      badgeEl.textContent = '✅';
+    }
+
+    header.append(emojiEl, titleEl, badgeEl);
+
+    // ── Stars / lock row
+    const starsEl = document.createElement('div');
+    starsEl.className = 'chapter-stars';
+    if (!unlocked) {
+      const lockNote = document.createElement('span');
+      lockNote.className = 'chapter-locked-note';
+      lockNote.textContent = 'Complete the previous chapter to unlock';
+      starsEl.appendChild(lockNote);
+    } else {
+      const earned = chProgress.stars || 0;
+      for (let i = 0; i < 3; i++) {
+        const s = document.createElement('span');
+        s.textContent = i < earned ? '⭐' : '☆';
+        starsEl.appendChild(s);
       }
-
-      header.append(emojiEl, titleEl, badgeEl);
-
-      // ── Stars / lock row
-      const starsEl = document.createElement('div');
-      starsEl.className = 'chapter-stars';
-      if (!unlocked) {
-        const lockNote = document.createElement('span');
-        lockNote.className = 'chapter-locked-note';
-        lockNote.textContent = 'Complete the previous chapter to unlock';
-        starsEl.appendChild(lockNote);
-      } else {
-        const earned = chProgress.stars || 0;
-        for (let i = 0; i < 3; i++) {
-          const s = document.createElement('span');
-          s.textContent = i < earned ? '⭐' : '☆';
-          starsEl.appendChild(s);
-        }
-        if (chProgress.bestPct !== null) {
-          const bestEl = document.createElement('span');
-          bestEl.className = 'chapter-best-pct';
-          bestEl.textContent = `Best: ${chProgress.bestPct}%`;
-          starsEl.appendChild(bestEl);
-        }
+      if (chProgress.bestPct !== null) {
+        const bestEl = document.createElement('span');
+        bestEl.className = 'chapter-best-pct';
+        bestEl.textContent = `Best: ${chProgress.bestPct}%`;
+        starsEl.appendChild(bestEl);
       }
+    }
 
-      card.append(header, starsEl);
+    card.append(header, starsEl);
 
-      if (unlocked) {
-        const storyEl = document.createElement('p');
-        storyEl.className = 'chapter-story';
-        storyEl.textContent = ch.story;
-        card.insertBefore(storyEl, starsEl);
+    if (unlocked) {
+      const storyEl = document.createElement('p');
+      storyEl.className = 'chapter-story';
+      storyEl.textContent = ch.story;
+      card.insertBefore(storyEl, starsEl);
 
-        const playBtn = document.createElement('button');
-        playBtn.className = 'btn btn-primary chapter-play-btn';
-        playBtn.setAttribute('type', 'button');
-        playBtn.textContent = chProgress.completed ? '🔄 Play Again' : '▶ Play';
-        playBtn.addEventListener('click', () => startChapter(ch.id));
-        card.appendChild(playBtn);
-      }
+      const playBtn = document.createElement('button');
+      playBtn.className = 'btn btn-primary chapter-play-btn';
+      playBtn.setAttribute('type', 'button');
+      playBtn.textContent = chProgress.completed ? '🔄 Play Again' : '▶ Play';
+      playBtn.addEventListener('click', () => startChapter(ch.id));
+      card.appendChild(playBtn);
+    }
 
-      section.appendChild(card);
-    });
-
-    list.appendChild(section);
+    list.appendChild(card);
   });
 
   if (newlyUnlockedChapter !== null) {
@@ -760,14 +850,21 @@ function handleStoryCompletion(pct) {
 
   // Detect if completing this chapter unlocks the next one for the first time
   let newlyUnlockedChapter = null;
+  let newlyUnlockedCharacter = null;
   if (passed && !wasCompleted) {
     const nextChapter = CHAPTERS.find(c => c.character === ch.character && c.charIdx === ch.charIdx + 1);
     if (nextChapter) {
       newlyUnlockedChapter = nextChapter.id;
+    } else {
+      // This was the last chapter — check if the next character is now unlocked
+      const currentCharIdx = CHARACTERS.findIndex(c => c.id === ch.character);
+      if (currentCharIdx >= 0 && currentCharIdx + 1 < CHARACTERS.length) {
+        newlyUnlockedCharacter = CHARACTERS[currentCharIdx + 1].id;
+      }
     }
   }
 
-  return { passed, newlyUnlockedChapter };
+  return { passed, newlyUnlockedChapter, newlyUnlockedCharacter };
 }
 
 // ── Game flow ─────────────────────────────────────────────────
@@ -948,8 +1045,9 @@ function showResults() {
 
   if (state.storyMode) {
     const ch = CHAPTERS[state.chapterId];
-    const { passed, newlyUnlockedChapter } = handleStoryCompletion(pct);
+    const { passed, newlyUnlockedChapter, newlyUnlockedCharacter } = handleStoryCompletion(pct);
     state.newlyUnlockedChapter = newlyUnlockedChapter;
+    state.newlyUnlockedCharacter = newlyUnlockedCharacter;
 
     // Build chapter result banner with DOM methods (no innerHTML for user data)
     banner.textContent = '';
@@ -995,10 +1093,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ── Character screen
+  $('#char-switch-user-btn').addEventListener('click', () => {
+    renderLoginScreen();
+    showScreen('#login-screen');
+  });
+
   // ── Story screen
   $('#switch-user-btn').addEventListener('click', () => {
     renderLoginScreen();
     showScreen('#login-screen');
+  });
+
+  $('#back-to-characters-btn').addEventListener('click', () => {
+    renderCharacterScreen(state.newlyUnlockedCharacter);
+    state.newlyUnlockedCharacter = null;
+    showScreen('#character-screen');
   });
 
   // ── Start screen: mode selection
@@ -1035,8 +1145,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('#back-to-story-btn').addEventListener('click', () => {
-    renderStoryScreen(state.newlyUnlockedChapter);
-    showScreen('#story-screen');
+    // If the last play unlocked a new character, go back to character screen to show it
+    if (state.newlyUnlockedCharacter) {
+      const unlockedId = state.newlyUnlockedCharacter;
+      state.newlyUnlockedCharacter = null;
+      renderCharacterScreen(unlockedId);
+      showScreen('#character-screen');
+    } else {
+      renderStoryScreen(state.newlyUnlockedChapter);
+      showScreen('#story-screen');
+    }
   });
 });
 
