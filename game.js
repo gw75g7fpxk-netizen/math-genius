@@ -306,7 +306,7 @@ const CHAPTERS = [
     charIdx: 2,
     title: "Chapter 3: Portal Power Calculations",
     emoji: "🌀",
-    story: "The portal between Margret's pool and the ocean needs perfectly balanced energy — too much or too little and it snaps shut! Maggie the ninja baby keeps trying to flip the portal control panel. Help Margret use multiplication to keep the portal energy stable and the mermaids safely connected to the neighborhood!",
+    story: "The mermaids are using their own magic to hold the portal open, but they need the numbers to be exactly right before they channel their power! Maggie the ninja baby keeps 'helping' by doing flips nearby, which is not helping. Help Margret use multiplication to calculate the precise figures the mermaids need so everyone crosses through safely!",
     mode: "multiply",
     unlockAt: 1,
     passPct: 80,
