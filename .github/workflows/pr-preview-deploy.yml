@@ -1,0 +1,13 @@
+name: PR Preview Deployment (replaced)
+# This workflow has been replaced by pr-preview.yml which handles deployment directly.
+# It is kept here as a no-op to avoid stale workflow_run references.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - run: echo "This workflow is disabled. Preview deployments are handled by pr-preview.yml."
