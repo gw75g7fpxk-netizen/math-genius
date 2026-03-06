@@ -358,11 +358,6 @@ function renderStoryScreen(newlyUnlockedChapter) {
 
     header.append(emojiEl, titleEl, badgeEl);
 
-    // ── Story text
-    const storyEl = document.createElement('p');
-    storyEl.className = 'chapter-story';
-    storyEl.textContent = ch.story;
-
     // ── Stars / lock row
     const starsEl = document.createElement('div');
     starsEl.className = 'chapter-stars';
@@ -386,9 +381,14 @@ function renderStoryScreen(newlyUnlockedChapter) {
       }
     }
 
-    card.append(header, storyEl, starsEl);
+    card.append(header, starsEl);
 
     if (unlocked) {
+      const storyEl = document.createElement('p');
+      storyEl.className = 'chapter-story';
+      storyEl.textContent = ch.story;
+      card.insertBefore(storyEl, starsEl);
+
       const playBtn = document.createElement('button');
       playBtn.className = 'btn btn-primary chapter-play-btn';
       playBtn.setAttribute('type', 'button');
