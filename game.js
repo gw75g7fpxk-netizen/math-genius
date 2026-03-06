@@ -699,7 +699,7 @@ function renderStoryScreen(newlyUnlockedChapter) {
   if (newlyUnlockedChapter !== null) {
     const ch = CHAPTERS[newlyUnlockedChapter];
     // Delay slightly so the screen transition completes first
-    setTimeout(() => showToast(`🎉 ${ch.emoji} ${ch.title} unlocked!`), NEWLY_UNLOCKED_TOAST_DELAY_MS);
+    setTimeout(() => showToast(`🎉 ${ch.emoji} Chapter ${ch.charIdx + 1} unlocked!`), NEWLY_UNLOCKED_TOAST_DELAY_MS);
   }
 }
 
