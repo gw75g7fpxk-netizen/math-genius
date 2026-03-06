@@ -59,14 +59,14 @@ He often stops by Kiki's lab or runs into her along the way. He sometimes encoun
 ## Lulu
 **Species:** Kangaroo  
 **Relation:** Friend of Humphrey, neighbor  
-**Personality:** One of Humphrey's neighborhood friends.
+**Personality:** One of Humphrey's neighborhood friends. Lulu lives next door to Roo.
 
 ---
 
 ## Maggie
 **Species:** Tiger  
 **Relation:** Margret's younger sister  
-**Personality:** Maggie is a ninja/karate baby. If Humphrey runs into her on his morning walks, she often likes to have him put her on his shoulder as they walk down the street together.
+**Personality:** Maggie is a ninja/karate baby. If Humphrey runs into her on his morning walks, she often likes to have him put her on his shoulder as they walk down the street together. She frequently busts out ninja moves that occasionally break things, making it seem like she is abnormally strong for her size. If she karate kicks a fence, it will fall right over. If she roundhouse kicks a soccer ball, it goes crazy fast. She does not always mean to cause destruction — it just kind of happens.
 
 ---
 
@@ -117,3 +117,10 @@ He often stops by Kiki's lab or runs into her along the way. He sometimes encoun
 **Species:** Mermaids  
 **Home:** The ocean  
 **Connection:** Friends of Margret. They travel to the neighborhood via a magical portal that connects to any body of water large enough for them to fit in — most often Margret's backyard swimming pool.
+
+---
+
+## Thumper
+**Species:** Rabbit  
+**Home:** A hole in the ground near a tree  
+**Personality:** Thumper is the town trickster. She thinks it is absolutely hilarious to play tricks and set traps for people — though others are not usually as thrilled about it. She means no harm and is never cruel; the pranks are all in good fun, even if the victims don't always agree. When someone falls for one of her tricks, Thumper lets out her very distinctive laugh: **kekekekeke!** Everyone in the neighborhood knows that sound means someone just got got.
