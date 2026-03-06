@@ -34,6 +34,7 @@ const CHARACTERS = [
     id: 'fluffy',
     name: 'Fluffy',
     emoji: '🧸',
+    image: 'assets/images/fluffy.png',
     description: 'A round, soft Tiger squish-mallow who hops down the street and accidentally bumps into everyone — but so gently everyone just giggles!',
   },
   {
