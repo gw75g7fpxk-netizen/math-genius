@@ -11,9 +11,58 @@
 <div id="app">
 
   <!-- ═══════════════════════════════════════════════════════
+       LOGIN SCREEN
+  ══════════════════════════════════════════════════════════ -->
+  <div id="login-screen" class="screen active">
+
+    <div class="card hero kiki-hero">
+      <img src="assets/images/kiki.png" alt="Kiki the bunny scientist" class="kiki-hero-img"
+           onerror="this.onerror=null;this.src='assets/images/kiki.svg'" />
+      <h1>Math Genius</h1>
+      <p>Learn math with Kiki the Mad Scientist!</p>
+    </div>
+
+    <div class="card">
+      <label>Who's playing?</label>
+      <div id="user-grid" class="user-grid"></div>
+      <p id="user-grid-empty" class="user-grid-empty">No players yet — add one below!</p>
+    </div>
+
+    <div class="card">
+      <label for="add-player-input">New player</label>
+      <div class="add-player-row">
+        <input id="add-player-input" type="text" placeholder="Enter name" maxlength="20" autocomplete="off" />
+        <button id="add-player-btn" class="btn btn-primary">Add</button>
+      </div>
+    </div>
+
+  </div><!-- /login-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       STORY MAP SCREEN
+  ══════════════════════════════════════════════════════════ -->
+  <div id="story-screen" class="screen">
+
+    <div class="card kiki-story-header">
+      <img src="assets/images/kiki.png" alt="Kiki the bunny scientist" class="kiki-story-img"
+           onerror="this.onerror=null;this.src='assets/images/kiki.svg'" />
+      <h2 class="story-adventure-title">Kiki's Lab Adventure</h2>
+      <div class="story-user-row">
+        <span id="story-username" class="story-username-text"></span>
+        <button id="switch-user-btn" class="btn-switch-user">Switch User</button>
+      </div>
+    </div>
+
+    <div id="chapters-list" class="chapters-list"></div>
+
+  </div><!-- /story-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
        START SCREEN
   ══════════════════════════════════════════════════════════ -->
-  <div id="start-screen" class="screen active">
+  <div id="start-screen" class="screen">
 
     <div class="card hero">
       <div class="hero-icon">🧮</div>
@@ -144,7 +193,12 @@
       <div id="history-list" class="history-list"></div>
     </div>
 
-    <button id="play-again-btn" class="btn btn-primary">🔄 Play Again</button>
+    <div id="story-result-banner" class="card story-result-banner"></div>
+
+    <div class="results-actions">
+      <button id="back-to-story-btn" class="btn btn-ghost">📚 Back to Story</button>
+      <button id="play-again-btn" class="btn btn-primary">🔄 Play Again</button>
+    </div>
 
   </div><!-- /results-screen -->
 

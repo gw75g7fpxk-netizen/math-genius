@@ -443,3 +443,290 @@ input[type="text"]:focus {
   .question-text { font-size: 3.5rem; }
   .answer-btn    { font-size: 1.8rem; padding: 26px 12px; }
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   KIKI / STORY MODE STYLES
+══════════════════════════════════════════════════════════════ */
+
+:root {
+  --kiki:        #7c5cbf;
+  --kiki-h:      #6a4dab;
+  --kiki-bg:     #f3eeff;
+  --kiki-border: #d4c5f0;
+}
+
+/* ── Login screen ──────────────────────────────────────────── */
+.kiki-hero {
+  text-align: center;
+  padding: 28px 24px 20px;
+  background: linear-gradient(160deg, #f3eeff 0%, #eef2ff 100%);
+  border-bottom: 3px solid var(--kiki-border);
+}
+.kiki-hero h1 {
+  color: var(--kiki);
+}
+.kiki-hero-img {
+  width: 100px;
+  height: auto;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 12px rgba(124, 92, 191, 0.25));
+}
+
+.user-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 12px;
+  border: 2px solid var(--kiki-border);
+  border-radius: var(--radius);
+  background: var(--kiki-bg);
+  cursor: pointer;
+  transition: border-color .15s, transform .1s, box-shadow .15s;
+  font-family: inherit;
+}
+.user-card:hover {
+  border-color: var(--kiki);
+  box-shadow: 0 4px 14px rgba(124, 92, 191, 0.2);
+}
+.user-card:active {
+  transform: scale(0.96);
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--kiki);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  text-align: center;
+  word-break: break-word;
+}
+
+.user-date {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.user-grid-empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 8px 0;
+}
+
+.add-player-row {
+  display: flex;
+  gap: 10px;
+}
+.add-player-row input {
+  flex: 1;
+  min-width: 0;
+}
+.add-player-row .btn {
+  width: auto;
+  padding: 12px 20px;
+  white-space: nowrap;
+  background: var(--kiki);
+  box-shadow: 0 4px 14px rgba(124, 92, 191, .35);
+}
+.add-player-row .btn:hover {
+  background: var(--kiki-h);
+}
+
+/* ── Story map screen ──────────────────────────────────────── */
+.kiki-story-header {
+  text-align: center;
+  padding: 24px 20px 20px;
+  background: linear-gradient(160deg, #f3eeff 0%, #eef2ff 100%);
+  border-bottom: 3px solid var(--kiki-border);
+}
+
+.kiki-story-img {
+  width: 120px;
+  height: auto;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 6px 16px rgba(124, 92, 191, 0.3));
+}
+
+.story-adventure-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--kiki);
+  margin-bottom: 10px;
+}
+
+.story-user-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.story-username-text {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.btn-switch-user {
+  border: 1.5px solid var(--kiki-border);
+  background: none;
+  color: var(--kiki);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 99px;
+  transition: background .15s;
+  font-family: inherit;
+}
+.btn-switch-user:hover {
+  background: var(--kiki-bg);
+}
+
+.chapters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Chapter cards ─────────────────────────────────────────── */
+.chapter-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  border: 2px solid transparent;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.chapter-card.unlocked {
+  border-color: var(--kiki-border);
+}
+.chapter-card.completed {
+  border-color: #bbf7d0;
+}
+.chapter-card.locked {
+  opacity: 0.6;
+}
+
+@keyframes unlockPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.04); box-shadow: 0 8px 28px rgba(124,92,191,.35); }
+  100% { transform: scale(1); }
+}
+.chapter-card.newly-unlocked {
+  animation: unlockPop .6s ease forwards;
+  border-color: var(--kiki);
+}
+
+.chapter-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.chapter-emoji {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.chapter-title {
+  flex: 1;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.chapter-status-badge {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.chapter-story {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.chapter-stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+.chapter-locked-note {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.chapter-best-pct {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+.chapter-play-btn {
+  background: var(--kiki);
+  box-shadow: 0 4px 14px rgba(124, 92, 191, .3);
+}
+.chapter-play-btn:hover {
+  background: var(--kiki-h);
+}
+
+/* ── Story result banner ───────────────────────────────────── */
+.story-result-banner {
+  padding: 16px 20px;
+  background: var(--kiki-bg);
+  border: 2px solid var(--kiki-border);
+}
+
+.srb-chapter {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--kiki);
+  margin-bottom: 6px;
+}
+
+.srb-result {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.srb-passed { color: var(--success); }
+.srb-failed { color: var(--danger); }
+
+/* ── Results actions layout ────────────────────────────────── */
+.results-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
