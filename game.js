@@ -711,7 +711,6 @@ function renderStoryScreen(newlyUnlockedChapter) {
   const charId = state.selectedCharacter;
   const char = CHARACTERS.find(c => c.id === charId);
 
-  $('#story-username').textContent = userName || '';
   $('#story-character-title').textContent = char ? char.name : '';
 
   // ── Character hero image / emoji at top of screen
@@ -1120,11 +1119,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── Story screen
-  $('#switch-user-btn').addEventListener('click', () => {
-    renderLoginScreen();
-    showScreen('#login-screen');
-  });
-
   $('#back-to-characters-btn').addEventListener('click', () => {
     renderCharacterScreen(state.newlyUnlockedCharacter);
     state.newlyUnlockedCharacter = null;
