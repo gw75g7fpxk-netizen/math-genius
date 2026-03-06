@@ -45,9 +45,9 @@ const CHAPTERS = [
   },
   {
     id: 3,
-    title: "Chapter 4: The Sandwich on the Moon",
-    emoji: "🌙",
-    story: "While testing her Rainbow Bubble Portal, Kiki accidentally teleported her lunch sandwich all the way to the moon! She needs to quickly calculate the return trajectory using both operations. Help Kiki rescue her sandwich!",
+    title: "Chapter 4: Bermione's Missing Sammich",
+    emoji: "🥪",
+    story: "Kiki's Rainbow Bubble Portal accidentally zapped the sammich belonging to her neighbour Bermione — and Bermione is NOT happy about it. \"That was MY sammich!\" she fumes, crossing her arms. Kiki must use the portal's return calculations to bring the sammich back before Bermione gets any grumpier. Help Kiki solve 20 problems to rescue the sammich and restore the peace!",
     mode: "both",
     unlockAt: 2,
     passPct: 60,
