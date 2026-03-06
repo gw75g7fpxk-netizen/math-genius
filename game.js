@@ -6,13 +6,20 @@
 
 // ── Constants ────────────────────────────────────────────────
 const QUESTIONS_PER_ROUND = 20;
-const TIME_PER_QUESTION   = 10;   // seconds
+const TIME_PER_QUESTION   = 10;   // seconds (default; overridden by user settings)
 const CIRCUMFERENCE       = 2 * Math.PI * 27; // r=27 → ≈169.6
 const MAX_POINTS          = 10;
 const MIN_POINTS          = 1;
 const TIMEOUT_ANSWER           = null; // sentinel value meaning no answer was given
 const MAX_PLAYER_NAME_LENGTH   = 20;   // must match maxlength on #add-player-input in HTML
 const NEWLY_UNLOCKED_TOAST_DELAY_MS = 400;
+
+// ── Default user settings ─────────────────────────────────────
+const DEFAULT_SETTINGS = {
+  timerDuration: TIME_PER_QUESTION, // seconds per question (5–30)
+  maxNumber:     10,                // max operand for questions (2–12)
+  allowDivision: true,              // when false, division is replaced by multiplication
+};
 
 // ── Characters ────────────────────────────────────────────────
 const CHARACTERS = [
@@ -540,6 +547,7 @@ let state = {
   selectedCharacter:    null,       // character id chosen on the character screen
   newlyUnlockedChapter: null,       // chapter id unlocked after last completion
   newlyUnlockedCharacter: null,     // character id unlocked after last completion
+  settings:             { ...DEFAULT_SETTINGS }, // active user's settings
 };
 
 // ── LocalStorage helpers ──────────────────────────────────────
@@ -554,6 +562,22 @@ function getCurrentUser() {
 }
 function setCurrentUser(name) {
   localStorage.setItem('mathgenius_currentUser', name);
+}
+
+// ── User settings helpers ─────────────────────────────────────
+function getUserSettings(userName) {
+  const users = getUsers();
+  const user = users.find(u => u.name === userName);
+  if (!user || !user.settings) return { ...DEFAULT_SETTINGS };
+  return { ...DEFAULT_SETTINGS, ...user.settings };
+}
+
+function saveUserSettings(userName, settings) {
+  const users = getUsers();
+  const user = users.find(u => u.name === userName);
+  if (!user) return;
+  user.settings = settings;
+  saveUsers(users);
 }
 
 // ── User progress helpers ─────────────────────────────────────
@@ -621,27 +645,32 @@ function formatDate(ts) {
 
 /**
  * Generate a single question object.
- * Multiplication: a × b = ? (a,b ∈ 0..10)
- * Division:       a ÷ b = ? where a = b×q, b ≠ 0, q ∈ 0..10
+ * Multiplication: a × b = ? (a,b ∈ 0..maxNumber)
+ * Division:       a ÷ b = ? where a = b×q, b ≠ 0, q ∈ 0..maxNumber
  */
 function generateQuestion(mode) {
   let type, a, b, answer, display;
 
+  const maxNum = state.settings.maxNumber;
+  const allowDiv = state.settings.allowDivision;
+
   if (mode === 'both') {
-    type = Math.random() < 0.5 ? 'multiply' : 'divide';
+    type = (allowDiv && Math.random() < 0.5) ? 'divide' : 'multiply';
+  } else if (mode === 'divide' && !allowDiv) {
+    type = 'multiply';
   } else {
     type = mode;
   }
 
   if (type === 'multiply') {
-    a = rand(0, 10);
-    b = rand(0, 10);
+    a = rand(0, maxNum);
+    b = rand(0, maxNum);
     answer = a * b;
     display = `${a} × ${b}`;
   } else {
-    // divisor b in 1..10, quotient in 0..10
-    b = rand(1, 10);
-    const q = rand(0, 10);
+    // divisor b in 1..maxNum, quotient in 0..maxNum
+    b = rand(1, maxNum);
+    const q = rand(0, maxNum);
     a = b * q;
     answer = q;
     display = `${a} ÷ ${b}`;
@@ -688,7 +717,8 @@ function showToast(text, isWrong = false) {
 
 // ── Timer ─────────────────────────────────────────────────────
 function startTimer() {
-  state.timeLeft = TIME_PER_QUESTION;
+  const duration = state.settings.timerDuration;
+  state.timeLeft = duration;
   state.tickStart = Date.now();
   updateTimerUI();
 
@@ -696,7 +726,7 @@ function startTimer() {
   state.timerID = setInterval(() => {
     state.timeLeft = Math.max(
       0,
-      TIME_PER_QUESTION - (Date.now() - state.tickStart) / 1000
+      duration - (Date.now() - state.tickStart) / 1000
     );
     updateTimerUI();
     if (state.timeLeft <= 0) {
@@ -717,7 +747,7 @@ function updateTimerUI() {
   const ring  = $('#timer-ring');
   const numEl = $('#timer-num');
   const fg    = $('#ring-fg');
-  const frac  = state.timeLeft / TIME_PER_QUESTION;
+  const frac  = state.timeLeft / state.settings.timerDuration;
   const offset = CIRCUMFERENCE * (1 - frac);
 
   fg.style.strokeDashoffset = offset;
@@ -766,6 +796,7 @@ function loginUser(name) {
     user.lastPlayed = Date.now();
     saveUsers(users);
   }
+  state.settings = getUserSettings(name);
   state.selectedCharacter = null;
   state.newlyUnlockedCharacter = null;
   renderCharacterScreen(null);
@@ -891,7 +922,28 @@ function selectCharacter(charId) {
   showScreen('#story-screen');
 }
 
-// ── Story map screen ──────────────────────────────────────────
+// ── Settings screen ───────────────────────────────────────────
+function renderSettingsScreen() {
+  const userName = getCurrentUser();
+  $('#settings-username').textContent = userName || '';
+
+  const s = state.settings;
+  const timerInput  = $('#timer-duration-input');
+  const timerVal    = $('#timer-duration-val');
+  const maxNumInput = $('#max-number-input');
+  const maxNumVal   = $('#max-number-val');
+  const divToggle   = $('#allow-division-input');
+
+  timerInput.value  = s.timerDuration;
+  timerVal.textContent = `${s.timerDuration}s`;
+
+  maxNumInput.value = s.maxNumber;
+  maxNumVal.textContent = s.maxNumber;
+
+  divToggle.checked = s.allowDivision;
+}
+
+
 function renderStoryScreen(newlyUnlockedChapter) {
   const userName = getCurrentUser();
   const user = getUserProgress(userName);
@@ -1130,7 +1182,7 @@ function handleAnswer(chosen) {
   state.answered = true;
   stopTimer();
 
-  const elapsed = (TIME_PER_QUESTION - state.timeLeft);
+  const elapsed = (state.settings.timerDuration - state.timeLeft);
   const q       = state.questions[state.index];
   const correct = chosen === q.answer;
 
@@ -1171,9 +1223,9 @@ function handleTimeout() {
 }
 
 function scorePoints(elapsed) {
-  // MAX_POINTS pts for the fastest answers, scaling down to MIN_POINTS at TIME_PER_QUESTION
+  // MAX_POINTS pts for the fastest answers, scaling down to MIN_POINTS at timerDuration
   const range = MAX_POINTS - MIN_POINTS;
-  const base  = Math.round(MAX_POINTS - Math.min(range, elapsed * range / TIME_PER_QUESTION));
+  const base  = Math.round(MAX_POINTS - Math.min(range, elapsed * range / state.settings.timerDuration));
   return Math.max(MIN_POINTS, base);
 }
 
@@ -1303,6 +1355,41 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#char-switch-user-btn').addEventListener('click', () => {
     renderLoginScreen();
     showScreen('#login-screen');
+  });
+
+  $('#char-settings-btn').addEventListener('click', () => {
+    renderSettingsScreen();
+    showScreen('#settings-screen');
+  });
+
+  // ── Settings screen
+  const timerInput  = $('#timer-duration-input');
+  const timerVal    = $('#timer-duration-val');
+  const maxNumInput = $('#max-number-input');
+  const maxNumVal   = $('#max-number-val');
+
+  timerInput.addEventListener('input', () => {
+    timerVal.textContent = `${timerInput.value}s`;
+  });
+
+  maxNumInput.addEventListener('input', () => {
+    maxNumVal.textContent = maxNumInput.value;
+  });
+
+  $('#back-from-settings-btn').addEventListener('click', () => {
+    showScreen('#character-screen');
+  });
+
+  $('#save-settings-btn').addEventListener('click', () => {
+    const newSettings = {
+      timerDuration: Number(timerInput.value),
+      maxNumber:     Number(maxNumInput.value),
+      allowDivision: $('#allow-division-input').checked,
+    };
+    state.settings = newSettings;
+    saveUserSettings(getCurrentUser(), newSettings);
+    showToast('✓ Settings saved!');
+    showScreen('#character-screen');
   });
 
   // ── Story screen
