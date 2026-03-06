@@ -1,0 +1,443 @@
+/* ============================================================
+   Math Genius – Mobile-first CSS
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary:   #4f46e5;
+  --primary-h: #4338ca;
+  --success:   #16a34a;
+  --danger:    #dc2626;
+  --warning:   #d97706;
+  --bg:        #f0f4ff;
+  --card:      #ffffff;
+  --text:      #1e293b;
+  --muted:     #64748b;
+  --radius:    14px;
+  --shadow:    0 4px 20px rgba(0,0,0,.10);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100%;
+  padding: 16px;
+}
+
+/* ── App wrapper ─────────────────────────────────────────── */
+#app {
+  width: 100%;
+  max-width: 480px;
+}
+
+/* ── Screens ─────────────────────────────────────────────── */
+.screen {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+.screen.active {
+  display: flex;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+/* ── Title / hero ────────────────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 32px 24px 24px;
+}
+.hero-icon {
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+.hero p {
+  color: var(--muted);
+  margin-top: 6px;
+  font-size: 0.95rem;
+}
+
+/* ── Form elements ───────────────────────────────────────── */
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color .2s;
+}
+input[type="text"]:focus {
+  border-color: var(--primary);
+}
+
+/* ── Mode selector ───────────────────────────────────────── */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.mode-btn {
+  cursor: pointer;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px 8px;
+  text-align: center;
+  transition: border-color .15s, background .15s;
+  user-select: none;
+}
+.mode-btn input {
+  display: none;
+}
+.mode-btn .mode-icon {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 4px;
+}
+.mode-btn .mode-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.mode-btn.selected,
+.mode-btn:has(input:checked) {
+  border-color: var(--primary);
+  background: #eef2ff;
+}
+.mode-btn.selected .mode-label {
+  color: var(--primary);
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .1s, box-shadow .1s;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(79, 70, 229, 0.15);
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(79,70,229,.35);
+}
+.btn-primary:hover {
+  background: var(--primary-h);
+}
+.btn-ghost {
+  background: #f1f5f9;
+  color: var(--text);
+}
+.btn-ghost:hover {
+  background: #e2e8f0;
+}
+
+/* ── HUD (in-game header) ────────────────────────────────── */
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.hud-item {
+  text-align: center;
+}
+.hud-item .hud-val {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.1;
+}
+.hud-item .hud-lbl {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Progress bar ────────────────────────────────────────── */
+.progress-wrap {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #818cf8);
+  border-radius: 99px;
+  transition: width .3s;
+}
+
+/* ── Question card ───────────────────────────────────────── */
+.question-card {
+  text-align: center;
+  padding: 32px 24px;
+}
+.question-type-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: #eef2ff;
+  color: var(--primary);
+  padding: 4px 12px;
+  border-radius: 99px;
+  margin-bottom: 16px;
+}
+.question-text {
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+/* ── Timer ring ──────────────────────────────────────────── */
+.timer-ring-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+.timer-ring {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.timer-ring svg {
+  transform: rotate(-90deg);
+  width: 64px;
+  height: 64px;
+}
+.timer-ring .ring-bg {
+  fill: none;
+  stroke: #e2e8f0;
+  stroke-width: 5;
+}
+.timer-ring .ring-fg {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 169.6;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset .1s linear, stroke .3s;
+}
+.timer-ring.urgent .ring-fg {
+  stroke: var(--danger);
+}
+.timer-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+.timer-ring.urgent .timer-num {
+  color: var(--danger);
+}
+
+/* ── Answer grid ─────────────────────────────────────────── */
+.answer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.answer-btn {
+  width: 100%;
+  padding: 22px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  background: var(--card);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .1s, background .1s, transform .1s;
+  -webkit-tap-highlight-color: rgba(79, 70, 229, 0.15);
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.answer-btn:active {
+  transform: scale(0.95);
+}
+.answer-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: #eef2ff;
+}
+.answer-btn.correct {
+  border-color: var(--success);
+  background: #dcfce7;
+  color: var(--success);
+}
+.answer-btn.wrong {
+  border-color: var(--danger);
+  background: #fee2e2;
+  color: var(--danger);
+}
+.answer-btn:disabled {
+  cursor: default;
+}
+
+/* ── Feedback toast ──────────────────────────────────────── */
+.feedback-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: var(--success);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  z-index: 999;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0,0,0,.2);
+}
+.feedback-toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+.feedback-toast.wrong {
+  background: var(--danger);
+}
+
+/* ── Results screen ──────────────────────────────────────── */
+.result-hero {
+  text-align: center;
+  padding: 24px;
+}
+.result-trophy {
+  font-size: 5rem;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.result-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+.result-sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.stat-card {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+.stat-val {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+.stat-lbl {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* Star rating */
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  font-size: 2.4rem;
+  margin: 8px 0;
+}
+
+/* ── History log ─────────────────────────────────────────── */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+.history-item.ok   { background: #dcfce7; }
+.history-item.bad  { background: #fee2e2; }
+.history-item .hi-q { font-weight: 700; }
+.history-item .hi-a { color: var(--muted); font-size: 0.8rem; }
+.history-item .hi-t { font-size: 0.8rem; color: var(--muted); }
+
+/* ── Responsive tweaks ───────────────────────────────────── */
+@media (min-width: 400px) {
+  .question-text { font-size: 3.5rem; }
+  .answer-btn    { font-size: 1.8rem; padding: 26px 12px; }
+}

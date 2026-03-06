@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4f46e5" />
+  <title>Math Genius</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════════════════
+       START SCREEN
+  ══════════════════════════════════════════════════════════ -->
+  <div id="start-screen" class="screen active">
+
+    <div class="card hero">
+      <div class="hero-icon">🧮</div>
+      <h1>Math Genius</h1>
+      <p>Master multiplication &amp; division from 0 to 10!</p>
+    </div>
+
+    <div class="card">
+      <label for="name-input">Your name</label>
+      <input id="name-input" type="text" placeholder="e.g. Emma" maxlength="20" autocomplete="off" />
+    </div>
+
+    <div class="card">
+      <label>Game mode</label>
+      <div class="mode-grid">
+        <label class="mode-btn" data-mode="multiply">
+          <input type="radio" name="mode" value="multiply" />
+          <span class="mode-icon">✖️</span>
+          <span class="mode-label">Multiply</span>
+        </label>
+        <label class="mode-btn selected" data-mode="both">
+          <input type="radio" name="mode" value="both" checked />
+          <span class="mode-icon">🔀</span>
+          <span class="mode-label">Both</span>
+        </label>
+        <label class="mode-btn" data-mode="divide">
+          <input type="radio" name="mode" value="divide" />
+          <span class="mode-icon">➗</span>
+          <span class="mode-label">Divide</span>
+        </label>
+      </div>
+    </div>
+
+    <button id="start-btn" class="btn btn-primary">
+      🚀 Start Game (20 questions)
+    </button>
+
+  </div><!-- /start-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       GAME SCREEN
+  ══════════════════════════════════════════════════════════ -->
+  <div id="game-screen" class="screen">
+
+    <!-- HUD -->
+    <div class="hud">
+      <div class="hud-item">
+        <div id="hud-score" class="hud-val">0</div>
+        <div class="hud-lbl">Score</div>
+      </div>
+      <div class="hud-item">
+        <div id="hud-streak" class="hud-val">—</div>
+        <div class="hud-lbl">Streak</div>
+      </div>
+      <div class="hud-item">
+        <div id="hud-q" class="hud-val">1/20</div>
+        <div class="hud-lbl">Question</div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div id="progress-bar" class="progress-bar" style="width:0%"></div>
+    </div>
+
+    <!-- Question card -->
+    <div class="card question-card">
+      <div id="question-type-badge" class="question-type-badge">✖ Multiplication</div>
+      <div id="question-text" class="question-text">3 × 7 = ?</div>
+
+      <div class="timer-ring-wrap">
+        <div id="timer-ring" class="timer-ring">
+          <svg viewBox="0 0 64 64">
+            <circle class="ring-bg" cx="32" cy="32" r="27"/>
+            <circle id="ring-fg" class="ring-fg" cx="32" cy="32" r="27"/>
+          </svg>
+          <div id="timer-num" class="timer-num">10</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Answer buttons -->
+    <div class="answer-grid">
+      <button class="answer-btn" data-value="0">0</button>
+      <button class="answer-btn" data-value="0">0</button>
+      <button class="answer-btn" data-value="0">0</button>
+      <button class="answer-btn" data-value="0">0</button>
+    </div>
+
+  </div><!-- /game-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       RESULTS SCREEN
+  ══════════════════════════════════════════════════════════ -->
+  <div id="results-screen" class="screen">
+
+    <div class="card result-hero">
+      <div id="result-trophy" class="result-trophy">🏆</div>
+      <div id="result-stars" class="stars">☆☆☆</div>
+      <div id="result-name" class="result-name">Well done!</div>
+      <div id="result-sub"  class="result-sub">Your result here</div>
+    </div>
+
+    <div class="card">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val">
+            <span id="stat-score">0</span>
+            <span id="stat-maxscore" style="font-size:1rem;color:var(--muted)">/200</span>
+          </div>
+          <div class="stat-lbl">Total Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-correct">0</div>
+          <div class="stat-lbl">Correct</div>
+        </div>
+        <div class="stat-card" style="grid-column:span 2">
+          <div class="stat-val" id="stat-avgtime">0s</div>
+          <div class="stat-lbl">Avg. answer time</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label style="margin-bottom:12px">Question log</label>
+      <div id="history-list" class="history-list"></div>
+    </div>
+
+    <button id="play-again-btn" class="btn btn-primary">🔄 Play Again</button>
+
+  </div><!-- /results-screen -->
+
+</div><!-- /app -->
+
+<!-- Feedback toast (fixed overlay) -->
+<div id="feedback-toast" class="feedback-toast" aria-live="polite"></div>
+
+<script src="game.js"></script>
+</body>
+</html>
