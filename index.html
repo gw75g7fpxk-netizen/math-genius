@@ -52,6 +52,7 @@
       </div>
       <div class="story-user-row">
         <span id="char-screen-username" class="story-username-text"></span>
+        <button id="char-settings-btn" class="btn-switch-user">⚙️ Settings</button>
         <button id="char-switch-user-btn" class="btn-switch-user">Switch User</button>
       </div>
     </div>
@@ -221,6 +222,69 @@
     </div>
 
   </div><!-- /results-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       SETTINGS SCREEN
+  ══════════════════════════════════════════════════════════ -->
+  <div id="settings-screen" class="screen">
+
+    <div class="card story-map-header">
+      <div class="story-map-topbar">
+        <button id="back-from-settings-btn" class="btn-back-characters">← Back</button>
+      </div>
+      <div class="story-map-title-row">
+        <span class="story-map-icon">⚙️</span>
+        <h2 class="story-adventure-title">Settings</h2>
+      </div>
+      <div class="story-user-row">
+        <span id="settings-username" class="story-username-text"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>⏱ Timer Duration</label>
+      <div class="settings-row">
+        <span class="settings-hint">Seconds per question</span>
+        <span id="timer-duration-val" class="settings-val">10s</span>
+      </div>
+      <input id="timer-duration-input" type="range" min="5" max="30" step="1" value="10" class="settings-range" />
+      <div class="settings-range-labels">
+        <span>5s (fast)</span>
+        <span>30s (slow)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>🔢 Number Range</label>
+      <div class="settings-row">
+        <span class="settings-hint">Numbers from 0 to</span>
+        <span id="max-number-val" class="settings-val">10</span>
+      </div>
+      <input id="max-number-input" type="range" min="2" max="12" step="1" value="10" class="settings-range" />
+      <div class="settings-range-labels">
+        <span>2 (easier)</span>
+        <span>12 (harder)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>➗ Operations</label>
+      <div class="settings-toggle-row">
+        <div class="settings-toggle-info">
+          <span class="settings-toggle-label">Division problems</span>
+          <span class="settings-toggle-desc">When off, division is replaced by multiplication</span>
+        </div>
+        <label class="toggle-switch" aria-label="Enable division problems">
+          <input id="allow-division-input" type="checkbox" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <button id="save-settings-btn" class="btn btn-primary">✓ Save Settings</button>
+
+  </div><!-- /settings-screen -->
 
 </div><!-- /app -->
 

@@ -919,3 +919,149 @@ input[type="text"]:focus {
   flex-direction: column;
   gap: 12px;
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   SETTINGS SCREEN
+══════════════════════════════════════════════════════════════ */
+
+/* ── Settings rows ─────────────────────────────────────────── */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.settings-hint {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.settings-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--kiki);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* ── Range slider ──────────────────────────────────────────── */
+.settings-range {
+  width: 100%;
+  height: 6px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--kiki-border);
+  border-radius: 99px;
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--kiki);
+}
+
+.settings-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--kiki);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(124, 92, 191, 0.35);
+  transition: transform .1s;
+}
+
+.settings-range::-webkit-slider-thumb:active {
+  transform: scale(1.15);
+}
+
+.settings-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: var(--kiki);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(124, 92, 191, 0.35);
+}
+
+.settings-range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ── Toggle switch ─────────────────────────────────────────── */
+.settings-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.settings-toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-toggle-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.settings-toggle-desc {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #cbd5e1;
+  border-radius: 99px;
+  transition: background .2s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: var(--kiki);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(22px);
+}
