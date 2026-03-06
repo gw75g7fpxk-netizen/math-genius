@@ -20,12 +20,14 @@ const CHARACTERS = [
     id: 'kiki',
     name: 'Kiki the Mad Scientist',
     emoji: '🔬',
+    image: 'assets/images/kiki.png',
     description: 'A brilliant bunny scientist who loves wild experiments!',
   },
   {
     id: 'humphrey',
     name: 'Humphrey the Heffalump',
     emoji: '🐘',
+    image: 'assets/images/humphrey.png',
     description: 'A friendly, strong heffalump who walks the neighborhood each morning with high-tech laser glasses!',
   },
   {
@@ -38,6 +40,7 @@ const CHARACTERS = [
     id: 'roo',
     name: 'Roo',
     emoji: '🦘',
+    image: 'assets/images/roo.png',
     description: 'A kangaroo with a seemingly endless pouch and a special blanket called "Blanket" — perfect for lassoing things from a distance!',
   },
   {
@@ -616,7 +619,21 @@ function renderStoryScreen(newlyUnlockedChapter) {
     // ── Character section header
     const sectionHeader = document.createElement('div');
     sectionHeader.className = 'character-section-header';
-    sectionHeader.textContent = `${char.emoji} ${char.name}`;
+    if (char.image) {
+      const img = document.createElement('img');
+      img.src = char.image;
+      img.alt = char.name;
+      img.className = 'character-section-img';
+      sectionHeader.appendChild(img);
+    } else {
+      const emojiSpan = document.createElement('span');
+      emojiSpan.className = 'character-section-emoji';
+      emojiSpan.textContent = char.emoji;
+      sectionHeader.appendChild(emojiSpan);
+    }
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = char.name;
+    sectionHeader.appendChild(nameSpan);
     section.appendChild(sectionHeader);
 
     charChapters.forEach(ch => {

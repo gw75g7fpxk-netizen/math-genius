@@ -639,11 +639,29 @@ input[type="text"]:focus {
 }
 
 .character-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1.1rem;
   font-weight: 800;
   color: var(--kiki);
-  padding: 6px 4px 6px;
+  padding: 6px 4px 8px;
   border-bottom: 2px solid var(--kiki-border);
+}
+
+.character-section-img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(124, 92, 191, 0.25));
+}
+
+.character-section-emoji {
+  font-size: 1.8rem;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 /* ── Chapter cards ─────────────────────────────────────────── */
