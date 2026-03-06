@@ -317,9 +317,11 @@ input[type="text"]:focus {
 .answer-btn:active {
   transform: scale(0.95);
 }
-.answer-btn:hover:not(:disabled) {
-  border-color: var(--primary);
-  background: #eef2ff;
+@media (hover: hover) {
+  .answer-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: #eef2ff;
+  }
 }
 .answer-btn.correct {
   border-color: var(--success);

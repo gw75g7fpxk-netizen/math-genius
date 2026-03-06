@@ -183,13 +183,15 @@ function loadQuestion() {
   $('#question-type-badge').textContent = q.type === 'multiply' ? '✖ Multiplication' : '➗ Division';
   $('#question-text').textContent       = q.display + ' = ?';
 
-  // Answer buttons
+  // Answer buttons – reset styles and remove focus so the previously
+  // selected button does not retain a highlighted border on the new question.
   const btns = $$('.answer-btn');
   btns.forEach((btn, i) => {
     btn.textContent = q.options[i];
     btn.dataset.value = q.options[i];
     btn.className  = 'answer-btn';
     btn.disabled   = false;
+    btn.blur();
   });
 
   // Timer
