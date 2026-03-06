@@ -554,6 +554,26 @@ input[type="text"]:focus {
 }
 
 /* ── Story map screen ──────────────────────────────────────── */
+.story-map-header {
+  text-align: center;
+  padding: 20px 20px 16px;
+  background: linear-gradient(160deg, #f3eeff 0%, #eef2ff 100%);
+  border-bottom: 3px solid var(--kiki-border);
+}
+
+.story-map-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.story-map-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
 .kiki-story-header {
   text-align: center;
   padding: 24px 20px 20px;
@@ -608,7 +628,22 @@ input[type="text"]:focus {
 .chapters-list {
   display: flex;
   flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Character sections ────────────────────────────────────── */
+.character-section {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
+}
+
+.character-section-header {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--kiki);
+  padding: 6px 4px 6px;
+  border-bottom: 2px solid var(--kiki-border);
 }
 
 /* ── Chapter cards ─────────────────────────────────────────── */
