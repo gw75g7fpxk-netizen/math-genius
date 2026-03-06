@@ -48,12 +48,14 @@ const CHARACTERS = [
     id: 'margret',
     name: 'Margret',
     emoji: '🐯',
+    image: 'assets/images/margret.png',
     description: 'A tiger with a backyard swimming pool — mermaid friends visit through a magic portal that opens to any water large enough for them!',
   },
   {
     id: 'maggie',
     name: 'Maggie',
     emoji: '🥋',
+    image: 'assets/images/maggie.png',
     description: 'A ninja/karate baby tiger who is abnormally strong for her size — karate kick a fence and it falls over, roundhouse kick a soccer ball and it goes crazy fast!',
   },
   {
