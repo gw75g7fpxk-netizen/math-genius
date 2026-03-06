@@ -468,7 +468,7 @@ input[type="text"]:focus {
 }
 .kiki-hero-img {
   width: 100px;
-  height: 100px;
+  height: auto;
   margin-bottom: 12px;
   filter: drop-shadow(0 4px 12px rgba(124, 92, 191, 0.25));
 }
@@ -563,7 +563,7 @@ input[type="text"]:focus {
 
 .kiki-story-img {
   width: 120px;
-  height: 120px;
+  height: auto;
   margin-bottom: 12px;
   filter: drop-shadow(0 6px 16px rgba(124, 92, 191, 0.3));
 }
