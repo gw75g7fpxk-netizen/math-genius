@@ -10,22 +10,118 @@ const TIME_PER_QUESTION   = 10;   // seconds
 const CIRCUMFERENCE       = 2 * Math.PI * 27; // r=27 → ≈169.6
 const MAX_POINTS          = 10;
 const MIN_POINTS          = 1;
-const TIMEOUT_ANSWER      = null; // sentinel value meaning no answer was given
+const TIMEOUT_ANSWER           = null; // sentinel value meaning no answer was given
+const MAX_PLAYER_NAME_LENGTH   = 20;   // must match maxlength on #add-player-input in HTML
+const NEWLY_UNLOCKED_TOAST_DELAY_MS = 400;
+
+// ── Story chapters ────────────────────────────────────────────
+const CHAPTERS = [
+  {
+    id: 0,
+    title: "Chapter 1: Shrink-a-tron Calibration",
+    emoji: "🔬",
+    story: "Kiki's Shrink-a-tron-5000 went haywire and shrank her entire toy collection to microscopic size! She needs to multiply the shrink factor by each toy's original size to restore them. Help Kiki solve 20 multiplication problems to rescue her toys!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 60,
+  },
+  {
+    id: 1,
+    title: "Chapter 2: Gigant-a-tron Overflow",
+    emoji: "🐟",
+    story: "Uh oh! The Gigant-a-tron-3000 made Kiki's goldfish WAY too big — it's now splashing around the whole living room! Kiki needs division to calculate exactly how much Anti-Grow Formula to use. Help her solve 20 division problems!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 60,
+  },
+  {
+    id: 2,
+    title: "Chapter 3: Rainbow Bubble Portal",
+    emoji: "🫧",
+    story: "Kiki discovered that mixing Shrink and Gigant formulas creates rainbow bubbles that can teleport objects! But the bubble formula needs precise mixed calculations to stay stable. Help Kiki solve 20 problems to open the portal!",
+    mode: "both",
+    unlockAt: 1,
+    passPct: 60,
+  },
+  {
+    id: 3,
+    title: "Chapter 4: The Sandwich on the Moon",
+    emoji: "🌙",
+    story: "While testing her Rainbow Bubble Portal, Kiki accidentally teleported her lunch sandwich all the way to the moon! She needs to quickly calculate the return trajectory using both operations. Help Kiki rescue her sandwich!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 60,
+  },
+  {
+    id: 4,
+    title: "Chapter 5: The Grand Science Fair",
+    emoji: "🏆",
+    story: "It's the day of the BIG Science Fair! Kiki is presenting ALL her inventions — the Shrink-a-tron-5000, Gigant-a-tron-3000, and the Rainbow Bubble Portal. The judges need the final calculation worksheet. Help Kiki ace it and win the Golden Bunsen Burner Trophy!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 70,
+  },
+];
 
 // ── State ─────────────────────────────────────────────────────
 let state = {
-  playerName: '',
-  mode:       'both',     // 'multiply' | 'divide' | 'both'
-  questions:  [],
-  index:      0,
-  score:      0,
-  streak:     0,
-  history:    [],         // {question, correct, given, ms}
-  timeLeft:   TIME_PER_QUESTION,
-  timerID:    null,
-  tickStart:  null,
-  answered:   false,
+  playerName:           '',
+  mode:                 'both',     // 'multiply' | 'divide' | 'both'
+  questions:            [],
+  index:                0,
+  score:                0,
+  streak:               0,
+  history:              [],         // {question, correct, given, ms}
+  timeLeft:             TIME_PER_QUESTION,
+  timerID:              null,
+  tickStart:            null,
+  answered:             false,
+  storyMode:            false,      // true when playing from a story chapter
+  chapterId:            null,       // which chapter (0-4) is being played
+  newlyUnlockedChapter: null,       // chapter id unlocked after last completion
 };
+
+// ── LocalStorage helpers ──────────────────────────────────────
+function getUsers() {
+  return JSON.parse(localStorage.getItem('mathgenius_users') || '[]');
+}
+function saveUsers(users) {
+  localStorage.setItem('mathgenius_users', JSON.stringify(users));
+}
+function getCurrentUser() {
+  return localStorage.getItem('mathgenius_currentUser') || null;
+}
+function setCurrentUser(name) {
+  localStorage.setItem('mathgenius_currentUser', name);
+}
+
+// ── User progress helpers ─────────────────────────────────────
+function getUserProgress(userName) {
+  const users = getUsers();
+  const user = users.find(u => u.name === userName);
+  if (!user) return null;
+  user.storyProgress = user.storyProgress || {};
+  user.storyProgress.kiki = user.storyProgress.kiki || { chapters: [] };
+  while (user.storyProgress.kiki.chapters.length < CHAPTERS.length) {
+    user.storyProgress.kiki.chapters.push({
+      completed: false, stars: 0, bestScore: null, bestPct: null,
+    });
+  }
+  return user;
+}
+
+function saveUserProgress(user) {
+  const users = getUsers();
+  const idx = users.findIndex(u => u.name === user.name);
+  if (idx >= 0) users[idx] = user;
+  saveUsers(users);
+}
+
+function isChapterUnlocked(chapterId, kikiProgress) {
+  if (chapterId === 0) return true;
+  const prev = kikiProgress.chapters[chapterId - 1];
+  return prev && prev.completed;
+}
 
 // ── Helpers ───────────────────────────────────────────────────
 function rand(min, max) {
@@ -38,6 +134,12 @@ function shuffle(arr) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+function formatDate(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
 
 /**
@@ -144,6 +246,217 @@ function updateTimerUI() {
   fg.style.strokeDashoffset = offset;
   numEl.textContent = Math.ceil(state.timeLeft);
   ring.classList.toggle('urgent', state.timeLeft <= 3);
+}
+
+// ── Login screen ──────────────────────────────────────────────
+function renderLoginScreen() {
+  const grid = $('#user-grid');
+  grid.textContent = '';
+
+  const users = getUsers();
+
+  users.forEach(u => {
+    const card = document.createElement('button');
+    card.className = 'user-card';
+    card.setAttribute('type', 'button');
+
+    const avatar = document.createElement('div');
+    avatar.className = 'user-avatar';
+    avatar.textContent = u.name.charAt(0).toUpperCase();
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'user-name';
+    nameEl.textContent = u.name;
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'user-date';
+    dateEl.textContent = u.lastPlayed ? formatDate(u.lastPlayed) : 'New player';
+
+    card.append(avatar, nameEl, dateEl);
+    card.addEventListener('click', () => loginUser(u.name));
+    grid.appendChild(card);
+  });
+
+  const emptyMsg = $('#user-grid-empty');
+  emptyMsg.style.display = users.length === 0 ? 'block' : 'none';
+}
+
+function loginUser(name) {
+  setCurrentUser(name);
+  const users = getUsers();
+  const user = users.find(u => u.name === name);
+  if (user) {
+    user.lastPlayed = Date.now();
+    saveUsers(users);
+  }
+  renderStoryScreen(null);
+  showScreen('#story-screen');
+}
+
+function addPlayer(rawName) {
+  const name = rawName.trim().slice(0, MAX_PLAYER_NAME_LENGTH);
+  if (!name) return;
+
+  const users = getUsers();
+  if (users.find(u => u.name === name)) {
+    // User already exists — just log in
+    loginUser(name);
+    return;
+  }
+
+  users.push({ name, created: Date.now(), lastPlayed: Date.now() });
+  saveUsers(users);
+  loginUser(name);
+}
+
+// ── Story map screen ──────────────────────────────────────────
+function renderStoryScreen(newlyUnlockedChapter) {
+  const userName = getCurrentUser();
+  const user = getUserProgress(userName);
+
+  const usernameEl = $('#story-username');
+  usernameEl.textContent = userName || '';
+
+  const list = $('#chapters-list');
+  list.textContent = '';
+
+  const kikiProgress = user ? user.storyProgress.kiki : { chapters: [] };
+  // Ensure enough slots if user is fresh
+  while (kikiProgress.chapters.length < CHAPTERS.length) {
+    kikiProgress.chapters.push({ completed: false, stars: 0, bestScore: null, bestPct: null });
+  }
+
+  CHAPTERS.forEach(ch => {
+    const unlocked = isChapterUnlocked(ch.id, kikiProgress);
+    const chProgress = kikiProgress.chapters[ch.id];
+
+    const card = document.createElement('div');
+    card.className = 'chapter-card';
+    card.classList.add(unlocked ? 'unlocked' : 'locked');
+    if (chProgress.completed) card.classList.add('completed');
+    if (ch.id === newlyUnlockedChapter) card.classList.add('newly-unlocked');
+
+    // ── Header row
+    const header = document.createElement('div');
+    header.className = 'chapter-header';
+
+    const emojiEl = document.createElement('span');
+    emojiEl.className = 'chapter-emoji';
+    emojiEl.textContent = ch.emoji;
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'chapter-title';
+    titleEl.textContent = ch.title;
+
+    const badgeEl = document.createElement('div');
+    badgeEl.className = 'chapter-status-badge';
+    if (!unlocked) {
+      badgeEl.textContent = '🔒';
+    } else if (chProgress.completed) {
+      badgeEl.textContent = '✅';
+    }
+
+    header.append(emojiEl, titleEl, badgeEl);
+
+    // ── Story text
+    const storyEl = document.createElement('p');
+    storyEl.className = 'chapter-story';
+    storyEl.textContent = ch.story;
+
+    // ── Stars / lock row
+    const starsEl = document.createElement('div');
+    starsEl.className = 'chapter-stars';
+    if (!unlocked) {
+      const lockNote = document.createElement('span');
+      lockNote.className = 'chapter-locked-note';
+      lockNote.textContent = 'Complete the previous chapter to unlock';
+      starsEl.appendChild(lockNote);
+    } else {
+      const earned = chProgress.stars || 0;
+      for (let i = 0; i < 3; i++) {
+        const s = document.createElement('span');
+        s.textContent = i < earned ? '⭐' : '☆';
+        starsEl.appendChild(s);
+      }
+      if (chProgress.bestPct !== null) {
+        const bestEl = document.createElement('span');
+        bestEl.className = 'chapter-best-pct';
+        bestEl.textContent = `Best: ${chProgress.bestPct}%`;
+        starsEl.appendChild(bestEl);
+      }
+    }
+
+    card.append(header, storyEl, starsEl);
+
+    if (unlocked) {
+      const playBtn = document.createElement('button');
+      playBtn.className = 'btn btn-primary chapter-play-btn';
+      playBtn.setAttribute('type', 'button');
+      playBtn.textContent = chProgress.completed ? '🔄 Play Again' : '▶ Play';
+      playBtn.addEventListener('click', () => startChapter(ch.id));
+      card.appendChild(playBtn);
+    }
+
+    list.appendChild(card);
+  });
+
+  if (newlyUnlockedChapter !== null) {
+    const ch = CHAPTERS[newlyUnlockedChapter];
+    // Delay slightly so the screen transition completes first
+    setTimeout(() => showToast(`🎉 ${ch.emoji} Chapter ${newlyUnlockedChapter + 1} unlocked!`), NEWLY_UNLOCKED_TOAST_DELAY_MS);
+  }
+}
+
+function startChapter(chapterId) {
+  const ch = CHAPTERS[chapterId];
+  state.storyMode  = true;
+  state.chapterId  = chapterId;
+
+  // Pre-fill player name from current user
+  const nameInput = $('#name-input');
+  nameInput.value = getCurrentUser() || '';
+
+  // Pre-select mode for this chapter
+  $$('.mode-btn').forEach(b => b.classList.remove('selected'));
+  const modeBtn = $(`.mode-btn[data-mode="${ch.mode}"]`);
+  if (modeBtn) modeBtn.classList.add('selected');
+
+  showScreen('#start-screen');
+}
+
+// ── Story completion ──────────────────────────────────────────
+function handleStoryCompletion(pct) {
+  const ch = CHAPTERS[state.chapterId];
+  const passed = pct >= ch.passPct;
+  const stars  = pct >= 90 ? 3 : pct >= 70 ? 2 : pct >= 50 ? 1 : 0;
+
+  const userName = getCurrentUser();
+  const user = getUserProgress(userName);
+  if (!user) return { passed, newlyUnlockedChapter: null };
+
+  const kikiProgress = user.storyProgress.kiki;
+  const chProgress   = kikiProgress.chapters[state.chapterId];
+  const wasCompleted = chProgress.completed;
+
+  if (passed) {
+    chProgress.completed = true;
+    chProgress.stars     = Math.max(chProgress.stars || 0, stars);
+    chProgress.bestScore = Math.max(chProgress.bestScore || 0, state.score);
+    chProgress.bestPct   = Math.max(chProgress.bestPct || 0, pct);
+    user.lastPlayed = Date.now();
+    saveUserProgress(user);
+  }
+
+  // Detect if completing this chapter unlocks the next one for the first time
+  let newlyUnlockedChapter = null;
+  if (passed && !wasCompleted) {
+    const nextId = state.chapterId + 1;
+    if (nextId < CHAPTERS.length) {
+      newlyUnlockedChapter = nextId;
+    }
+  }
+
+  return { passed, newlyUnlockedChapter };
 }
 
 // ── Game flow ─────────────────────────────────────────────────
@@ -290,7 +603,7 @@ function showResults() {
   ).join('');
 
   // Stats
-  $('#stat-score').textContent   = state.score;
+  $('#stat-score').textContent    = state.score;
   $('#stat-maxscore').textContent = `/ ${maxScore}`;
   $('#stat-correct').textContent  = correct;
   $('#stat-avgtime').textContent  = `${(avgMs / 1000).toFixed(1)}s`;
@@ -317,11 +630,67 @@ function showResults() {
     row.append(qEl, aEl, tEl);
     list.appendChild(row);
   });
+
+  // ── Story mode extras
+  const banner      = $('#story-result-banner');
+  const backBtn     = $('#back-to-story-btn');
+
+  if (state.storyMode) {
+    const ch = CHAPTERS[state.chapterId];
+    const { passed, newlyUnlockedChapter } = handleStoryCompletion(pct);
+    state.newlyUnlockedChapter = newlyUnlockedChapter;
+
+    // Build chapter result banner with DOM methods (no innerHTML for user data)
+    banner.textContent = '';
+
+    const chapterLabel = document.createElement('div');
+    chapterLabel.className = 'srb-chapter';
+    chapterLabel.textContent = `${ch.emoji} ${ch.title}`;
+
+    const resultLine = document.createElement('div');
+    resultLine.className = `srb-result ${passed ? 'srb-passed' : 'srb-failed'}`;
+
+    if (passed) {
+      resultLine.textContent = `✅ Chapter complete! (${pct}% — need ${ch.passPct}%)`;
+    } else {
+      resultLine.textContent = `❌ Not quite… ${pct}% scored, need ${ch.passPct}% to pass. Try again!`;
+    }
+
+    banner.append(chapterLabel, resultLine);
+    banner.style.display = 'block';
+    backBtn.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+    backBtn.style.display = 'none';
+    state.newlyUnlockedChapter = null;
+  }
 }
 
 // ── Event wiring ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Mode selection
+  // ── Login screen
+  renderLoginScreen();
+
+  $('#add-player-btn').addEventListener('click', () => {
+    const input = $('#add-player-input');
+    addPlayer(input.value);
+    input.value = '';
+  });
+
+  $('#add-player-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      addPlayer(e.target.value);
+      e.target.value = '';
+    }
+  });
+
+  // ── Story screen
+  $('#switch-user-btn').addEventListener('click', () => {
+    renderLoginScreen();
+    showScreen('#login-screen');
+  });
+
+  // ── Start screen: mode selection
   $$('.mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       $$('.mode-btn').forEach(b => b.classList.remove('selected'));
@@ -337,15 +706,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') startGame();
   });
 
-  // Answer buttons
+  // ── Game screen: answer buttons
   $$('.answer-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       handleAnswer(Number(btn.dataset.value));
     });
   });
 
-  // Play again
+  // ── Results screen buttons
   $('#play-again-btn').addEventListener('click', () => {
-    showScreen('#start-screen');
+    if (state.storyMode) {
+      // Restart the same chapter directly (name/mode already set in DOM)
+      startGame();
+    } else {
+      showScreen('#start-screen');
+    }
+  });
+
+  $('#back-to-story-btn').addEventListener('click', () => {
+    renderStoryScreen(state.newlyUnlockedChapter);
+    showScreen('#story-screen');
   });
 });
+
