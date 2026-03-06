@@ -23,7 +23,7 @@ const CHAPTERS = [
     story: "Kiki's Shrink-a-tron-5000 went haywire and shrank her entire toy collection to microscopic size! She needs to multiply the shrink factor by each toy's original size to restore them. Help Kiki solve 20 multiplication problems to rescue her toys!",
     mode: "multiply",
     unlockAt: 0,
-    passPct: 60,
+    passPct: 80,
   },
   {
     id: 1,
@@ -32,7 +32,7 @@ const CHAPTERS = [
     story: "Uh oh! The Gigant-a-tron-3000 made Kiki's goldfish WAY too big — it's now splashing around the whole living room! Kiki needs division to calculate exactly how much Anti-Grow Formula to use. Help her solve 20 division problems!",
     mode: "divide",
     unlockAt: 0,
-    passPct: 60,
+    passPct: 80,
   },
   {
     id: 2,
@@ -41,7 +41,7 @@ const CHAPTERS = [
     story: "Kiki discovered that mixing Shrink and Gigant formulas creates rainbow bubbles that can teleport objects! But the bubble formula needs precise mixed calculations to stay stable. Help Kiki solve 20 problems to open the portal!",
     mode: "both",
     unlockAt: 1,
-    passPct: 60,
+    passPct: 80,
   },
   {
     id: 3,
@@ -50,7 +50,7 @@ const CHAPTERS = [
     story: "Kiki's Rainbow Bubble Portal accidentally zapped the sammich belonging to her neighbour Bermione — and Bermione is NOT happy about it. \"That was MY sammich!\" she fumes, crossing her arms. Kiki must use the portal's return calculations to bring the sammich back before Bermione gets any grumpier. Help Kiki solve 20 problems to rescue the sammich and restore the peace!",
     mode: "both",
     unlockAt: 2,
-    passPct: 60,
+    passPct: 80,
   },
   {
     id: 4,
@@ -59,7 +59,7 @@ const CHAPTERS = [
     story: "It's the day of the BIG Science Fair! Kiki is presenting ALL her inventions — the Shrink-a-tron-5000, Gigant-a-tron-3000, and the Rainbow Bubble Portal. The judges need the final calculation worksheet. Help Kiki ace it and win the Golden Bunsen Burner Trophy!",
     mode: "both",
     unlockAt: 3,
-    passPct: 70,
+    passPct: 80,
   },
 ];
 
