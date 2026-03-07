@@ -1,6 +1,6 @@
 // PlayFab Integration for Math Genius
 // Saves all player profiles and their story progress to the cloud.
-// Microsoft Azure PlayFab – Title ID: 1A2EEC
+// Microsoft Azure PlayFab – Title ID: 1934FB
 //
 // Google OAuth 2.0 Client ID (Web application type):
 //   https://console.cloud.google.com/ → APIs & Services → Credentials
@@ -8,7 +8,7 @@
 'use strict';
 
 const PlayFabManager = {
-    TITLE_ID: '1A2EEC',
+    TITLE_ID: '1934FB',
     GOOGLE_CLIENT_ID: '959296849138-3n2bpfspbkr04kk2s23p8era65fol16i.apps.googleusercontent.com',
 
     isLoggedIn: false,
