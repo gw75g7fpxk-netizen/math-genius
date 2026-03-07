@@ -98,7 +98,39 @@ const CHARACTERS = [
     emoji: '💧',
     description: 'A strong and kind Water Pokémon who can only say her own name — but shoots a powerful water cannon blast from her mouth! A very good friend of Margret and the Tigey\'s.',
   },
+  {
+    id: 'hermione',
+    name: 'Hermione',
+    emoji: '🦄',
+    image: 'assets/images/IMG_8543.png',
+    description: 'A magical unicorn who is quite pleasant to be around — and her magic always seems to arrive at just the right moment!',
+  },
+  {
+    id: 'bermione',
+    name: 'Bermione',
+    emoji: '🦄',
+    image: 'assets/images/IMG_8545.png',
+    description: 'A reformed conqueror of Jupiter and Hermione\'s sister. She sometimes struggles with the temptation to become a villain again, but always does the right thing in the end — though she grumbles about it. Receives a magical daily sammich from a genie wish and takes very loud, proud bites.',
+  },
 ];
+
+// ── Per-theme character order ─────────────────────────────────
+// Each theme has its own ordered list of playable character IDs.
+// Characters are shown and unlocked sequentially within that order.
+const THEME_CHARACTERS = {
+  // Chapter 1 – Friends: original street order
+  1: ['kiki', 'humphrey', 'fluffy', 'roo', 'margret', 'maggie',
+      'tigey_avinia', 'thumper', 'tigey', 'giri', 'vaporeon'],
+  // Chapter 2 – The Neighbourhood: Giri out, Bermione in; minor shuffle
+  2: ['kiki', 'humphrey', 'fluffy', 'roo', 'margret', 'thumper',
+      'maggie', 'tigey_avinia', 'tigey', 'vaporeon', 'bermione'],
+};
+
+/** Returns the ordered array of character objects for the given theme. */
+function getThemeCharacters(themeId) {
+  const ids = THEME_CHARACTERS[themeId] || [];
+  return ids.map(id => CHARACTERS.find(c => c.id === id)).filter(Boolean);
+}
 
 // ── Story chapters ────────────────────────────────────────────
 const CHAPTERS = [
@@ -1238,58 +1270,58 @@ const CHAPTERS = [
     passPct: 80,
   },
 
-  // ── Giri ─────────────────────────────────────────────────────
+  // ── Bermione ──────────────────────────────────────────────────
   {
     id: 100,
-    character: 'giri',
+    character: 'bermione',
     charIdx: 5,
-    title: "Chapter 1: The Hot Chocolate Shop Rivalry",
+    title: "Chapter 1: Bermione and the Hot Chocolate Spring",
     emoji: "☕",
-    story: "Kiki's Hot Chocolate Spring is very popular, but Giri has created his own signature 'Giri's Gourmet Hot Chocolate' at the shop — extra thick with whipped cream on top! He needs multiplication to calculate how many cups he can serve each morning. (It is not really a rivalry. Everyone loves both. But Giri is a little competitive.) Help Giri tally his chocolate numbers!",
+    story: "Bermione has discovered that the Hot Chocolate Spring is the perfect place to enjoy her daily sammich — extra warm, extra cosy, extra delicious. She needs multiplication to calculate exactly how many mugs of hot chocolate she can have alongside each magnificent sammich bite. Help Bermione calculate her perfect morning at the spring!",
     mode: "multiply",
     unlockAt: 0,
     passPct: 80,
   },
   {
     id: 101,
-    character: 'giri',
+    character: 'bermione',
     charIdx: 6,
-    title: "Chapter 2: Chocolate Treat Deliveries",
-    emoji: "🎁",
-    story: "Giri is delivering treat boxes to every house on the street today — including Roo's, Margret's, and even Thumper's hole by the tree (he left it at the entrance). He needs division to make sure each box has exactly the same number of chocolates. Humphrey stopped to help — and ate a few along the way. Help Giri divide the chocolate deliveries fairly!",
+    title: "Chapter 2: Sammich Strategy at the Cheese Tree Forest",
+    emoji: "🧀",
+    story: "Bermione has arrived at the Cheese Tree Forest and decided — entirely of her own goodwill — to share some of the fallen cheese branches with the neighbourhood friends. She needs division to split the branches fairly so every friend gets exactly the same amount. She is being very gracious about this, and would like everyone to know it. Help Bermione divide the cheese!",
     mode: "divide",
     unlockAt: 0,
     passPct: 80,
   },
   {
     id: 102,
-    character: 'giri',
+    character: 'bermione',
     charIdx: 7,
-    title: "Chapter 3: Ice Cream Chocolate Toppings",
-    emoji: "🍨",
-    story: "Giri is setting up a chocolate topping station at the bottom of the Ice Cream Sledding Hill — sledders can ride down and immediately get a hot fudge drizzle! He needs multiplication to calculate how much chocolate sauce, how many spoons, and how many napkins to bring. Fluffy alone will need a lot of napkins. Help Giri set up the most delicious hill-bottom chocolate station!",
+    title: "Chapter 3: The Ice Cream Hill Expedition",
+    emoji: "🛷",
+    story: "Bermione has decided to sled the Ice Cream Hill — partly because Hermione said it would be fun, and partly because she spotted that the sled landing puts you right next to where her sammich tends to appear each morning. She needs multiplication to calculate the timing and make sure every run is as efficient as possible. Help Bermione plan the perfect sledding expedition!",
     mode: "multiply",
     unlockAt: 1,
     passPct: 80,
   },
   {
     id: 103,
-    character: 'giri',
+    character: 'bermione',
     charIdx: 8,
-    title: "Chapter 4: Chocolate Donut Collab",
+    title: "Chapter 4: The Donut River Floatilla",
     emoji: "🍩",
-    story: "Giri and Kiki have teamed up to create chocolate-dipped donuts — using the Donut River donuts as the base and Giri's finest chocolate as the coating! They need multiplication and division to calculate how many donuts can be dipped per hour, how much chocolate is needed, and how to distribute them along the riverbank. Help Giri and Kiki launch the neighbourhood's first chocolate donut collaboration!",
+    story: "Bermione has commandeered a giant donut from the Donut River as a floating sammich-eating platform — and everyone agrees it is actually genius. She needs multiplication and division to calculate how long she can float, how many friends can join, and how to navigate back to shore. Hermione is paddling alongside on her own donut, offering encouragement. Help Bermione run the most magnificent donut floatilla!",
     mode: "both",
     unlockAt: 2,
     passPct: 80,
   },
   {
     id: 104,
-    character: 'giri',
+    character: 'bermione',
     charIdx: 9,
-    title: "Chapter 5: Grand Neighbourhood Chocolate Festival",
+    title: "Chapter 5: The Grand Neighbourhood Welcome",
     emoji: "🏆",
-    story: "Giri is hosting the Grand Neighbourhood Chocolate Festival — with stalls at the Hot Chocolate Spring, the Cheese Tree Forest, the Ice Cream Hill, and right in front of his shop! Every location needs its own supply calculation. He needs multiplication and division to make sure every stall has exactly what it needs for the biggest chocolate celebration the neighbourhood has ever seen. Help Giri organise the festival!",
+    story: "Hermione talked Bermione into hosting a Grand Neighbourhood Welcome for all the street's residents — a celebration of community, friendship, and one or two spectacular sammich moments. Bermione grumbled through every planning meeting but secretly put in enormous effort. She needs multiplication and division to organise every detail. Help Bermione (and her hidden heart of gold) pull off the greatest neighbourhood welcome ever!",
     mode: "both",
     unlockAt: 3,
     passPct: 80,
@@ -1346,7 +1378,7 @@ const CHAPTERS = [
     charIdx: 9,
     title: "Chapter 5: The Grand Water Finale",
     emoji: "🌟",
-    story: "Vaporeon is performing her legendary Grand Water Finale at the lake — the most spectacular water cannon display the neighbourhood has ever seen, with blasts timed to music! Margret has brought her mermaid friends through the portal to watch, and Giri set up a chocolate dipping station at the water's edge. Vaporeon! Help Vaporeon calculate the perfect timing and water quantities for the most magnificent show in neighbourhood history!",
+    story: "Vaporeon is performing her legendary Grand Water Finale at the lake — the most spectacular water cannon display the neighbourhood has ever seen, with blasts timed to music! Margret has brought her mermaid friends through the portal to watch, and Bermione set up a sammich station at the water's edge (and ate most of it herself). Vaporeon! Help Vaporeon calculate the perfect timing and water quantities for the most magnificent show in neighbourhood history!",
     mode: "both",
     unlockAt: 3,
     passPct: 80,
@@ -1461,11 +1493,14 @@ function isChapterUnlocked(ch, progress) {
   return prev && prev.completed;
 }
 
-/** Returns true when all chapters of character at CHARACTERS[charIndex-1] are done
- *  within the given themeId, so characters unlock independently per chapter. */
-function isCharacterUnlocked(charIndex, progress, themeId) {
-  if (charIndex === 0) return true;
-  const prevChar = CHARACTERS[charIndex - 1];
+/** Returns true when all chapters of the character before charId in the
+ *  theme-specific order are completed, so characters unlock independently
+ *  per theme. */
+function isCharacterUnlocked(charId, progress, themeId) {
+  const themeChars = getThemeCharacters(themeId);
+  const charIndex = themeChars.findIndex(c => c.id === charId);
+  if (charIndex <= 0) return true;
+  const prevChar = themeChars[charIndex - 1];
   const prevProgress = progress[prevChar.id];
   if (!prevProgress) return false;
   const prevChapters = CHAPTERS.filter(ch => ch.character === prevChar.id && ch.theme === themeId);
@@ -1795,8 +1830,9 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
   const grid = $('#character-grid');
   grid.textContent = '';
 
-  CHARACTERS.forEach((char, charIndex) => {
-    const unlocked = isCharacterUnlocked(charIndex, progress, themeId);
+  const themeChars = getThemeCharacters(themeId);
+  themeChars.forEach((char, charIndex) => {
+    const unlocked = isCharacterUnlocked(char.id, progress, themeId);
     const charProgress = progress[char.id];
     // Count progress for the selected chapter only
     const charThemeChapters = CHAPTERS.filter(ch => ch.character === char.id && ch.theme === themeId);
@@ -1842,7 +1878,7 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
     descEl.textContent = unlocked
       ? char.description
       : charIndex > 0
-        ? `Complete ${CHARACTERS[charIndex - 1].name}'s stories to unlock!`
+        ? `Complete ${themeChars[charIndex - 1].name}'s stories to unlock!`
         : 'Locked';
 
     const progressEl = document.createElement('div');
@@ -2084,9 +2120,10 @@ function handleStoryCompletion(pct) {
       newlyUnlockedChapter = nextChapter.id;
     } else {
       // This was the last chapter — check if the next character is now unlocked
-      const currentCharIdx = CHARACTERS.findIndex(c => c.id === ch.character);
-      if (currentCharIdx >= 0 && currentCharIdx + 1 < CHARACTERS.length) {
-        newlyUnlockedCharacter = CHARACTERS[currentCharIdx + 1].id;
+      const themeChars = getThemeCharacters(ch.theme);
+      const currentCharIdx = themeChars.findIndex(c => c.id === ch.character);
+      if (currentCharIdx >= 0 && currentCharIdx + 1 < themeChars.length) {
+        newlyUnlockedCharacter = themeChars[currentCharIdx + 1].id;
       }
     }
   }
