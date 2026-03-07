@@ -1288,7 +1288,7 @@ const CHAPTERS = [
     charIdx: 6,
     title: "Chapter 2: Bermione and the Lake Sandcastle Showdown",
     emoji: "🏖️",
-    story: "Bermione has arrived at Lake Sandcastle and declared herself the official organiser of the neighbourhood's first-ever sandcastle competition. She needs division to split the shoreline into equal building plots so every competitor gets a fair section — and hers is absolutely not in the prime spot (she measured very carefully). Help Bermione divide up the shoreline and crown a sandcastle champion!",
+    story: "Bermione has arrived at The Lake and declared herself the official organiser of the neighbourhood's first-ever sandcastle competition. She needs division to split the shoreline into equal building plots so every competitor gets a fair section — and hers is absolutely not in the prime spot (she measured very carefully). Help Bermione divide up the shoreline and crown a sandcastle champion!",
     mode: "divide",
     unlockAt: 0,
     passPct: 80,
