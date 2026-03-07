@@ -124,3 +124,9 @@ He often stops by Kiki's lab or runs into her along the way. He sometimes encoun
 **Species:** Rabbit  
 **Home:** A hole in the ground near a tree  
 **Personality:** Thumper is the town trickster. She thinks it is absolutely hilarious to play tricks and set traps for people — though others are not usually as thrilled about it. She means no harm and is never cruel; the pranks are all in good fun, even if the victims don't always agree. When someone falls for one of her tricks, Thumper lets out her very distinctive laugh: **kekekekeke!** Everyone in the neighborhood knows that sound means someone just got got.
+
+---
+
+## Vaporeon
+**Species:** Pokémon (Water-type)  
+**Personality:** Strong, kind, and a very good friend. Like all Pokémon, Vaporeon can only say her own name — "Vaporeon!" — but she communicates a great deal with it. She is able to shoot a powerful water cannon blast from her mouth, which comes in handy on hot days and in emergencies alike. Vaporeon is a dear friend of Margret and the Tigey's.
