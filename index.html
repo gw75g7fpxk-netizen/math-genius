@@ -41,19 +41,42 @@
 
 
   <!-- ═══════════════════════════════════════════════════════
-       CHARACTER SELECT SCREEN
+       CHAPTER SELECT SCREEN (global — shown right after login)
+  ══════════════════════════════════════════════════════════ -->
+  <div id="chapter-screen" class="screen">
+
+    <div class="card story-map-header">
+      <div class="story-map-title-row">
+        <span class="story-map-icon">📚</span>
+        <h2 class="story-adventure-title">Story Adventures</h2>
+      </div>
+      <div class="story-user-row">
+        <span id="chapter-screen-username" class="story-username-text"></span>
+        <button id="chapter-settings-btn" class="btn-switch-user">⚙️ Settings</button>
+        <button id="chapter-switch-user-btn" class="btn-switch-user">Switch User</button>
+      </div>
+    </div>
+
+    <div id="chapter-list" class="theme-list"></div>
+
+  </div><!-- /chapter-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       CHARACTER SELECT SCREEN (shown after choosing a chapter)
   ══════════════════════════════════════════════════════════ -->
   <div id="character-screen" class="screen">
 
     <div class="card story-map-header">
+      <div class="story-map-topbar">
+        <button id="back-to-chapters-btn" class="btn-back-characters">← Chapters</button>
+      </div>
       <div class="story-map-title-row">
-        <span class="story-map-icon">🌟</span>
-        <h2 class="story-adventure-title">Story Adventures</h2>
+        <span id="char-screen-chapter-icon" class="story-map-icon"></span>
+        <h2 id="char-screen-chapter-title" class="story-adventure-title"></h2>
       </div>
       <div class="story-user-row">
         <span id="char-screen-username" class="story-username-text"></span>
-        <button id="char-settings-btn" class="btn-switch-user">⚙️ Settings</button>
-        <button id="char-switch-user-btn" class="btn-switch-user">Switch User</button>
       </div>
     </div>
 

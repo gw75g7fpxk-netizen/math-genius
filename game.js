@@ -718,6 +718,658 @@ const CHAPTERS = [
     unlockAt: 3,
     passPct: 80,
   },
+
+  // ════════════════════════════════════════════════════════════
+  // CHAPTER 2: THE NEIGHBOURHOOD
+  // Stories set in the neighbourhood locations described in
+  // LOCATIONS.md. charIdx 5–9 for each character.
+  // ════════════════════════════════════════════════════════════
+
+  // ── Kiki ─────────────────────────────────────────────────────
+  {
+    id: 55,
+    character: 'kiki',
+    charIdx: 5,
+    title: "Chapter 1: Restock the Ice Cream Hill",
+    emoji: "🍨",
+    story: "The Ice Cream Sledding Hill is running out of ice cream — kids are arriving with their sleds but there's barely enough to slide on! Kiki needs multiplication to calculate how many gallons of each flavour to pump up to the hill so it stays topped up all day. Help Kiki solve 20 multiplication problems to save sledding day!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 56,
+    character: 'kiki',
+    charIdx: 6,
+    title: "Chapter 2: Cheese Tree Forest Harvest",
+    emoji: "🧀",
+    story: "The Cheese Trees are dropping their branches and it's harvest time! Kiki needs division to figure out how many cheese branches to share with each family and how much to sell at the supermarket to fund her next experiment. Vaporeon is watering the trees — Vaporeon! Help Kiki divide the harvest fairly across the neighbourhood!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 57,
+    character: 'kiki',
+    charIdx: 7,
+    title: "Chapter 3: Hot Chocolate Spring Morning",
+    emoji: "☕",
+    story: "The Hot Chocolate Spring is busier than ever — half the neighbourhood has turned up with mugs, thermoses, and even buckets! Kiki needs multiplication to calculate how many servings the spring can provide. Bermione is nearby taking loud bites of her sammich between sips. Help Kiki manage the morning hot chocolate rush!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 58,
+    character: 'kiki',
+    charIdx: 8,
+    title: "Chapter 4: The Donut River Dilemma",
+    emoji: "🍩",
+    story: "The Donut River is flowing too fast today — and Lego Humphrey, a rogue Lego experiment that escaped from Kiki's lab, is riding the donuts and reshaping itself into a donut-blocking dam just to cause chaos! Kiki needs both multiplication and division to calculate the river's speed and figure out how to recapture Lego Humphrey before anyone gets carried all the way to the volcano. Help Kiki tame the donut current and stop the rogue brick creature!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 59,
+    character: 'kiki',
+    charIdx: 9,
+    title: "Chapter 5: The Underground Laboratory",
+    emoji: "🔭",
+    story: "Kiki is testing all 10 basement levels of her laboratory today — and Humphrey, Roo, and Fluffy insisted on coming along for the elevator ride! Each level has a different experiment. Kiki needs both multiplication and division to record data from every floor before the escalator breaks down again. Help Kiki catalogue all her underground experiments!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Humphrey ─────────────────────────────────────────────────
+  {
+    id: 60,
+    character: 'humphrey',
+    charIdx: 5,
+    title: "Chapter 1: The Ice Cream Hill Detour",
+    emoji: "🛷",
+    story: "On his morning walk, Humphrey spotted the Ice Cream Sledding Hill — and the whole street was there! The sled queue is so long that Humphrey needs multiplication to figure out how many turns each friend gets and how many scoops were eaten. Maggie shot a snowball so fast it bounced off three fences. Help Humphrey manage the hill schedule!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 61,
+    character: 'humphrey',
+    charIdx: 6,
+    title: "Chapter 2: Through the Lake",
+    emoji: "🏖️",
+    story: "It's a hot afternoon and Humphrey is running through the lake along the bottom with just his trunk above the water to breathe! He and Hailey are planning a sandcastle fort the size of a real house. Humphrey needs division to calculate how many buckets of sand they need and how long it will take. Help Humphrey plan the greatest sandcastle the neighbourhood has ever seen!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 62,
+    character: 'humphrey',
+    charIdx: 7,
+    title: "Chapter 3: Giri's Chocolate Shop Sprint",
+    emoji: "🍫",
+    story: "It's the end of Humphrey's morning walk and Giri's Chocolate Shop is just ahead! Today Giri has a new batch of his famous chocolate treats, and Humphrey needs multiplication to help calculate how many of each treat to pack for the whole neighbourhood. Even Bermione showed up early — for the chocolate, obviously. Help Humphrey and Giri sort out the orders!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 63,
+    character: 'humphrey',
+    charIdx: 8,
+    title: "Chapter 4: Donut River Adventure",
+    emoji: "🍩",
+    story: "On their afternoon adventure, Humphrey and Hailey discovered the Donut River flowing faster than usual — and Bowser's enormous airship was hovering overhead, scooping donuts up with a giant claw! Hailey jumped on a giant donut before Humphrey could stop her. Humphrey needs multiplication and division to calculate the river's speed, outwit Bowser's donut heist, and reunite with Hailey before the donuts reach the volcanic prairie. Help Humphrey navigate the donut current and foil Bowser's plan!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 64,
+    character: 'humphrey',
+    charIdx: 9,
+    title: "Chapter 5: Neighbourhood Grand Tour",
+    emoji: "🗺️",
+    story: "Humphrey is giving new neighbour Lilli (Giri's niece — a kid giraffe who runs the sandwich shop in Kiki's lab) a grand tour of the neighbourhood! They visit the Ice Cream Hill, the Cheese Tree Forest, the Hot Chocolate Spring, and Margret's pool — all in one afternoon. Help Humphrey calculate distances and timings to fit everything in!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Fluffy ───────────────────────────────────────────────────
+  {
+    id: 65,
+    character: 'fluffy',
+    charIdx: 5,
+    title: "Chapter 1: Sled-Bump Bonanza!",
+    emoji: "🛷",
+    story: "Fluffy is at the Ice Cream Sledding Hill — Boing! Boing! Boing! She needs multiplication to count the sleds, the flavours of ice cream, and how many bumps she can do before the hill needs restocking. She accidentally bounced into the sled line and sent five sleds flying — everyone just laughed and got covered in ice cream. Help Fluffy calculate the sled count!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 66,
+    character: 'fluffy',
+    charIdx: 6,
+    title: "Chapter 2: Cheese Tree Bumps",
+    emoji: "🧀",
+    story: "Fluffy hopped into the Cheese Tree Forest and bumped into a cheese stick tree — and a cascade of cheese branches rained down! Kiki needs division to sort all the fallen branches into equal bundles for each neighbour. Fluffy keeps trying to help but keeps accidentally bumping more branches loose. Help Fluffy and Kiki divide up all that delicious cheese!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 67,
+    character: 'fluffy',
+    charIdx: 7,
+    title: "Chapter 3: Hot Chocolate Morning",
+    emoji: "☕",
+    story: "It's Fluffy's favourite morning destination — the Hot Chocolate Spring! She needs multiplication to figure out how many mugs the spring fills and how many friends she can invite for a cosy morning scoop. She bounced into someone's mug (it was fine, they said — very warm and chocolatey). Help Fluffy multiply the morning mugs!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 68,
+    character: 'fluffy',
+    charIdx: 8,
+    title: "Chapter 4: Donut River Ride",
+    emoji: "🍩",
+    story: "Fluffy jumped onto a donut in the Donut River and immediately went zooming downstream — Boing! BOING! She is soft and bouncy enough to ride without getting hurt, but she is a very long way from home. Humphrey is using multiplication and division to calculate how fast she is going and how to intercept her before she reaches the prairie. Help rescue a very giggly Fluffy!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 69,
+    character: 'fluffy',
+    charIdx: 9,
+    title: "Chapter 5: The Neighbourhood Great Day Out",
+    emoji: "🌟",
+    story: "Fluffy is having the best day ever — she bounced through the Cheese Forest, slid down the Ice Cream Hill, and scooped hot chocolate at the spring! Now she is helping Margret set up chairs for a neighbourhood gathering and needs multiplication and division to count the chairs, snacks, and how many times she has accidentally bumped into something today. Help Fluffy wrap up the most wonderfully bumpy day!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Roo ──────────────────────────────────────────────────────
+  {
+    id: 70,
+    character: 'roo',
+    charIdx: 5,
+    title: "Chapter 1: Supplies for the Hot Chocolate Spring",
+    emoji: "☕",
+    story: "Roo is packing her legendary pouch with everything the friends need for a morning at the Hot Chocolate Spring — mugs, sugar, marshmallows, and Blanket (just in case). She needs multiplication to figure out how many supplies to bring for the whole group. Bermione showed up uninvited but Roo had packed extra just in case (she always does). Help Roo calculate the hot chocolate supplies!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 71,
+    character: 'roo',
+    charIdx: 6,
+    title: "Chapter 2: Sandcastle Fort at the Lake",
+    emoji: "🏖️",
+    story: "Roo and Humphrey are building an enormous sandcastle fort at the lake — as big as a real house! Roo needs division to calculate how to divide the sand between the different towers and walls. She uses Blanket as a measuring rope to mark out each section. Help Roo design and build the ultimate neighbourhood sandcastle!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 72,
+    character: 'roo',
+    charIdx: 7,
+    title: "Chapter 3: Cheese Tree Harvest Help",
+    emoji: "🧀",
+    story: "The Cheese Tree Forest branches are falling and Roo is using Blanket as a basket to carry them back to share with the neighbourhood! She needs multiplication to count how many branches fit per trip and how many journeys she needs to make. Fluffy is bouncing around in the trees above her, making branches fall faster. Help Roo collect the cheese harvest!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 73,
+    character: 'roo',
+    charIdx: 8,
+    title: "Chapter 4: Donut River Rescue",
+    emoji: "🍩",
+    story: "A huge batch of runaway donuts is flowing down the Donut River way too fast — and Kiki's favourite equipment is sitting right in the river's path! Roo springs into action: she lassos the equipment with Blanket and pulls it clear. She needs multiplication and division to calculate how many donuts to redirect and how fast she needs to move. Help Roo save Kiki's gear!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 74,
+    character: 'roo',
+    charIdx: 9,
+    title: "Chapter 5: Peggy the Pegasus Patrol",
+    emoji: "🦄",
+    story: "Peggy the Pegasus is patrolling the neighbourhood today and has asked Roo to help count all the friends at each location — the Hot Chocolate Spring, the Ice Cream Hill, the lake, and Margret's pool. Roo needs multiplication and division to calculate patrol routes and response times. Help Roo and Peggy keep the whole neighbourhood safe!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Margret ──────────────────────────────────────────────────
+  {
+    id: 75,
+    character: 'margret',
+    charIdx: 5,
+    title: "Chapter 1: Pool Meets Hot Chocolate",
+    emoji: "☕",
+    story: "Margret is connecting her backyard pool to a supply line from the Hot Chocolate Spring for a special Hot Chocolate Pool Party! She needs multiplication to calculate how many gallons flow through the pipe and how long it will take to fill the pool. Fluffy has already fallen in — she is fine and very chocolatey now. Help Margret calculate the fill rate!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 76,
+    character: 'margret',
+    charIdx: 6,
+    title: "Chapter 2: Mermaid Lake Day",
+    emoji: "🌊",
+    story: "Margret's mermaid friends are visiting through the magical portal — this time they want to explore the neighbourhood lake! Margret needs division to calculate how to divide the lake space so mermaids and land friends can enjoy it at the same time. Humphrey chose this moment to do his underwater run. Help Margret organise the lake day!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 77,
+    character: 'margret',
+    charIdx: 7,
+    title: "Chapter 3: Ice Cream Hill Pool Party",
+    emoji: "🍨",
+    story: "Margret got an ice cream delivery from the Ice Cream Sledding Hill — now the pool is filled with ice cream for the afternoon! She needs multiplication to calculate how many scoops fit in the pool, how many friends can swim, and how much warm water to add so nobody freezes. Vaporeon is keeping it stirred with gentle blasts. Help Margret run the world's most delicious pool party!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 78,
+    character: 'margret',
+    charIdx: 8,
+    title: "Chapter 4: Cheese Tree Decorations",
+    emoji: "🧀",
+    story: "Margret is decorating the pool area with fallen Cheese Tree branches for the Grand Pool Gala — cheesy AND beautiful! She needs multiplication and division to figure out how many branches to place, how to divide them evenly around the fence, and how many extras Kiki quietly took for her lab. Help Margret create the cheesiest pool décor the neighbourhood has ever seen!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 79,
+    character: 'margret',
+    charIdx: 9,
+    title: "Chapter 5: Donut River Boat Party",
+    emoji: "🍩",
+    story: "Margret spotted that the giant donuts in the Donut River are big enough to sit on — so she organised a Donut River Boat Party! She needs multiplication and division to calculate how many friends can ride at once, how long each trip lasts before reaching the prairie, and how to split into fair teams. Bermione refused to get on a donut but sat on the bank eating her sammich very loudly. Help Margret plan the most delicious boat party!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Maggie ───────────────────────────────────────────────────
+  {
+    id: 80,
+    character: 'maggie',
+    charIdx: 5,
+    title: "Chapter 1: Donut Kick!",
+    emoji: "🍩",
+    story: "Maggie roundhouse-kicked a donut clean out of the Donut River — it flew through the air and landed three streets over! Now she needs multiplication to count how many donuts were displaced, how far each traveled, and how many apologies she needs to deliver. The donuts were fine. Several neighbours got a free breakfast. Help Maggie calculate the donut damage!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 81,
+    character: 'maggie',
+    charIdx: 6,
+    title: "Chapter 2: The Ice Cream Hill Speed Record",
+    emoji: "🛷",
+    story: "Maggie karate-kicked herself onto a sled at the Ice Cream Sledding Hill and set the all-time speed record — then rocketed off the end of the hill and into the Cheese Tree Forest! She needs division to calculate how far she went, how many cheese branches she knocked down, and how much of the hill needs to be repacked. Help Maggie figure out the stickiest math problem ever!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 82,
+    character: 'maggie',
+    charIdx: 7,
+    title: "Chapter 3: Cheese Tree Kickathon",
+    emoji: "🧀",
+    story: "Maggie has decided the Cheese Tree Forest is the perfect ninja training ground! Every kick sends a cheese stick branch flying — and Kiki is frantically collecting them all. Maggie needs multiplication to count how many kicks she did, how many branches flew, and how many ended up in Kiki's cart vs in people's gardens. Help Maggie track her cheese stick kickathon performance!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 83,
+    character: 'maggie',
+    charIdx: 8,
+    title: "Chapter 4: Protecting the Pine Tree Forest",
+    emoji: "🌲",
+    story: "Lego Humphrey — a rogue Lego experiment escaped from Kiki's lab — is tunnelling around Mrs. Spruce's Pine Tree Forest, reshaping itself into a battering ram to knock trees over! Mrs. Spruce (who is alive and very worried) called on Maggie to stop it. The tricky part: if Maggie kicks it apart, it just reassembles itself. Maggie needs multiplication and division to calculate patrol routes and the precise kick force to scatter the pieces far enough to buy time. Help Maggie defend the pine forest from the indestructible brick menace!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 84,
+    character: 'maggie',
+    charIdx: 9,
+    title: "Chapter 5: Peggy Calls for Backup",
+    emoji: "🦄",
+    story: "Peggy the Pegasus spotted trouble near the Donut River — it is overflowing and sending donuts into Roo's yard! Peggy called on Maggie, who arrived with an enthusiastic flying kick that accidentally redirected three donut flows at once. Maggie needs multiplication and division to restore the river's normal path before the whole street floods with pastry. Help Maggie save the neighbourhood from a donut disaster!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Tigey Avinia ─────────────────────────────────────────────
+  {
+    id: 85,
+    character: 'tigey_avinia',
+    charIdx: 5,
+    title: "Chapter 1: Le Café du Chocolat Chaud",
+    emoji: "☕",
+    story: "Tigey Avinia has set up a pretend French café next to the Hot Chocolate Spring! 'Bienvenue! Ze hot chocolate, it is magnifique, non?' She needs multiplication to count the cups served and tally the totally made-up Francs she is charging. (The currency is not real. Neither is the accent.) Help Tigey Avinia run Le Café du Chocolat Chaud!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 86,
+    character: 'tigey_avinia',
+    charIdx: 6,
+    title: "Chapter 2: Ze Fromage Fantastique",
+    emoji: "🧀",
+    story: "Tigey Avinia has declared the Cheese Tree Forest a 'national treasure of France' — a France that exists only in her imagination. She is leading tours and charging visitors in entirely made-up French Francs. She needs division to split the 'revenue' equally among the tour group. Help Tigey Avinia run the most enthusiastically fake-French cheese forest tour!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 87,
+    character: 'tigey_avinia',
+    charIdx: 7,
+    title: "Chapter 3: La Piste de Ski",
+    emoji: "🛷",
+    story: "Tigey Avinia has renamed the Ice Cream Sledding Hill 'La Grande Piste de Ski' and is insisting everyone use proper 'French ski technique'. ('You must lean, like zis! Ooh la la!') She needs multiplication to count the runs, calculate the ice cream consumed, and track everyone's 'French ski scores'. Help Tigey Avinia organise the most fantastically fake-French sledding competition!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 88,
+    character: 'tigey_avinia',
+    charIdx: 8,
+    title: "Chapter 4: La Rivière des Beignets",
+    emoji: "🍩",
+    story: "Tigey Avinia has discovered the Donut River and is convinced it is a 'classic French patisserie river'. 'Ah oui, in France we have zis everywhere, non?' She wants to organise a Donut River cruise and needs multiplication and division to calculate how many donut-boats the group needs and how long the trip takes. Help Tigey Avinia host the most classically fake-French donut cruise!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 89,
+    character: 'tigey_avinia',
+    charIdx: 9,
+    title: "Chapter 5: La Grande Carte du Quartier",
+    emoji: "🗺️",
+    story: "Tigey Avinia is drawing a grand map of 'her neighbourhood in France' — the Hot Chocolate Spring, the Cheese Tree Forest, La Grande Piste de Ski, La Rivière des Beignets, and her totally imaginary French café. She needs multiplication and division to calculate distances and label everything in 'French'. Help Tigey Avinia complete her magnifique cartographic masterpiece!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Thumper ──────────────────────────────────────────────────
+  {
+    id: 90,
+    character: 'thumper',
+    charIdx: 5,
+    title: "Chapter 1: Tunnel Network Expansion",
+    emoji: "🕳️",
+    story: "Thumper is digging new tunnel branches — one running under the Hot Chocolate Spring (perfect for popping up and scaring people!) and another under the Cheese Tree Forest. She needs multiplication to calculate how long each tunnel will take to dig and how many materials she needs. Kekekekeke — nobody will ever see her coming through their morning hot chocolate!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 91,
+    character: 'thumper',
+    charIdx: 6,
+    title: "Chapter 2: The Ice Cream Hill Prank",
+    emoji: "🛷",
+    story: "Thumper has rigged a prank on the Ice Cream Sledding Hill — a tripwire that sends a load of whipped cream flying at whoever reaches the top! She needs division to split her prank supplies evenly across three different trip wires so every sled rider gets a surprise. Kekekekeke! Help Thumper calculate the perfect prank distribution!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 92,
+    character: 'thumper',
+    charIdx: 7,
+    title: "Chapter 3: Cheese Tree Camouflage",
+    emoji: "🧀",
+    story: "Thumper discovered that sitting still among the Cheese Tree Forest branches makes her almost perfectly camouflaged — she smells like cheese and blends right in! She needs multiplication to count how many branches to collect and build her ultimate hiding spot. Roo actually sat on her by mistake. Kekekekeke! Help Thumper build the perfect cheese camouflage!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 93,
+    character: 'thumper',
+    charIdx: 8,
+    title: "Chapter 4: Donut River Relay Prank",
+    emoji: "🍩",
+    story: "Thumper has set up a chain of prank activators along the Donut River — when a donut bumps a tripwire, a bucket of confetti drops on whoever is standing nearby. She needs both multiplication and division to calculate the timing and spacing. Humphrey was the first victim. KEKEKEKEKE! Help Thumper perfect the relay prank timing!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 94,
+    character: 'thumper',
+    charIdx: 9,
+    title: "Chapter 5: The Ultimate Neighbourhood Prank",
+    emoji: "🎭",
+    story: "Thumper's tunnels now run under the Ice Cream Hill, the Cheese Forest, and the Donut River. She can pop up ANYWHERE. The plan: a perfect simultaneous prank at every location at the same moment. But then — BOOM — Bowser's airship appears overhead, blotting out the sun and announcing his plan to conquer the town. Thumper decides the prank ALSO hits Bowser's crew as they descend the landing ramp. She needs multiplication and division to calculate the timing. KEKEKEKEKE! Help Thumper pull off the most legendary prank — and neighbourhood defence — in history!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Tigey ────────────────────────────────────────────────────
+  {
+    id: 95,
+    character: 'tigey',
+    charIdx: 5,
+    title: "Chapter 1: Neighbourhood Walk with Tigey",
+    emoji: "🌸",
+    story: "Tigey is setting out on a long walk of the neighbourhood today — past the Hot Chocolate Spring, through the Cheese Tree Forest, and all the way to Giri's Chocolate Shop! She needs multiplication to calculate how many steps between each stop and how many friends she will meet along the way. Help Tigey plan the perfect neighbourhood morning walk!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 96,
+    character: 'tigey',
+    charIdx: 6,
+    title: "Chapter 2: Hot Chocolate Spring Sharing",
+    emoji: "☕",
+    story: "Tigey has brought a big batch of mugs to the Hot Chocolate Spring so everyone can share a morning cup together! She needs division to make sure every friend gets exactly the same serving — Bermione wants double, but Tigey is being fair. Help Tigey divide the hot chocolate so everyone gets an equal and delicious share!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 97,
+    character: 'tigey',
+    charIdx: 7,
+    title: "Chapter 3: Ice Cream Sledding Day",
+    emoji: "🛷",
+    story: "Tigey and Tigey Avinia are at the Ice Cream Sledding Hill together — Tigey Avinia keeps calling it 'La Piste de Ski' and pretending to speak French, while Tigey focuses on actually sledding. Tigey needs multiplication to count the sled runs, calculate ice cream consumed, and keep the scoreboard. Help Tigey run the real numbers on sledding day!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 98,
+    character: 'tigey',
+    charIdx: 8,
+    title: "Chapter 4: Sandcastle Fort at the Lake",
+    emoji: "🏖️",
+    story: "Tigey and Vaporeon are building a sandcastle fort at the lake! Vaporeon uses her water cannon to shape the walls — Vaporeon! — while Tigey does the mathematical planning. She needs multiplication and division to calculate how much sand goes in each section and how many towers the fort needs. Help Tigey design the greatest sandcastle fort the neighbourhood has ever seen!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 99,
+    character: 'tigey',
+    charIdx: 9,
+    title: "Chapter 5: Neighbourhood Grand Day",
+    emoji: "🎉",
+    story: "Tigey is organising the neighbourhood Grand Day Out — visiting every major neighbourhood spot in one epic afternoon! The Ice Cream Hill, the Cheese Forest, the Hot Chocolate Spring, the lake, and Giri's shop are all on the list. She needs multiplication and division to plan routes, timings, and supply needs for the whole crew. Help Tigey coordinate the greatest neighbourhood day ever!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Giri ─────────────────────────────────────────────────────
+  {
+    id: 100,
+    character: 'giri',
+    charIdx: 5,
+    title: "Chapter 1: The Hot Chocolate Shop Rivalry",
+    emoji: "☕",
+    story: "Kiki's Hot Chocolate Spring is very popular, but Giri has created his own signature 'Giri's Gourmet Hot Chocolate' at the shop — extra thick with whipped cream on top! He needs multiplication to calculate how many cups he can serve each morning. (It is not really a rivalry. Everyone loves both. But Giri is a little competitive.) Help Giri tally his chocolate numbers!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 101,
+    character: 'giri',
+    charIdx: 6,
+    title: "Chapter 2: Chocolate Treat Deliveries",
+    emoji: "🎁",
+    story: "Giri is delivering treat boxes to every house on the street today — including Roo's, Margret's, and even Thumper's hole by the tree (he left it at the entrance). He needs division to make sure each box has exactly the same number of chocolates. Humphrey stopped to help — and ate a few along the way. Help Giri divide the chocolate deliveries fairly!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 102,
+    character: 'giri',
+    charIdx: 7,
+    title: "Chapter 3: Ice Cream Chocolate Toppings",
+    emoji: "🍨",
+    story: "Giri is setting up a chocolate topping station at the bottom of the Ice Cream Sledding Hill — sledders can ride down and immediately get a hot fudge drizzle! He needs multiplication to calculate how much chocolate sauce, how many spoons, and how many napkins to bring. Fluffy alone will need a lot of napkins. Help Giri set up the most delicious hill-bottom chocolate station!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 103,
+    character: 'giri',
+    charIdx: 8,
+    title: "Chapter 4: Chocolate Donut Collab",
+    emoji: "🍩",
+    story: "Giri and Kiki have teamed up to create chocolate-dipped donuts — using the Donut River donuts as the base and Giri's finest chocolate as the coating! They need multiplication and division to calculate how many donuts can be dipped per hour, how much chocolate is needed, and how to distribute them along the riverbank. Help Giri and Kiki launch the neighbourhood's first chocolate donut collaboration!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 104,
+    character: 'giri',
+    charIdx: 9,
+    title: "Chapter 5: Grand Neighbourhood Chocolate Festival",
+    emoji: "🏆",
+    story: "Giri is hosting the Grand Neighbourhood Chocolate Festival — with stalls at the Hot Chocolate Spring, the Cheese Tree Forest, the Ice Cream Hill, and right in front of his shop! Every location needs its own supply calculation. He needs multiplication and division to make sure every stall has exactly what it needs for the biggest chocolate celebration the neighbourhood has ever seen. Help Giri organise the festival!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+
+  // ── Vaporeon ─────────────────────────────────────────────────
+  {
+    id: 105,
+    character: 'vaporeon',
+    charIdx: 5,
+    title: "Chapter 1: Lake Water Cannon Workout",
+    emoji: "🌊",
+    story: "Vaporeon is training her water cannon at the lake this morning — Vaporeon! She practices shooting at targets across the water, with Humphrey helpfully providing things to aim at from the other bank. She needs multiplication to calculate how many blast sequences to complete and how much water she uses per workout. Help Vaporeon train for peak water cannon performance!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 106,
+    character: 'vaporeon',
+    charIdx: 6,
+    title: "Chapter 2: Donut River Direction",
+    emoji: "🍩",
+    story: "The Donut River is flowing too close to Mrs. Spruce's Pine Tree Forest and the trees are getting soggy! Vaporeon offers to redirect the flow using her water cannon — Vaporeon! — but she needs division to calculate how many blasts are needed at each redirection point. Help Vaporeon calculate her water cannon plan to save Mrs. Spruce's trees!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 107,
+    character: 'vaporeon',
+    charIdx: 7,
+    title: "Chapter 3: Hot Chocolate Spring Temperature",
+    emoji: "☕",
+    story: "Kiki's Hot Chocolate Spring is running a bit cool today and Vaporeon is the only one who can help — she can fire precise warm water blasts to keep the temperature just right! She needs multiplication to calculate exactly how many water bursts are needed. Bermione is watching from the side, holding her mug, very opinionated. Help Vaporeon heat up the hot chocolate spring!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 108,
+    character: 'vaporeon',
+    charIdx: 8,
+    title: "Chapter 4: Neighbourhood Water Festival",
+    emoji: "🎉",
+    story: "It's the hottest day of the year and Vaporeon has organised a full Neighbourhood Water Festival — water balloons at the Ice Cream Hill, cool mist at the Cheese Tree Forest, and a water cannon show at the lake! She needs multiplication and division to plan the water usage across all locations and make sure nobody runs out of cool water. Help Vaporeon coordinate the ultimate water festival!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 109,
+    character: 'vaporeon',
+    charIdx: 9,
+    title: "Chapter 5: The Grand Water Finale",
+    emoji: "🌟",
+    story: "Vaporeon is performing her legendary Grand Water Finale at the lake — the most spectacular water cannon display the neighbourhood has ever seen, with blasts timed to music! Margret has brought her mermaid friends through the portal to watch, and Giri set up a chocolate dipping station at the water's edge. Vaporeon! Help Vaporeon calculate the perfect timing and water quantities for the most magnificent show in neighbourhood history!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+];
+
+// Tag every chapter with its story theme (1 = Friends, 2 = The Neighbourhood)
+CHAPTERS.forEach(ch => { ch.theme = ch.charIdx <= 4 ? 1 : 2; });
+
+// ── Story themes ──────────────────────────────────────────────
+const STORY_THEMES = [
+  {
+    id: 1,
+    title: 'Chapter 1: Friends',
+    emoji: '👫',
+    description: 'Play alongside your neighbourhood friends in their everyday adventures!',
+  },
+  {
+    id: 2,
+    title: 'Chapter 2: The Neighbourhood',
+    emoji: '🏘️',
+    description: 'Explore the magical neighbourhood — the Ice Cream Hill, the Cheese Tree Forest, the Hot Chocolate Spring, the Donut River, and more!',
+  },
 ];
 
 // ── State ─────────────────────────────────────────────────────
@@ -734,8 +1386,9 @@ let state = {
   tickStart:            null,
   answered:             false,
   storyMode:            false,      // true when playing from a story chapter
-  chapterId:            null,       // which chapter (0-4) is being played
+  chapterId:            null,       // which chapter is being played
   selectedCharacter:    null,       // character id chosen on the character screen
+  selectedTheme:        null,       // story theme id chosen on the theme screen (1 or 2)
   newlyUnlockedChapter: null,       // chapter id unlocked after last completion
   newlyUnlockedCharacter: null,     // character id unlocked after last completion
   settings:             { ...DEFAULT_SETTINGS }, // active user's settings
@@ -800,21 +1453,38 @@ function saveUserProgress(user) {
 
 function isChapterUnlocked(ch, progress) {
   if (ch.charIdx === 0) return true;
+  // First chapter of theme 2 (charIdx === 5) unlocks when the last chapter
+  // of theme 1 (charIdx === 4) is completed — this falls out naturally below.
   const charProgress = progress[ch.character];
   if (!charProgress) return false;
   const prev = charProgress.chapters[ch.charIdx - 1];
   return prev && prev.completed;
 }
 
-/** Returns true when all chapters of character at CHARACTERS[charIndex-1] are done. */
-function isCharacterUnlocked(charIndex, progress) {
+/** Returns true when all chapters of character at CHARACTERS[charIndex-1] are done
+ *  within the given themeId, so characters unlock independently per chapter. */
+function isCharacterUnlocked(charIndex, progress, themeId) {
   if (charIndex === 0) return true;
   const prevChar = CHARACTERS[charIndex - 1];
   const prevProgress = progress[prevChar.id];
   if (!prevProgress) return false;
-  const prevChapters = CHAPTERS.filter(ch => ch.character === prevChar.id);
+  const prevChapters = CHAPTERS.filter(ch => ch.character === prevChar.id && ch.theme === themeId);
   return prevChapters.length > 0 &&
-    prevChapters.every((ch, i) => prevProgress.chapters[i] && prevProgress.chapters[i].completed);
+    prevChapters.every(ch => prevProgress.chapters[ch.charIdx] && prevProgress.chapters[ch.charIdx].completed);
+}
+
+/**
+ * Returns true when the given chapter (theme) is accessible globally.
+ * Chapter 1 is always unlocked.
+ * Chapter 2 requires ALL Chapter-1 stories to be complete across ALL characters.
+ */
+function isGlobalChapterUnlocked(themeId, progress) {
+  if (themeId === 1) return true;
+  const theme1Chapters = CHAPTERS.filter(ch => ch.theme === 1);
+  return theme1Chapters.length > 0 && theme1Chapters.every(ch => {
+    const cp = progress[ch.character];
+    return cp && cp.chapters[ch.charIdx] && cp.chapters[ch.charIdx].completed;
+  });
 }
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -991,9 +1661,10 @@ function loginUser(name) {
   }
   state.settings = getUserSettings(name);
   state.selectedCharacter = null;
+  state.selectedTheme = null;
   state.newlyUnlockedCharacter = null;
-  renderCharacterScreen(null);
-  showScreen('#character-screen');
+  renderChapterScreen();
+  showScreen('#chapter-screen');
 }
 
 function addPlayer(rawName) {
@@ -1012,11 +1683,95 @@ function addPlayer(rawName) {
   loginUser(name);
 }
 
+// ── Chapter select screen (global) ───────────────────────────
+function renderChapterScreen() {
+  const userName = getCurrentUser();
+  const user = getUserProgress(userName);
+  const progress = user ? user.storyProgress : {};
+
+  $('#chapter-screen-username').textContent = userName || '';
+
+  const list = $('#chapter-list');
+  list.textContent = '';
+
+  STORY_THEMES.forEach(theme => {
+    const unlocked = isGlobalChapterUnlocked(theme.id, progress);
+
+    // Overall progress for this theme across all characters
+    const allThemeChapters = CHAPTERS.filter(ch => ch.theme === theme.id);
+    const completedCount = allThemeChapters.filter(ch => {
+      const cp = progress[ch.character];
+      return cp && cp.chapters[ch.charIdx] && cp.chapters[ch.charIdx].completed;
+    }).length;
+    const allDone = allThemeChapters.length > 0 && completedCount === allThemeChapters.length;
+
+    const card = document.createElement('button');
+    card.className = 'theme-card';
+    card.classList.add(unlocked ? 'unlocked' : 'locked');
+    if (allDone) card.classList.add('completed');
+    card.setAttribute('type', 'button');
+    card.disabled = !unlocked;
+
+    const emojiEl = document.createElement('div');
+    emojiEl.className = 'theme-card-emoji';
+    emojiEl.textContent = unlocked ? theme.emoji : '🔒';
+
+    const body = document.createElement('div');
+    body.className = 'theme-card-body';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'theme-card-title';
+    titleEl.textContent = theme.title;
+
+    const descEl = document.createElement('div');
+    descEl.className = 'theme-card-desc';
+    if (unlocked) {
+      descEl.textContent = theme.description;
+    } else {
+      // Theme 1 is always unlocked, so this branch is only reached for theme 2+.
+      // prevTheme is used to display a helpful unlock hint; the fallback 'Locked'
+      // covers any future themes that have no predecessor defined.
+      const prevTheme = STORY_THEMES.find(t => t.id === theme.id - 1);
+      descEl.textContent = prevTheme
+        ? `Complete "${prevTheme.title}" to unlock!`
+        : 'Locked';
+    }
+
+    const progressEl = document.createElement('div');
+    progressEl.className = 'theme-card-progress';
+    if (!unlocked) {
+      progressEl.textContent = '🔒 Locked';
+    } else if (allDone) {
+      progressEl.textContent = `✅ All ${allThemeChapters.length} ${allThemeChapters.length === 1 ? 'story' : 'stories'} complete!`;
+    } else {
+      progressEl.textContent = `${completedCount} / ${allThemeChapters.length} ${allThemeChapters.length === 1 ? 'story' : 'stories'} complete`;
+    }
+
+    body.append(titleEl, descEl, progressEl);
+    card.append(emojiEl, body);
+
+    if (unlocked) {
+      card.addEventListener('click', () => selectChapter(theme.id));
+    }
+
+    list.appendChild(card);
+  });
+}
+
+function selectChapter(themeId) {
+  state.selectedTheme = themeId;
+  state.selectedCharacter = null;
+  renderCharacterScreen(null);
+  showScreen('#character-screen');
+}
+
 // ── Character select screen ───────────────────────────────────
 function renderCharacterScreen(newlyUnlockedCharacterId) {
   const userName = getCurrentUser();
   const user = getUserProgress(userName);
   const progress = user ? user.storyProgress : {};
+  const themeId = state.selectedTheme;
+  const theme = STORY_THEMES.find(t => t.id === themeId);
 
   // Ensure progress slots exist for all characters
   CHARACTERS.forEach(char => {
@@ -1029,17 +1784,26 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
 
   $('#char-screen-username').textContent = userName || '';
 
+  // Update chapter header
+  const chapterIconEl = $('#char-screen-chapter-icon');
+  const chapterTitleEl = $('#char-screen-chapter-title');
+  if (theme) {
+    chapterIconEl.textContent = theme.emoji;
+    chapterTitleEl.textContent = theme.title;
+  }
+
   const grid = $('#character-grid');
   grid.textContent = '';
 
   CHARACTERS.forEach((char, charIndex) => {
-    const unlocked = isCharacterUnlocked(charIndex, progress);
+    const unlocked = isCharacterUnlocked(charIndex, progress, themeId);
     const charProgress = progress[char.id];
-    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
-    const completedCount = charChapters.filter((ch, i) =>
-      charProgress.chapters[i] && charProgress.chapters[i].completed
+    // Count progress for the selected chapter only
+    const charThemeChapters = CHAPTERS.filter(ch => ch.character === char.id && ch.theme === themeId);
+    const completedCount = charThemeChapters.filter(ch =>
+      charProgress.chapters[ch.charIdx] && charProgress.chapters[ch.charIdx].completed
     ).length;
-    const allDone = completedCount === charChapters.length;
+    const allDone = charThemeChapters.length > 0 && completedCount === charThemeChapters.length;
 
     const card = document.createElement('button');
     card.className = 'character-card';
@@ -1078,7 +1842,7 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
     descEl.textContent = unlocked
       ? char.description
       : charIndex > 0
-        ? `Complete ${CHARACTERS[charIndex - 1].name}'s story to unlock!`
+        ? `Complete ${CHARACTERS[charIndex - 1].name}'s stories to unlock!`
         : 'Locked';
 
     const progressEl = document.createElement('div');
@@ -1086,9 +1850,10 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
     if (!unlocked) {
       progressEl.textContent = '🔒 Locked';
     } else if (allDone) {
-      progressEl.textContent = '✅ All chapters complete!';
+      progressEl.textContent = '✅ All stories complete!';
     } else {
-      progressEl.textContent = `${completedCount} / ${charChapters.length} chapters complete`;
+      const n = charThemeChapters.length;
+      progressEl.textContent = `${completedCount} / ${n} ${n === 1 ? 'story' : 'stories'} complete`;
     }
 
     body.append(nameEl, descEl, progressEl);
@@ -1142,8 +1907,11 @@ function renderStoryScreen(newlyUnlockedChapter) {
   const user = getUserProgress(userName);
   const charId = state.selectedCharacter;
   const char = CHARACTERS.find(c => c.id === charId);
+  const theme = STORY_THEMES.find(t => t.id === state.selectedTheme);
 
-  $('#story-character-title').textContent = char ? char.name : '';
+  // Show "Character name — Theme title"
+  const titleParts = [char ? char.name : '', theme ? theme.title : ''].filter(Boolean);
+  $('#story-character-title').textContent = titleParts.join(' — ');
 
   // ── Character hero image / emoji at top of screen
   const heroEl = $('#story-char-hero');
@@ -1177,7 +1945,10 @@ function renderStoryScreen(newlyUnlockedChapter) {
     }
   }
 
-  const charChapters = char ? CHAPTERS.filter(ch => ch.character === char.id) : [];
+  // Filter chapters to the selected character AND selected theme
+  const charChapters = char
+    ? CHAPTERS.filter(ch => ch.character === char.id && ch.theme === state.selectedTheme)
+    : [];
   const charProgress = char ? (progress[char.id] || { chapters: [] }) : { chapters: [] };
 
   charChapters.forEach(ch => {
@@ -1255,9 +2026,14 @@ function renderStoryScreen(newlyUnlockedChapter) {
   });
 
   if (newlyUnlockedChapter !== null) {
+    // Chapter id equals its index in CHAPTERS, so direct access is O(1)
     const ch = CHAPTERS[newlyUnlockedChapter];
-    // Delay slightly so the screen transition completes first
-    setTimeout(() => showToast(`🎉 ${ch.emoji} Chapter ${ch.charIdx + 1} unlocked!`), NEWLY_UNLOCKED_TOAST_DELAY_MS);
+    if (ch) {
+      // Show 1-based story number within its theme
+      const themeIdx = CHAPTERS.filter(c => c.character === ch.character && c.theme === ch.theme)
+        .findIndex(c => c.id === ch.id);
+      setTimeout(() => showToast(`🎉 ${ch.emoji} Story ${themeIdx + 1} unlocked!`), NEWLY_UNLOCKED_TOAST_DELAY_MS);
+    }
   }
 }
 
@@ -1303,7 +2079,7 @@ function handleStoryCompletion(pct) {
   let newlyUnlockedChapter = null;
   let newlyUnlockedCharacter = null;
   if (passed && !wasCompleted) {
-    const nextChapter = CHAPTERS.find(c => c.character === ch.character && c.charIdx === ch.charIdx + 1);
+    const nextChapter = CHAPTERS.find(c => c.character === ch.character && c.charIdx === ch.charIdx + 1 && c.theme === ch.theme);
     if (nextChapter) {
       newlyUnlockedChapter = nextChapter.id;
     } else {
@@ -1544,15 +2320,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ── Character screen
-  $('#char-switch-user-btn').addEventListener('click', () => {
+  // ── Chapter screen
+  $('#chapter-switch-user-btn').addEventListener('click', () => {
     renderLoginScreen();
     showScreen('#login-screen');
   });
 
-  $('#char-settings-btn').addEventListener('click', () => {
+  $('#chapter-settings-btn').addEventListener('click', () => {
     renderSettingsScreen();
     showScreen('#settings-screen');
+  });
+
+  // ── Character screen (back → chapter select)
+  $('#back-to-chapters-btn').addEventListener('click', () => {
+    renderChapterScreen();
+    showScreen('#chapter-screen');
   });
 
   // ── Settings screen
@@ -1570,7 +2352,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('#back-from-settings-btn').addEventListener('click', () => {
-    showScreen('#character-screen');
+    showScreen('#chapter-screen');
   });
 
   $('#save-settings-btn').addEventListener('click', () => {
@@ -1582,13 +2364,12 @@ document.addEventListener('DOMContentLoaded', () => {
     state.settings = newSettings;
     saveUserSettings(getCurrentUser(), newSettings);
     showToast('✓ Settings saved!');
-    showScreen('#character-screen');
+    showScreen('#chapter-screen');
   });
 
-  // ── Story screen
+  // ── Story screen (back → character select)
   $('#back-to-characters-btn').addEventListener('click', () => {
-    renderCharacterScreen(state.newlyUnlockedCharacter);
-    state.newlyUnlockedCharacter = null;
+    renderCharacterScreen(null);
     showScreen('#character-screen');
   });
 
@@ -1633,6 +2414,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderCharacterScreen(unlockedId);
       showScreen('#character-screen');
     } else {
+      // Return to the story map for the current character + theme
       renderStoryScreen(state.newlyUnlockedChapter);
       showScreen('#story-screen');
     }
