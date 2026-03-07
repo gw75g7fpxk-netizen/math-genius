@@ -1433,7 +1433,11 @@ function getUsers() {
 function saveUsers(users) {
   localStorage.setItem('mathgenius_users', JSON.stringify(users));
   if (typeof PlayFabManager !== 'undefined' && PlayFabManager.isLoggedIn) {
-    PlayFabManager.saveUsersToCloud(users);
+    try {
+      PlayFabManager.saveUsersToCloud(users);
+    } catch (e) {
+      console.warn('PlayFab: saveUsersToCloud threw synchronously —', e);
+    }
   }
 }
 function getCurrentUser() {
@@ -2370,11 +2374,39 @@ function showResults() {
 }
 
 // ── Event wiring ───────────────────────────────────────────────
+// Handle bfcache restoration on mobile (page restored from browser cache does
+// not re-fire DOMContentLoaded; pageshow fires with event.persisted = true).
+// Re-render the login screen if active and ensure the modal is properly
+// dismissed so that user-card click events are never blocked by a stale modal state.
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    // Always hide the modal – it may have been left open if the user was
+    // mid-sign-in when the page was suspended (e.g. Google popup opened).
+    const modal = document.getElementById('mg-login-modal');
+    if (modal) modal.style.display = 'none';
+
+    // Only re-render the login screen if it is currently the active screen;
+    // other screens should stay as-is (e.g. story/chapter/game screens).
+    const loginScreen = document.getElementById('login-screen');
+    if (loginScreen && loginScreen.classList.contains('active')) {
+      if (typeof PlayFabManager !== 'undefined') {
+        PlayFabManager.initialize();
+      }
+      renderLoginScreen();
+    }
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   // Initialise PlayFab (restores session from localStorage if present)
   if (typeof PlayFabManager !== 'undefined') {
     PlayFabManager.initialize();
   }
+
+  // Explicitly hide the login modal so it can never intercept touch events
+  // on page load (guards against CSS not yet applied or bfcache edge-cases).
+  const modal = document.getElementById('mg-login-modal');
+  if (modal) modal.style.display = 'none';
 
   // ── Login screen
   renderLoginScreen();
