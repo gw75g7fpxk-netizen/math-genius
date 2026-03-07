@@ -128,17 +128,44 @@ const PlayFabManager = {
         });
     },
 
-    // Save the full users array to PlayFab cloud (fire-and-forget)
+    // Save the full users array to PlayFab cloud using read-modify-write.
+    // Fetches the current cloud state first, merges it with the provided users
+    // (keeping the best result per metric), then writes back the merged result.
+    // This prevents concurrent saves from multiple devices overwriting each
+    // other's progress when different users are playing at the same time.
     saveUsersToCloud(users) {
         if (!this.isLoggedIn || typeof PlayFabClientSDK === 'undefined') return;
-        PlayFabClientSDK.UpdateUserData({
-            Data: { mathGeniusUsers: JSON.stringify(users) },
-        }, (result, error) => {
-            if (error) {
-                console.warn('PlayFab: Cloud save failed —', error.errorMessage);
-            } else {
-                console.log('PlayFab: Players saved to cloud');
+        this.loadUsersFromCloud((loadError, cloudUsers) => {
+            if (loadError) {
+                // Abort rather than blindly overwrite — the local save already
+                // persisted progress to localStorage, so no data is lost here.
+                console.warn('PlayFab: Cloud save aborted (could not read current state) —', loadError.message);
+                return;
             }
+            if (typeof CloudSync === 'undefined') {
+                console.warn('PlayFab: CloudSync unavailable — merge skipped, saving local data only');
+            }
+            const merged = (cloudUsers && typeof CloudSync !== 'undefined')
+                ? CloudSync.mergeUsers(users, cloudUsers)
+                : users;
+            // Keep local storage in sync with the freshly merged data so that
+            // progress made by other users on other devices is visible locally.
+            if (cloudUsers) {
+                try {
+                    localStorage.setItem('mathgenius_users', JSON.stringify(merged));
+                } catch (e) {
+                    console.warn('PlayFab: Failed to update local storage after merge —', e);
+                }
+            }
+            PlayFabClientSDK.UpdateUserData({
+                Data: { mathGeniusUsers: JSON.stringify(merged) },
+            }, (result, error) => {
+                if (error) {
+                    console.warn('PlayFab: Cloud save failed —', error.errorMessage);
+                } else {
+                    console.log('PlayFab: Players saved to cloud');
+                }
+            });
         });
     },
 
