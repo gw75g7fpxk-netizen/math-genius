@@ -1461,28 +1461,30 @@ function isChapterUnlocked(ch, progress) {
   return prev && prev.completed;
 }
 
-/** Returns true when all chapters of character at CHARACTERS[charIndex-1] are done. */
-function isCharacterUnlocked(charIndex, progress) {
+/** Returns true when all chapters of character at CHARACTERS[charIndex-1] are done
+ *  within the given themeId, so characters unlock independently per chapter. */
+function isCharacterUnlocked(charIndex, progress, themeId) {
   if (charIndex === 0) return true;
   const prevChar = CHARACTERS[charIndex - 1];
   const prevProgress = progress[prevChar.id];
   if (!prevProgress) return false;
-  const prevChapters = CHAPTERS.filter(ch => ch.character === prevChar.id);
+  const prevChapters = CHAPTERS.filter(ch => ch.character === prevChar.id && ch.theme === themeId);
   return prevChapters.length > 0 &&
-    prevChapters.every((ch, i) => prevProgress.chapters[i] && prevProgress.chapters[i].completed);
+    prevChapters.every(ch => prevProgress.chapters[ch.charIdx] && prevProgress.chapters[ch.charIdx].completed);
 }
 
 /**
- * Returns true when the given story theme is unlocked for a character.
- * Theme 1 is always unlocked. Theme 2 requires all theme-1 chapters to be complete.
+ * Returns true when the given chapter (theme) is accessible globally.
+ * Chapter 1 is always unlocked.
+ * Chapter 2 requires ALL Chapter-1 stories to be complete across ALL characters.
  */
-function isThemeUnlocked(themeId, charId, progress) {
+function isGlobalChapterUnlocked(themeId, progress) {
   if (themeId === 1) return true;
-  const charProgress = progress[charId];
-  if (!charProgress) return false;
-  const theme1Chapters = CHAPTERS.filter(ch => ch.character === charId && ch.theme === 1);
-  return theme1Chapters.length > 0 &&
-    theme1Chapters.every(ch => charProgress.chapters[ch.charIdx] && charProgress.chapters[ch.charIdx].completed);
+  const theme1Chapters = CHAPTERS.filter(ch => ch.theme === 1);
+  return theme1Chapters.length > 0 && theme1Chapters.every(ch => {
+    const cp = progress[ch.character];
+    return cp && cp.chapters[ch.charIdx] && cp.chapters[ch.charIdx].completed;
+  });
 }
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -1659,9 +1661,10 @@ function loginUser(name) {
   }
   state.settings = getUserSettings(name);
   state.selectedCharacter = null;
+  state.selectedTheme = null;
   state.newlyUnlockedCharacter = null;
-  renderCharacterScreen(null);
-  showScreen('#character-screen');
+  renderChapterScreen();
+  showScreen('#chapter-screen');
 }
 
 function addPlayer(rawName) {
@@ -1680,152 +1683,27 @@ function addPlayer(rawName) {
   loginUser(name);
 }
 
-// ── Character select screen ───────────────────────────────────
-function renderCharacterScreen(newlyUnlockedCharacterId) {
+// ── Chapter select screen (global) ───────────────────────────
+function renderChapterScreen() {
   const userName = getCurrentUser();
   const user = getUserProgress(userName);
   const progress = user ? user.storyProgress : {};
 
-  // Ensure progress slots exist for all characters
-  CHARACTERS.forEach(char => {
-    progress[char.id] = progress[char.id] || { chapters: [] };
-    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
-    while (progress[char.id].chapters.length < charChapters.length) {
-      progress[char.id].chapters.push({ completed: false, stars: 0, bestScore: null, bestPct: null });
-    }
-  });
+  $('#chapter-screen-username').textContent = userName || '';
 
-  $('#char-screen-username').textContent = userName || '';
-
-  const grid = $('#character-grid');
-  grid.textContent = '';
-
-  CHARACTERS.forEach((char, charIndex) => {
-    const unlocked = isCharacterUnlocked(charIndex, progress);
-    const charProgress = progress[char.id];
-    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
-    const completedCount = charChapters.filter(ch =>
-      charProgress.chapters[ch.charIdx] && charProgress.chapters[ch.charIdx].completed
-    ).length;
-    const allDone = completedCount === charChapters.length;
-
-    const card = document.createElement('button');
-    card.className = 'character-card';
-    card.classList.toggle('unlocked', unlocked);
-    card.classList.toggle('locked', !unlocked);
-    if (allDone) card.classList.add('completed');
-    if (char.id === newlyUnlockedCharacterId) card.classList.add('newly-unlocked');
-    card.setAttribute('type', 'button');
-    card.disabled = !unlocked;
-
-    // Image or emoji
-    const imgWrap = document.createElement('div');
-    imgWrap.className = 'character-card-img-wrap';
-    if (char.image) {
-      const img = document.createElement('img');
-      img.src = char.image;
-      img.alt = char.name;
-      img.className = 'character-card-img';
-      imgWrap.appendChild(img);
-    } else {
-      const emo = document.createElement('span');
-      emo.className = 'character-card-emoji';
-      emo.textContent = unlocked ? char.emoji : '🔒';
-      imgWrap.appendChild(emo);
-    }
-
-    const body = document.createElement('div');
-    body.className = 'character-card-body';
-
-    const nameEl = document.createElement('div');
-    nameEl.className = 'character-card-name';
-    nameEl.textContent = char.name;
-
-    const descEl = document.createElement('div');
-    descEl.className = 'character-card-desc';
-    descEl.textContent = unlocked
-      ? char.description
-      : charIndex > 0
-        ? `Complete ${CHARACTERS[charIndex - 1].name}'s story to unlock!`
-        : 'Locked';
-
-    const progressEl = document.createElement('div');
-    progressEl.className = 'character-card-progress';
-    if (!unlocked) {
-      progressEl.textContent = '🔒 Locked';
-    } else if (allDone) {
-      progressEl.textContent = '✅ All chapters complete!';
-    } else {
-      progressEl.textContent = `${completedCount} / ${charChapters.length} chapters complete`;
-    }
-
-    body.append(nameEl, descEl, progressEl);
-    card.append(imgWrap, body);
-
-    if (unlocked) {
-      card.addEventListener('click', () => selectCharacter(char.id));
-    }
-
-    grid.appendChild(card);
-  });
-
-  if (newlyUnlockedCharacterId) {
-    const char = CHARACTERS.find(c => c.id === newlyUnlockedCharacterId);
-    setTimeout(() => {
-      if (char) showToast(`🎉 ${char.emoji} ${char.name} unlocked!`);
-    }, NEWLY_UNLOCKED_TOAST_DELAY_MS);
-  }
-}
-
-function selectCharacter(charId) {
-  state.selectedCharacter = charId;
-  state.selectedTheme = null;
-  renderThemeScreen();
-  showScreen('#theme-screen');
-}
-
-// ── Theme select screen ───────────────────────────────────────
-function renderThemeScreen() {
-  const userName = getCurrentUser();
-  const user = getUserProgress(userName);
-  const charId = state.selectedCharacter;
-  const char = CHARACTERS.find(c => c.id === charId);
-  const progress = user ? user.storyProgress : {};
-
-  // Character hero
-  $('#theme-character-title').textContent = char ? char.name : '';
-  const heroEl = $('#theme-char-hero');
-  heroEl.textContent = '';
-  if (char) {
-    if (char.image) {
-      const img = document.createElement('img');
-      img.src = char.image;
-      img.alt = char.name;
-      img.className = 'story-char-hero-img';
-      heroEl.appendChild(img);
-    } else {
-      const emo = document.createElement('span');
-      emo.className = 'story-char-hero-emoji';
-      emo.textContent = char.emoji;
-      heroEl.appendChild(emo);
-    }
-  }
-
-  const list = $('#theme-list');
+  const list = $('#chapter-list');
   list.textContent = '';
 
   STORY_THEMES.forEach(theme => {
-    const unlocked = isThemeUnlocked(theme.id, charId, progress);
+    const unlocked = isGlobalChapterUnlocked(theme.id, progress);
 
-    // Count progress within this theme for the character
-    const themeChapters = charId
-      ? CHAPTERS.filter(ch => ch.character === charId && ch.theme === theme.id)
-      : [];
-    const charProgress = charId ? (progress[charId] || { chapters: [] }) : { chapters: [] };
-    const completedCount = themeChapters.filter(ch =>
-      charProgress.chapters[ch.charIdx] && charProgress.chapters[ch.charIdx].completed
-    ).length;
-    const allDone = themeChapters.length > 0 && completedCount === themeChapters.length;
+    // Overall progress for this theme across all characters
+    const allThemeChapters = CHAPTERS.filter(ch => ch.theme === theme.id);
+    const completedCount = allThemeChapters.filter(ch => {
+      const cp = progress[ch.character];
+      return cp && cp.chapters[ch.charIdx] && cp.chapters[ch.charIdx].completed;
+    }).length;
+    const allDone = allThemeChapters.length > 0 && completedCount === allThemeChapters.length;
 
     const card = document.createElement('button');
     card.className = 'theme-card';
@@ -1864,24 +1742,140 @@ function renderThemeScreen() {
     if (!unlocked) {
       progressEl.textContent = '🔒 Locked';
     } else if (allDone) {
-      progressEl.textContent = `✅ All ${themeChapters.length} stories complete!`;
+      progressEl.textContent = `✅ All ${allThemeChapters.length} ${allThemeChapters.length === 1 ? 'story' : 'stories'} complete!`;
     } else {
-      progressEl.textContent = `${completedCount} / ${themeChapters.length} stories complete`;
+      progressEl.textContent = `${completedCount} / ${allThemeChapters.length} ${allThemeChapters.length === 1 ? 'story' : 'stories'} complete`;
     }
 
     body.append(titleEl, descEl, progressEl);
     card.append(emojiEl, body);
 
     if (unlocked) {
-      card.addEventListener('click', () => selectTheme(theme.id));
+      card.addEventListener('click', () => selectChapter(theme.id));
     }
 
     list.appendChild(card);
   });
 }
 
-function selectTheme(themeId) {
+function selectChapter(themeId) {
   state.selectedTheme = themeId;
+  state.selectedCharacter = null;
+  renderCharacterScreen(null);
+  showScreen('#character-screen');
+}
+
+// ── Character select screen ───────────────────────────────────
+function renderCharacterScreen(newlyUnlockedCharacterId) {
+  const userName = getCurrentUser();
+  const user = getUserProgress(userName);
+  const progress = user ? user.storyProgress : {};
+  const themeId = state.selectedTheme;
+  const theme = STORY_THEMES.find(t => t.id === themeId);
+
+  // Ensure progress slots exist for all characters
+  CHARACTERS.forEach(char => {
+    progress[char.id] = progress[char.id] || { chapters: [] };
+    const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
+    while (progress[char.id].chapters.length < charChapters.length) {
+      progress[char.id].chapters.push({ completed: false, stars: 0, bestScore: null, bestPct: null });
+    }
+  });
+
+  $('#char-screen-username').textContent = userName || '';
+
+  // Update chapter header
+  const chapterIconEl = $('#char-screen-chapter-icon');
+  const chapterTitleEl = $('#char-screen-chapter-title');
+  if (theme) {
+    chapterIconEl.textContent = theme.emoji;
+    chapterTitleEl.textContent = theme.title;
+  }
+
+  const grid = $('#character-grid');
+  grid.textContent = '';
+
+  CHARACTERS.forEach((char, charIndex) => {
+    const unlocked = isCharacterUnlocked(charIndex, progress, themeId);
+    const charProgress = progress[char.id];
+    // Count progress for the selected chapter only
+    const charThemeChapters = CHAPTERS.filter(ch => ch.character === char.id && ch.theme === themeId);
+    const completedCount = charThemeChapters.filter(ch =>
+      charProgress.chapters[ch.charIdx] && charProgress.chapters[ch.charIdx].completed
+    ).length;
+    const allDone = charThemeChapters.length > 0 && completedCount === charThemeChapters.length;
+
+    const card = document.createElement('button');
+    card.className = 'character-card';
+    card.classList.toggle('unlocked', unlocked);
+    card.classList.toggle('locked', !unlocked);
+    if (allDone) card.classList.add('completed');
+    if (char.id === newlyUnlockedCharacterId) card.classList.add('newly-unlocked');
+    card.setAttribute('type', 'button');
+    card.disabled = !unlocked;
+
+    // Image or emoji
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'character-card-img-wrap';
+    if (char.image) {
+      const img = document.createElement('img');
+      img.src = char.image;
+      img.alt = char.name;
+      img.className = 'character-card-img';
+      imgWrap.appendChild(img);
+    } else {
+      const emo = document.createElement('span');
+      emo.className = 'character-card-emoji';
+      emo.textContent = unlocked ? char.emoji : '🔒';
+      imgWrap.appendChild(emo);
+    }
+
+    const body = document.createElement('div');
+    body.className = 'character-card-body';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'character-card-name';
+    nameEl.textContent = char.name;
+
+    const descEl = document.createElement('div');
+    descEl.className = 'character-card-desc';
+    descEl.textContent = unlocked
+      ? char.description
+      : charIndex > 0
+        ? `Complete ${CHARACTERS[charIndex - 1].name}'s stories to unlock!`
+        : 'Locked';
+
+    const progressEl = document.createElement('div');
+    progressEl.className = 'character-card-progress';
+    if (!unlocked) {
+      progressEl.textContent = '🔒 Locked';
+    } else if (allDone) {
+      progressEl.textContent = '✅ All stories complete!';
+    } else {
+      const n = charThemeChapters.length;
+      progressEl.textContent = `${completedCount} / ${n} ${n === 1 ? 'story' : 'stories'} complete`;
+    }
+
+    body.append(nameEl, descEl, progressEl);
+    card.append(imgWrap, body);
+
+    if (unlocked) {
+      card.addEventListener('click', () => selectCharacter(char.id));
+    }
+
+    grid.appendChild(card);
+  });
+
+  if (newlyUnlockedCharacterId) {
+    const char = CHARACTERS.find(c => c.id === newlyUnlockedCharacterId);
+    setTimeout(() => {
+      if (char) showToast(`🎉 ${char.emoji} ${char.name} unlocked!`);
+    }, NEWLY_UNLOCKED_TOAST_DELAY_MS);
+  }
+}
+
+function selectCharacter(charId) {
+  state.selectedCharacter = charId;
   renderStoryScreen(null);
   showScreen('#story-screen');
 }
@@ -2085,7 +2079,7 @@ function handleStoryCompletion(pct) {
   let newlyUnlockedChapter = null;
   let newlyUnlockedCharacter = null;
   if (passed && !wasCompleted) {
-    const nextChapter = CHAPTERS.find(c => c.character === ch.character && c.charIdx === ch.charIdx + 1);
+    const nextChapter = CHAPTERS.find(c => c.character === ch.character && c.charIdx === ch.charIdx + 1 && c.theme === ch.theme);
     if (nextChapter) {
       newlyUnlockedChapter = nextChapter.id;
     } else {
@@ -2326,15 +2320,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ── Character screen
-  $('#char-switch-user-btn').addEventListener('click', () => {
+  // ── Chapter screen
+  $('#chapter-switch-user-btn').addEventListener('click', () => {
     renderLoginScreen();
     showScreen('#login-screen');
   });
 
-  $('#char-settings-btn').addEventListener('click', () => {
+  $('#chapter-settings-btn').addEventListener('click', () => {
     renderSettingsScreen();
     showScreen('#settings-screen');
+  });
+
+  // ── Character screen (back → chapter select)
+  $('#back-to-chapters-btn').addEventListener('click', () => {
+    renderChapterScreen();
+    showScreen('#chapter-screen');
   });
 
   // ── Settings screen
@@ -2352,7 +2352,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('#back-from-settings-btn').addEventListener('click', () => {
-    showScreen('#character-screen');
+    showScreen('#chapter-screen');
   });
 
   $('#save-settings-btn').addEventListener('click', () => {
@@ -2364,19 +2364,12 @@ document.addEventListener('DOMContentLoaded', () => {
     state.settings = newSettings;
     saveUserSettings(getCurrentUser(), newSettings);
     showToast('✓ Settings saved!');
-    showScreen('#character-screen');
+    showScreen('#chapter-screen');
   });
 
-  // ── Story screen (back → theme select)
-  $('#back-to-theme-btn').addEventListener('click', () => {
-    renderThemeScreen();
-    showScreen('#theme-screen');
-  });
-
-  // ── Theme screen (back → character select)
-  $('#back-to-characters-from-theme-btn').addEventListener('click', () => {
-    renderCharacterScreen(state.newlyUnlockedCharacter);
-    state.newlyUnlockedCharacter = null;
+  // ── Story screen (back → character select)
+  $('#back-to-characters-btn').addEventListener('click', () => {
+    renderCharacterScreen(null);
     showScreen('#character-screen');
   });
 
