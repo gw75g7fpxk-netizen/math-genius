@@ -73,6 +73,13 @@ const CHARACTERS = [
     description: 'A tiger who likes to pretend she knows French — she speaks in a French accent regardless. Très amusant! (Her French is completely made up.)',
   },
   {
+    id: 'thumper',
+    name: 'Thumper',
+    emoji: '🐰',
+    image: 'assets/images/thumper.png',
+    description: 'A rabbit who lives in a hole near a tree — and the undisputed town trickster! When her pranks land she lets out a very distinctive kekekekeke!',
+  },
+  {
     id: 'tigey',
     name: 'Tigey',
     emoji: '🐯',
@@ -80,11 +87,10 @@ const CHARACTERS = [
     description: 'One of the neighborhood tiger friends and Tigey Avinia\'s sister. A warm and loyal friend to everyone on the street.',
   },
   {
-    id: 'thumper',
-    name: 'Thumper',
-    emoji: '🐰',
-    image: 'assets/images/thumper.png',
-    description: 'A rabbit who lives in a hole near a tree — and the undisputed town trickster! When her pranks land she lets out a very distinctive kekekekeke!',
+    id: 'giri',
+    name: 'Giri',
+    emoji: '🦒',
+    description: 'A giraffe chocolatier who runs the beloved chocolate shop at the end of the street — the highlight of Humphrey\'s morning walk!',
   },
   {
     id: 'vaporeon',
@@ -107,6 +113,24 @@ const CHARACTERS = [
     description: 'A reformed conqueror of Jupiter and Hermione\'s sister. She sometimes struggles with the temptation to become a villain again, but always does the right thing in the end — though she grumbles about it. Receives a magical daily sammich from a genie wish and takes very loud, proud bites.',
   },
 ];
+
+// ── Per-theme character order ─────────────────────────────────
+// Each theme has its own ordered list of playable character IDs.
+// Characters are shown and unlocked sequentially within that order.
+const THEME_CHARACTERS = {
+  // Chapter 1 – Friends: original street order
+  1: ['kiki', 'humphrey', 'fluffy', 'roo', 'margret', 'maggie',
+      'tigey_avinia', 'thumper', 'tigey', 'giri', 'vaporeon'],
+  // Chapter 2 – The Neighbourhood: Giri out, Bermione in; minor shuffle
+  2: ['kiki', 'humphrey', 'fluffy', 'roo', 'margret', 'thumper',
+      'maggie', 'tigey_avinia', 'tigey', 'vaporeon', 'bermione'],
+};
+
+/** Returns the ordered array of character objects for the given theme. */
+function getThemeCharacters(themeId) {
+  const ids = THEME_CHARACTERS[themeId] || [];
+  return ids.map(id => CHARACTERS.find(c => c.id === id)).filter(Boolean);
+}
 
 // ── Story chapters ────────────────────────────────────────────
 const CHAPTERS = [
@@ -610,6 +634,62 @@ const CHAPTERS = [
     title: "Chapter 5: The Grand Street Celebration",
     emoji: "🎉",
     story: "The whole street is throwing a grand celebration and Tigey is helping organise it! From Giri's chocolate treats at the dessert table to Vaporeon's water cannon keeping everyone cool, there is a lot to calculate. Help Tigey use multiplication and division to make sure the biggest party the street has ever seen goes perfectly!",
+    mode: "both",
+    unlockAt: 3,
+    passPct: 80,
+  },
+  // ── Giri ─────────────────────────────────────────────────────
+  {
+    id: 45,
+    character: 'giri',
+    charIdx: 0,
+    title: "Chapter 1: Stocking the Chocolate Shop",
+    emoji: "🍫",
+    story: "Giri's chocolate shop is running low! He needs multiplication to work out how many chocolate bars, truffles, and fudge squares to order before the morning rush. The whole neighborhood depends on Giri's shop — help him get the order numbers just right!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 46,
+    character: 'giri',
+    charIdx: 1,
+    title: "Chapter 2: Treat Boxes for Everyone",
+    emoji: "🎁",
+    story: "Giri is putting together treat boxes for every friend on the street. He needs division to figure out how many chocolates go in each box so that every box has exactly the same amount. Help Giri divide the chocolates evenly so everyone gets the same delicious surprise!",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 47,
+    character: 'giri',
+    charIdx: 2,
+    title: "Chapter 3: The New Chocolate Recipe",
+    emoji: "🧁",
+    story: "Giri has invented a brand-new chocolate recipe and wants to make enough for the entire neighborhood! He needs multiplication to scale up every ingredient in the recipe. Even Bermione stopped by early to taste-test — and she gave a very enthusiastic \"Mmm!\" between bites. Help Giri multiply the recipe!",
+    mode: "multiply",
+    unlockAt: 1,
+    passPct: 80,
+  },
+  {
+    id: 48,
+    character: 'giri',
+    charIdx: 3,
+    title: "Chapter 4: Busy Market Day",
+    emoji: "🛒",
+    story: "It's the busiest day at the chocolate shop yet! Friends are lined up all the way down the street. Giri needs both multiplication and division to track sales, restock shelves, and calculate change. Help Giri keep up with the rush so no one leaves without their chocolate fix!",
+    mode: "both",
+    unlockAt: 2,
+    passPct: 80,
+  },
+  {
+    id: 49,
+    character: 'giri',
+    charIdx: 4,
+    title: "Chapter 5: The Grand Chocolate Festival",
+    emoji: "🏆",
+    story: "Giri is hosting the first-ever Grand Neighborhood Chocolate Festival! There are chocolate fountains, tasting stations, and gift bags for every guest. Fluffy accidentally bumped into a chocolate fountain (she is fine — and delicious), and Maggie roundhouse-kicked a truffle tower across the street. Help Giri calculate everything needed to make the festival a sweet success!",
     mode: "both",
     unlockAt: 3,
     passPct: 80,
@@ -1303,63 +1383,6 @@ const CHAPTERS = [
     unlockAt: 3,
     passPct: 80,
   },
-
-  // ── Hermione ──────────────────────────────────────────────────
-  {
-    id: 110,
-    character: 'hermione',
-    charIdx: 5,
-    title: "Chapter 1: Magical Morning Walk",
-    emoji: "🌟",
-    story: "Hermione is setting out on her morning walk of the neighbourhood, using her magic to help wherever she can — sparkling up the Ice Cream Hill, making the Cheese Tree branches glow, and leaving a trail of shimmering hoofprints! She needs multiplication to count how many magical touches she can give before her magic recharges by lunchtime. Help Hermione spread some neighbourly magic!",
-    mode: "multiply",
-    unlockAt: 0,
-    passPct: 80,
-  },
-  {
-    id: 111,
-    character: 'hermione',
-    charIdx: 6,
-    title: "Chapter 2: Splitting the Stardust Fairly",
-    emoji: "✨",
-    story: "Hermione has gathered a big supply of magical stardust from near the Hot Chocolate Spring — it bubbles up extra sparkly there! She wants to divide it equally so every friend on the street gets a little jar. She needs division to make sure every share is perfectly even. Help Hermione distribute the stardust so no one gets a glimmer more or less than anyone else!",
-    mode: "divide",
-    unlockAt: 0,
-    passPct: 80,
-  },
-  {
-    id: 112,
-    character: 'hermione',
-    charIdx: 7,
-    title: "Chapter 3: The Enchanted Ice Cream Hill",
-    emoji: "🛷",
-    story: "Hermione has cast a magical enhancement on the Ice Cream Sledding Hill — now the ice cream glows in rainbow colours and the rides last twice as long! She needs multiplication to calculate how many friends can enjoy the hill and how many servings of glowing ice cream to prepare. Even Bermione agreed it was, and she quoted, 'surprisingly not terrible.' Help Hermione calculate the most magical sled day ever!",
-    mode: "multiply",
-    unlockAt: 1,
-    passPct: 80,
-  },
-  {
-    id: 113,
-    character: 'hermione',
-    charIdx: 8,
-    title: "Chapter 4: The Donut River Magic Show",
-    emoji: "🍩",
-    story: "Hermione is putting on a magic show at the Donut River — making donuts float in beautiful patterns, launching sparkle fountains, and enchanting the water to shimmer gold! She needs multiplication and division to calculate the timing, the number of enchantments, and how many friends can watch from the riverbank. Bermione attended (and ate three donuts during the performance). Help Hermione make it the most spectacular show the neighbourhood has seen!",
-    mode: "both",
-    unlockAt: 2,
-    passPct: 80,
-  },
-  {
-    id: 114,
-    character: 'hermione',
-    charIdx: 9,
-    title: "Chapter 5: The Grand Unicorn Neighbourhood Gala",
-    emoji: "🦄",
-    story: "Hermione and Bermione are co-hosting the Grand Unicorn Neighbourhood Gala — the biggest celebration the street has ever seen! Hermione handles the magic and the organisation while Bermione handles 'security' (she is mostly standing near the sammich table). Together they need multiplication and division to plan every detail. Help Hermione make the Gala the most magnificent night in neighbourhood history!",
-    mode: "both",
-    unlockAt: 3,
-    passPct: 80,
-  },
 ];
 
 // Tag every chapter with its story theme (1 = Friends, 2 = The Neighbourhood)
@@ -1470,11 +1493,14 @@ function isChapterUnlocked(ch, progress) {
   return prev && prev.completed;
 }
 
-/** Returns true when all chapters of character at CHARACTERS[charIndex-1] are done
- *  within the given themeId, so characters unlock independently per chapter. */
-function isCharacterUnlocked(charIndex, progress, themeId) {
-  if (charIndex === 0) return true;
-  const prevChar = CHARACTERS[charIndex - 1];
+/** Returns true when all chapters of the character before charId in the
+ *  theme-specific order are completed, so characters unlock independently
+ *  per theme. */
+function isCharacterUnlocked(charId, progress, themeId) {
+  const themeChars = getThemeCharacters(themeId);
+  const charIndex = themeChars.findIndex(c => c.id === charId);
+  if (charIndex <= 0) return true;
+  const prevChar = themeChars[charIndex - 1];
   const prevProgress = progress[prevChar.id];
   if (!prevProgress) return false;
   const prevChapters = CHAPTERS.filter(ch => ch.character === prevChar.id && ch.theme === themeId);
@@ -1804,8 +1830,9 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
   const grid = $('#character-grid');
   grid.textContent = '';
 
-  CHARACTERS.forEach((char, charIndex) => {
-    const unlocked = isCharacterUnlocked(charIndex, progress, themeId);
+  const themeChars = getThemeCharacters(themeId);
+  themeChars.forEach((char, charIndex) => {
+    const unlocked = isCharacterUnlocked(char.id, progress, themeId);
     const charProgress = progress[char.id];
     // Count progress for the selected chapter only
     const charThemeChapters = CHAPTERS.filter(ch => ch.character === char.id && ch.theme === themeId);
@@ -1821,7 +1848,7 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
     if (allDone) card.classList.add('completed');
     if (char.id === newlyUnlockedCharacterId) card.classList.add('newly-unlocked');
     card.setAttribute('type', 'button');
-    card.disabled = !unlocked || charThemeChapters.length === 0;
+    card.disabled = !unlocked;
 
     // Image or emoji
     const imgWrap = document.createElement('div');
@@ -1851,7 +1878,7 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
     descEl.textContent = unlocked
       ? char.description
       : charIndex > 0
-        ? `Complete ${CHARACTERS[charIndex - 1].name}'s stories to unlock!`
+        ? `Complete ${themeChars[charIndex - 1].name}'s stories to unlock!`
         : 'Locked';
 
     const progressEl = document.createElement('div');
@@ -2093,9 +2120,10 @@ function handleStoryCompletion(pct) {
       newlyUnlockedChapter = nextChapter.id;
     } else {
       // This was the last chapter — check if the next character is now unlocked
-      const currentCharIdx = CHARACTERS.findIndex(c => c.id === ch.character);
-      if (currentCharIdx >= 0 && currentCharIdx + 1 < CHARACTERS.length) {
-        newlyUnlockedCharacter = CHARACTERS[currentCharIdx + 1].id;
+      const themeChars = getThemeCharacters(ch.theme);
+      const currentCharIdx = themeChars.findIndex(c => c.id === ch.character);
+      if (currentCharIdx >= 0 && currentCharIdx + 1 < themeChars.length) {
+        newlyUnlockedCharacter = themeChars[currentCharIdx + 1].id;
       }
     }
   }
