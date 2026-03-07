@@ -69,18 +69,21 @@ const CHARACTERS = [
     id: 'tigey_avinia',
     name: 'Tigey Avinia',
     emoji: '🐯',
+    image: 'assets/images/tigey.png',
     description: 'A tiger who likes to pretend she knows French — she speaks in a French accent regardless. Très amusant! (Her French is completely made up.)',
   },
   {
     id: 'thumper',
     name: 'Thumper',
     emoji: '🐰',
+    image: 'assets/images/thumper.png',
     description: 'A rabbit who lives in a hole near a tree — and the undisputed town trickster! When her pranks land she lets out a very distinctive kekekekeke!',
   },
   {
     id: 'tigey',
     name: 'Tigey',
     emoji: '🐯',
+    image: 'assets/images/tigey.png',
     description: 'One of the neighborhood tiger friends and Tigey Avinia\'s sister. A warm and loyal friend to everyone on the street.',
   },
   {
