@@ -5,7 +5,7 @@ Character bios for use in story mode plots, dialogue, and future content.
 ---
 
 ## Kiki the Mad Scientist
-**Species:** Bunny  
+**Species:** Kangaroo  
 **Personality:** Brilliant, enthusiastic, and a little chaotic. Kiki is a mad scientist who loves wild experiments that sometimes go delightfully wrong. She operates out of her own lab and is always inventing something new. Her inventions include the Shrink-a-tron-5000, the Gigant-a-tron-3000, and the Rainbow Bubble Portal. Humphrey does not always approve of her experiments because they can lead her (and others) into mischief, but she means well and her gadgets are genuinely incredible.
 
 ---
