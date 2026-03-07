@@ -1432,6 +1432,9 @@ function getUsers() {
 }
 function saveUsers(users) {
   localStorage.setItem('mathgenius_users', JSON.stringify(users));
+  if (typeof PlayFabManager !== 'undefined' && PlayFabManager.isLoggedIn) {
+    PlayFabManager.saveUsersToCloud(users);
+  }
 }
 function getCurrentUser() {
   return localStorage.getItem('mathgenius_currentUser') || null;
@@ -1684,6 +1687,33 @@ function renderLoginScreen() {
 
   const emptyMsg = $('#user-grid-empty');
   emptyMsg.style.display = users.length === 0 ? 'block' : 'none';
+
+  renderCloudLoginStatus();
+}
+
+function renderCloudLoginStatus() {
+  const statusEl = $('#cloud-login-status');
+  const btnEl    = $('#cloud-login-btn');
+  const hintEl   = $('#cloud-login-hint');
+  if (!statusEl || !btnEl) return;
+
+  const loggedIn = typeof PlayFabManager !== 'undefined' && PlayFabManager.isLoggedIn;
+  if (loggedIn) {
+    const name = PlayFabManager.displayName || PlayFabManager.playFabId || 'your account';
+    statusEl.textContent = '✅ Synced — ' + name;
+    statusEl.classList.add('cloud-login-status--connected');
+    btnEl.textContent = 'Sign out';
+    btnEl.classList.add('btn-cloud-logout');
+    btnEl.classList.remove('btn-cloud-login');
+    if (hintEl) hintEl.textContent = 'All players on this device are backed up to the cloud.';
+  } else {
+    statusEl.textContent = '☁️ Save progress online';
+    statusEl.classList.remove('cloud-login-status--connected');
+    btnEl.textContent = 'Sign in with Google';
+    btnEl.classList.remove('btn-cloud-logout');
+    btnEl.classList.add('btn-cloud-login');
+    if (hintEl) hintEl.textContent = 'Optional — syncs all players across devices';
+  }
 }
 
 function loginUser(name) {
@@ -2341,6 +2371,11 @@ function showResults() {
 
 // ── Event wiring ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialise PlayFab (restores session from localStorage if present)
+  if (typeof PlayFabManager !== 'undefined') {
+    PlayFabManager.initialize();
+  }
+
   // ── Login screen
   renderLoginScreen();
 
@@ -2354,6 +2389,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') {
       addPlayer(e.target.value);
       e.target.value = '';
+    }
+  });
+
+  // Cloud login button (optional Google sign-in / sign-out)
+  $('#cloud-login-btn').addEventListener('click', () => {
+    const loggedIn = typeof PlayFabManager !== 'undefined' && PlayFabManager.isLoggedIn;
+    if (loggedIn) {
+      if (typeof LoginModal !== 'undefined') {
+        LoginModal.triggerLogout();
+      } else if (typeof PlayFabManager !== 'undefined') {
+        PlayFabManager.logout();
+      }
+      renderCloudLoginStatus();
+    } else {
+      if (typeof LoginModal !== 'undefined') {
+        LoginModal.show(() => {
+          renderLoginScreen();
+        });
+      }
     }
   });
 
