@@ -90,6 +90,7 @@ const CHARACTERS = [
     id: 'giri',
     name: 'Giri',
     emoji: '🦒',
+    image: 'assets/images/giri.png',
     description: 'A giraffe chocolatier who runs the beloved chocolate shop at the end of the street — the highlight of Humphrey\'s morning walk!',
   },
   {
