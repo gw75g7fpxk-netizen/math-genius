@@ -97,6 +97,7 @@ const CHARACTERS = [
     id: 'vaporeon',
     name: 'Vaporeon',
     emoji: '💧',
+    image: 'assets/images/vaporeon.png',
     description: 'A strong and kind Water Pokémon who can only say her own name — but shoots a powerful water cannon blast from her mouth! A very good friend of Margret and the Tigey\'s.',
   },
   {
