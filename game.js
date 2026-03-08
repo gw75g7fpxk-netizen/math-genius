@@ -1444,7 +1444,7 @@ const CHAPTERS = [
     villainEncounter: true,
     title: "Villain Encounter: Frisbee Strike",
     emoji: "🥏",
-    story: "Humphrey sets his jaw with the most determined look a Heffalump has ever worn. He reaches into his bag and pulls out his treasured Captain America frisbee — a gift he has never used in actual battle. He winds up, drawing on every last drop of his legendary Heffalump strength, and LAUNCHES it full force toward the submarine! Help Humphrey use multiplication to calculate the frisbee's trajectory and power so he can aim the perfect strike at just the right moment!",
+    story: "Humphrey sets his jaw with the most determined look a Heffalump has ever worn. He reaches into his bag and pulls out his treasured Captain America frisbee — a tool he has used many times in battle. He winds up, drawing on every last drop of his legendary Heffalump strength, and LAUNCHES it full force toward the submarine! Help Humphrey use multiplication to calculate the frisbee's trajectory and power so he can aim the perfect strike at just the right moment!",
     mode: "multiply",
     unlockAt: 0,
     passPct: 80,
