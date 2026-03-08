@@ -1466,6 +1466,7 @@ function setCurrentUser(name) {
 
 // ── Dev mode helpers (local-only — never synced to cloud) ─────
 const DEV_MODE_KEY_PREFIX = 'mathgenius_devmode_';
+const DEV_MODE_ALLOWED_USER = 'Brandon'; // only this player can enable dev mode
 
 function getDevMode(userName) {
   if (!userName) return false;
@@ -1814,7 +1815,7 @@ function loginUser(name) {
     saveUsers(users);
   }
   state.settings = getUserSettings(name);
-  state.devMode = getDevMode(name);
+  state.devMode = name === DEV_MODE_ALLOWED_USER ? getDevMode(name) : false;
   state.selectedCharacter = null;
   state.selectedTheme = null;
   state.newlyUnlockedCharacter = null;
@@ -2087,7 +2088,11 @@ function renderSettingsScreen() {
     bestEl.textContent = best > 0 ? `🏆 All-time best: ${best} correct` : 'No lightning rounds played yet';
   }
 
-  // Dev mode toggle (local-only, never synced)
+  // Dev mode toggle (local-only, never synced) — only visible for DEV_MODE_ALLOWED_USER
+  const devCard = $('.dev-mode-card');
+  if (devCard) {
+    devCard.style.display = userName === DEV_MODE_ALLOWED_USER ? '' : 'none';
+  }
   const devToggle = $('#dev-mode-input');
   if (devToggle) {
     devToggle.checked = state.devMode;
@@ -2914,8 +2919,9 @@ document.addEventListener('DOMContentLoaded', () => {
     saveUserSettings(getCurrentUser(), newSettings);
 
     // Dev mode is local-only — saved to a separate key, never synced to cloud
+    // Only available for DEV_MODE_ALLOWED_USER
     const devModeInput = $('#dev-mode-input');
-    if (devModeInput) {
+    if (devModeInput && getCurrentUser() === DEV_MODE_ALLOWED_USER) {
       const devEnabled = devModeInput.checked;
       setDevMode(getCurrentUser(), devEnabled);
       state.devMode = devEnabled;
