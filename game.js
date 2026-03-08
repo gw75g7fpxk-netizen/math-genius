@@ -2385,7 +2385,18 @@ function showResults() {
 function syncCloudIfLoggedIn() {
   if (typeof PlayFabManager !== 'undefined' && PlayFabManager.isLoggedIn
       && typeof CloudSync !== 'undefined') {
-    CloudSync.syncFromCloud(() => renderLoginScreen());
+    CloudSync.syncFromCloud(() => {
+      renderLoginScreen();
+      // Re-render whichever data-dependent screen is currently visible so
+      // that merged cloud progress is reflected immediately, even if the
+      // user navigated to that screen before the async sync completed.
+      const activeEl = document.querySelector('.screen.active');
+      if (activeEl) {
+        if      (activeEl.id === 'chapter-screen')   renderChapterScreen();
+        else if (activeEl.id === 'character-screen') renderCharacterScreen(null);
+        else if (activeEl.id === 'story-screen')     renderStoryScreen(null);
+      }
+    });
   }
 }
 
