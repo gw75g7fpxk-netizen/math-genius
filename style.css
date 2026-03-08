@@ -1394,6 +1394,40 @@ input[type="text"]:focus {
   background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
 }
 
+/* Chapter card with villain-encounter flag */
+.chapter-card.villain-encounter-chapter {
+  border-left: 4px solid #ef4444;
+}
+
+.chapter-card.villain-encounter-chapter .chapter-header {
+  background: linear-gradient(135deg, rgba(239,68,68,0.08), transparent);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Villain encounter badge next to chapter title */
+.chapter-villain-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 8px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* Play button for villain-encounter chapters */
+.villain-play-btn {
+  background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+  color: #fff !important;
+}
+.villain-play-btn:hover {
+  background: linear-gradient(135deg, #f87171, #ef4444) !important;
+}
+
 /* Story result banner: best score line */
 .srb-best {
   font-size: 0.9rem;
