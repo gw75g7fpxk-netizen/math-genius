@@ -20,5 +20,8 @@
   "homepage": "https://github.com/gw75g7fpxk-netizen/math-genius#readme",
   "devDependencies": {
     "jest": "^30.2.0"
+  },
+  "dependencies": {
+    "playfab-sdk": "^2.187.251205"
   }
 }

@@ -35,7 +35,18 @@ const PlayFabManager = {
                 this.displayName = data.displayName || null;
                 this.isLoggedIn = true;
                 if (typeof PlayFab !== 'undefined') {
+                    // The PlayFab JS SDK authenticates API calls via
+                    // PlayFab._internalSettings.sessionTicket — not the public
+                    // PlayFab.settings.sessionTicket.  Both must be set when
+                    // restoring a persisted session after a page reload, otherwise
+                    // every API call throws "Must be logged in to call this method"
+                    // (the SDK throws a bare string, not an Error, which is why the
+                    // error shows as "GetUserData threw: undefined" in the toast —
+                    // strings have no .message property).
                     PlayFab.settings.sessionTicket = this.sessionTicket;
+                    if (PlayFab._internalSettings) {
+                        PlayFab._internalSettings.sessionTicket = this.sessionTicket;
+                    }
                 }
                 console.log('PlayFab: Session restored for', this.playFabId);
             }
@@ -65,6 +76,9 @@ const PlayFabManager = {
         this.isLoggedIn = true;
         if (typeof PlayFab !== 'undefined') {
             PlayFab.settings.sessionTicket = sessionTicket;
+            if (PlayFab._internalSettings) {
+                PlayFab._internalSettings.sessionTicket = sessionTicket;
+            }
         }
         this._persistSession();
     },
@@ -218,10 +232,11 @@ const PlayFabManager = {
             });
         } catch (e) {
             // Guard against synchronous throws from the PlayFab SDK (e.g. when the
-            // SDK is in an invalid state).  Treat as a non-fatal error so callers
-            // can continue; the try-catch in saveUsers already covers UpdateUserData.
+            // SDK throws a bare string like "Must be logged in to call this method"
+            // rather than an Error object).
+            const msg = (e && e.message) ? e.message : String(e);
             console.warn('PlayFab: GetUserData threw synchronously —', e);
-            callback(new Error('GetUserData threw: ' + e.message), null);
+            callback(new Error('GetUserData threw: ' + msg), null);
         }
     },
 
