@@ -133,8 +133,9 @@ const PlayFabManager = {
     // network round-trip so that the write is reliably dispatched even if the
     // user navigates away immediately after completing a level.
     // Multi-device merge is handled by syncFromCloud (loginModal.js), which
-    // reads the current cloud state, merges it with local data, and then calls
-    // saveUsers — so the merged result is always what gets written here.
+    // reads the current cloud state, merges it with local data, and writes the
+    // result to localStorage only.  The next explicit saveUsersToCloud call
+    // (from a user action) then reliably writes the fully-merged state.
     saveUsersToCloud(users) {
         if (!this.isLoggedIn || typeof PlayFabClientSDK === 'undefined') return;
         PlayFabClientSDK.UpdateUserData({
@@ -142,6 +143,15 @@ const PlayFabManager = {
         }, (result, error) => {
             if (error) {
                 console.warn('PlayFab: Cloud save failed —', error.errorMessage);
+                // Session-related errors mean all future saves will also fail.
+                // Log out now so the UI shows "not connected" and the user can
+                // re-sign in to obtain a fresh session ticket.
+                if (this._isSessionError(error)) {
+                    this.logout();
+                    if (typeof renderCloudLoginStatus === 'function') {
+                        renderCloudLoginStatus();
+                    }
+                }
             } else {
                 console.log('PlayFab: Players saved to cloud');
             }
@@ -154,23 +164,50 @@ const PlayFabManager = {
             callback(new Error('Not logged in'), null);
             return;
         }
-        PlayFabClientSDK.GetUserData({
-            Keys: ['mathGeniusUsers'],
-        }, (result, error) => {
-            if (error) {
-                callback(new Error(error.errorMessage || 'Cloud load failed'), null);
-                return;
-            }
-            const entry = result.data?.Data?.mathGeniusUsers;
-            if (entry?.Value) {
-                try {
-                    callback(null, JSON.parse(entry.Value));
-                } catch (e) {
-                    callback(new Error('Failed to parse cloud save data'), null);
+        try {
+            PlayFabClientSDK.GetUserData({
+                Keys: ['mathGeniusUsers'],
+            }, (result, error) => {
+                if (error) {
+                    if (this._isSessionError(error)) {
+                        this.logout();
+                        if (typeof renderCloudLoginStatus === 'function') {
+                            renderCloudLoginStatus();
+                        }
+                    }
+                    callback(new Error(error.errorMessage || 'Cloud load failed'), null);
+                    return;
                 }
-            } else {
-                callback(null, null); // No cloud save exists yet for this account
-            }
-        });
+                const entry = result.data?.Data?.mathGeniusUsers;
+                if (entry?.Value) {
+                    try {
+                        callback(null, JSON.parse(entry.Value));
+                    } catch (e) {
+                        callback(new Error('Failed to parse cloud save data'), null);
+                    }
+                } else {
+                    callback(null, null); // No cloud save exists yet for this account
+                }
+            });
+        } catch (e) {
+            // Guard against synchronous throws from the PlayFab SDK (e.g. when the
+            // SDK is in an invalid state).  Treat as a non-fatal error so callers
+            // can continue; the try-catch in saveUsers already covers UpdateUserData.
+            console.warn('PlayFab: GetUserData threw synchronously —', e);
+            callback(new Error('GetUserData threw: ' + e.message), null);
+        }
+    },
+
+    // Returns true when a PlayFab error indicates an invalid or expired session.
+    _isSessionError(error) {
+        // PlayFab errorCodes: 1001 = NotAuthenticated, 1014 = SessionTicketExpired,
+        // 1142 = SessionNotFound.  These are the stable, versioned identifiers.
+        const SESSION_ERROR_CODES = [1001, 1014, 1142];
+        if (error.errorCode && SESSION_ERROR_CODES.includes(error.errorCode)) return true;
+        // Also check the short error code string as a belt-and-suspenders fallback
+        // in case a future SDK version reports an unrecognised numeric code.
+        const msg = (error.errorMessage || '').toLowerCase();
+        if (msg.includes('sessionticket') || msg.includes('not authenticated')) return true;
+        return false;
     },
 };

@@ -84,10 +84,21 @@ const CloudSync = {
                 if (callback) callback();
                 return;
             }
-            // getUsers / saveUsers are defined in game.js (loaded before first use)
-            const local  = (typeof getUsers  === 'function') ? getUsers()  : [];
+            // getUsers is defined in game.js (loaded before first use).
+            // Write merged data directly to localStorage rather than going through
+            // saveUsers().  saveUsers() also calls saveUsersToCloud(), which would
+            // create an unnecessary cloud write-back — and, critically, that write
+            // races with any in-flight chapter-completion write and could overwrite
+            // newer progress data with a stale merged snapshot.
+            // There are no other side-effects in saveUsers() beyond the localStorage
+            // write and the cloud write, so this direct write is safe.
+            const local  = (typeof getUsers === 'function') ? getUsers() : [];
             const merged = this.mergeUsers(local, cloudUsers);
-            if (typeof saveUsers === 'function') saveUsers(merged);
+            try {
+                localStorage.setItem('mathgenius_users', JSON.stringify(merged));
+            } catch (e) {
+                console.warn('PlayFab: Failed to persist synced players to localStorage —', e);
+            }
             console.log('PlayFab: Players synced from cloud');
             if (callback) callback();
         });
