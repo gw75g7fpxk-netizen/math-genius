@@ -130,3 +130,19 @@ He often stops by Kiki's lab or runs into her along the way. He sometimes encoun
 ## Vaporeon
 **Species:** Pokémon (Water-type)  
 **Personality:** Strong, kind, and a very good friend. Like all Pokémon, Vaporeon can only say her own name — "Vaporeon!" — but she communicates a great deal with it. She is able to shoot a powerful water cannon blast from her mouth, which comes in handy on hot days and in emergencies alike. Vaporeon is a dear friend of Margret and the Tigey's.
+
+---
+
+## Lligen
+**Species:** Rock Giant  
+**Home:** The Volcano  
+**Relation:** One of the main rock giants at the volcano, alongside Giganta  
+**Personality:** Friendly, curious, and endlessly fascinated by the tiny neighbourhood friends and their tiny neighbourhood things. Lligen is on the smaller end of the rock giants — which still means she towers over everyone in the neighbourhood — making her the most suited for visits. She travels by leaping enormous distances through the air; when she lands, the earth shakes. She tends to address friends by their animal type since everyone looks very small to her ("HELLO HEFFALUMP!", "HELLO TINY TIGER!", "HELLO SMALL WATER FRIENDS!"). Rock giants eat rocks and donuts as part of their well-balanced diet.
+
+---
+
+## Giganta
+**Species:** Rock Giant  
+**Home:** The Volcano  
+**Role:** Leader of the volcano village  
+**Personality:** Enthusiastic and welcoming. Giganta is the leader of the rock giants who live inside and around the volcano. She is enormous — even by rock giant standards — and her landings send shockwaves across the volcanic plain. She is very friendly toward the neighbourhood friends despite the vast size difference, and calls Humphrey by his animal type ("HELLO HEFFALUMP!"). She is particularly fond of Kiki's scientific visits. Giganta and Lligen are the two main characters the neighbourhood friends interact with at the volcano.
