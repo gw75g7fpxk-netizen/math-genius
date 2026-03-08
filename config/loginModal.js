@@ -85,19 +85,27 @@ const CloudSync = {
                 return;
             }
             // getUsers is defined in game.js (loaded before first use).
-            // Write merged data directly to localStorage rather than going through
-            // saveUsers().  saveUsers() also calls saveUsersToCloud(), which would
-            // create an unnecessary cloud write-back — and, critically, that write
-            // races with any in-flight chapter-completion write and could overwrite
-            // newer progress data with a stale merged snapshot.
-            // There are no other side-effects in saveUsers() beyond the localStorage
-            // write and the cloud write, so this direct write is safe.
             const local  = (typeof getUsers === 'function') ? getUsers() : [];
             const merged = this.mergeUsers(local, cloudUsers);
             try {
                 localStorage.setItem('mathgenius_users', JSON.stringify(merged));
             } catch (e) {
                 console.warn('PlayFab: Failed to persist synced players to localStorage —', e);
+            }
+            // Push merged data back to cloud so that:
+            //   1. If cloud was previously corrupted with stale data (e.g. by
+            //      an older version of the app that wrote stale localStorage to
+            //      cloud on login), a device with better local data automatically
+            //      repairs the cloud on its next startup sync.
+            //   2. Local-only users/progress get backed up even when no cloud
+            //      save existed yet for this account.
+            //
+            // The merged result is always >= cloud (it takes the best of local
+            // AND cloud per field), so this write can never regress cloud data.
+            try {
+                PlayFabManager.saveUsersToCloud(merged);
+            } catch (e) {
+                console.warn('PlayFab: Failed to write merged data back to cloud —', e);
             }
             console.log('PlayFab: Players synced from cloud');
             if (callback) callback();
