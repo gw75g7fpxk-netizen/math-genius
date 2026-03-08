@@ -10,15 +10,18 @@ const TIME_PER_QUESTION   = 10;   // seconds (default; overridden by user settin
 const CIRCUMFERENCE       = 2 * Math.PI * 27; // r=27 → ≈169.6
 const MAX_POINTS          = 10;
 const MIN_POINTS          = 1;
+const LIGHTNING_REF_SECS  = 5;    // reference seconds for max points in lightning mode
 const TIMEOUT_ANSWER           = null; // sentinel value meaning no answer was given
 const MAX_PLAYER_NAME_LENGTH   = 20;   // must match maxlength on #add-player-input in HTML
 const NEWLY_UNLOCKED_TOAST_DELAY_MS = 400;
 
 // ── Default user settings ─────────────────────────────────────
 const DEFAULT_SETTINGS = {
-  timerDuration: TIME_PER_QUESTION, // seconds per question (5–30)
-  maxNumber:     10,                // max operand for questions (2–12)
-  allowDivision: true,              // when false, division is replaced by multiplication
+  timerDuration:       TIME_PER_QUESTION, // seconds per question (5–30)
+  maxNumber:           10,                // max operand for questions (2–12)
+  allowDivision:       true,              // when false, division is replaced by multiplication
+  lightningDuration:   60,               // seconds for entire lightning round (30–120)
+  lightningPassCount:  20,               // correct answers needed to pass a lightning round (5–40)
 };
 
 // ── Characters ────────────────────────────────────────────────
@@ -803,6 +806,7 @@ const CHAPTERS = [
     mode: "both",
     unlockAt: 2,
     passPct: 80,
+    lightning: true,
   },
   {
     id: 59,
@@ -860,6 +864,7 @@ const CHAPTERS = [
     mode: "both",
     unlockAt: 2,
     passPct: 80,
+    lightning: true,
   },
   {
     id: 64,
@@ -1088,6 +1093,7 @@ const CHAPTERS = [
     mode: "both",
     unlockAt: 2,
     passPct: 80,
+    lightning: true,
   },
   {
     id: 84,
@@ -1213,6 +1219,7 @@ const CHAPTERS = [
     mode: "both",
     unlockAt: 3,
     passPct: 80,
+    lightning: true,
   },
 
   // ── Tigey ────────────────────────────────────────────────────
@@ -1426,6 +1433,15 @@ let state = {
   newlyUnlockedChapter: null,       // chapter id unlocked after last completion
   newlyUnlockedCharacter: null,     // character id unlocked after last completion
   settings:             { ...DEFAULT_SETTINGS }, // active user's settings
+  devMode:              false,      // local-only testing flag — never synced to cloud
+  // Lightning round state
+  lightningMode:        false,      // true when playing a lightning round
+  lightningTimeLeft:    0,          // remaining seconds in the full-round countdown
+  lightningTimerID:     null,       // setInterval ID for full-round timer
+  lightningTickStart:   null,       // timestamp when round timer started
+  lightningCount:       0,          // total questions attempted this lightning round
+  lightningCorrect:     0,          // correct answers this lightning round
+  lightningQuestionStart: 0,        // timestamp when the current question appeared
 };
 
 // ── LocalStorage helpers ──────────────────────────────────────
@@ -1461,6 +1477,24 @@ function setCurrentUser(name) {
   localStorage.setItem('mathgenius_currentUser', name);
 }
 
+// ── Dev mode helpers (local-only — never synced to cloud) ─────
+const DEV_MODE_KEY_PREFIX = 'mathgenius_devmode_';
+const DEV_MODE_ALLOWED_USER = 'Brandon'; // only this player can enable dev mode
+
+function getDevMode(userName) {
+  if (!userName) return false;
+  return localStorage.getItem(DEV_MODE_KEY_PREFIX + userName) === 'true';
+}
+
+function setDevMode(userName, enabled) {
+  if (!userName) return;
+  if (enabled) {
+    localStorage.setItem(DEV_MODE_KEY_PREFIX + userName, 'true');
+  } else {
+    localStorage.removeItem(DEV_MODE_KEY_PREFIX + userName);
+  }
+}
+
 // ── User settings helpers ─────────────────────────────────────
 function getUserSettings(userName) {
   if (!userName) return { ...DEFAULT_SETTINGS };
@@ -1485,6 +1519,9 @@ function getUserProgress(userName) {
   const user = users.find(u => u.name === userName);
   if (!user) return null;
   user.storyProgress = user.storyProgress || {};
+  // Ensure all-time lightning best fields exist
+  user.bestLightningCorrect = user.bestLightningCorrect || 0;
+  user.bestLightningScore   = user.bestLightningScore   || 0;
   CHARACTERS.forEach(char => {
     user.storyProgress[char.id] = user.storyProgress[char.id] || { chapters: [] };
     const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
@@ -1505,6 +1542,7 @@ function saveUserProgress(user) {
 }
 
 function isChapterUnlocked(ch, progress) {
+  if (state.devMode) return true;
   if (ch.charIdx === 0) return true;
   // First chapter of theme 2 (charIdx === 5) unlocks when the last chapter
   // of theme 1 (charIdx === 4) is completed — this falls out naturally below.
@@ -1518,6 +1556,7 @@ function isChapterUnlocked(ch, progress) {
  *  theme-specific order are completed, so characters unlock independently
  *  per theme. */
 function isCharacterUnlocked(charId, progress, themeId) {
+  if (state.devMode) return true;
   const themeChars = getThemeCharacters(themeId);
   const charIndex = themeChars.findIndex(c => c.id === charId);
   if (charIndex <= 0) return true;
@@ -1535,6 +1574,7 @@ function isCharacterUnlocked(charId, progress, themeId) {
  * Chapter 2 requires ALL Chapter-1 stories to be complete across ALL characters.
  */
 function isGlobalChapterUnlocked(themeId, progress) {
+  if (state.devMode) return true;
   if (themeId === 1) return true;
   const theme1Chapters = CHAPTERS.filter(ch => ch.theme === 1);
   return theme1Chapters.length > 0 && theme1Chapters.every(ch => {
@@ -1676,16 +1716,61 @@ function stopTimer() {
   state.timerID = null;
 }
 
+// ── Lightning round timer ─────────────────────────────────────
+function startLightningTimer() {
+  const duration = state.settings.lightningDuration;
+  state.lightningTimeLeft = duration;
+  state.lightningTickStart = Date.now();
+  updateTimerUI();
+
+  clearInterval(state.lightningTimerID);
+  state.lightningTimerID = setInterval(() => {
+    state.lightningTimeLeft = Math.max(
+      0,
+      duration - (Date.now() - state.lightningTickStart) / 1000
+    );
+    updateTimerUI();
+
+    // Update progress bar to reflect time elapsed
+    const elapsed = duration - state.lightningTimeLeft;
+    $('#progress-bar').style.width = `${(elapsed / duration) * 100}%`;
+
+    if (state.lightningTimeLeft <= 0) {
+      clearInterval(state.lightningTimerID);
+      state.lightningTimerID = null;
+      // The resultsShown guard in showResults() prevents double invocation
+      // (e.g. if the player just answered and nextQuestion() is also pending).
+      showResults();
+    }
+  }, 80);
+}
+
+function stopLightningTimer() {
+  clearInterval(state.lightningTimerID);
+  state.lightningTimerID = null;
+}
+
 function updateTimerUI() {
   const ring  = $('#timer-ring');
   const numEl = $('#timer-num');
   const fg    = $('#ring-fg');
-  const frac  = state.timeLeft / state.settings.timerDuration;
+
+  let timeLeft, duration;
+  if (state.lightningMode) {
+    timeLeft = state.lightningTimeLeft;
+    duration = state.settings.lightningDuration;
+  } else {
+    timeLeft = state.timeLeft;
+    duration = state.settings.timerDuration;
+  }
+
+  const frac  = duration > 0 ? timeLeft / duration : 0;
   const offset = CIRCUMFERENCE * (1 - frac);
 
   fg.style.strokeDashoffset = offset;
-  numEl.textContent = Math.ceil(state.timeLeft);
-  ring.classList.toggle('urgent', state.timeLeft <= 3);
+  numEl.textContent = Math.ceil(timeLeft);
+  ring.classList.toggle('urgent', timeLeft <= (state.lightningMode ? 10 : 3));
+  ring.classList.toggle('lightning-timer', state.lightningMode);
 }
 
 // ── Login screen ──────────────────────────────────────────────
@@ -1764,6 +1849,7 @@ function loginUser(name) {
     saveUsersLocally(users);
   }
   state.settings = getUserSettings(name);
+  state.devMode = name === DEV_MODE_ALLOWED_USER ? getDevMode(name) : false;
   state.selectedCharacter = null;
   state.selectedTheme = null;
   state.newlyUnlockedCharacter = null;
@@ -1796,7 +1882,17 @@ function renderChapterScreen() {
   const user = getUserProgress(userName);
   const progress = user ? user.storyProgress : {};
 
-  $('#chapter-screen-username').textContent = userName || '';
+  // Show dev mode badge next to username when active
+  const usernameEl = $('#chapter-screen-username');
+  usernameEl.textContent = userName || '';
+  const existingBadge = usernameEl.parentElement.querySelector('.dev-mode-badge');
+  if (existingBadge) existingBadge.remove();
+  if (state.devMode) {
+    const badge = document.createElement('span');
+    badge.className = 'dev-mode-badge';
+    badge.textContent = '🧪 Dev Mode';
+    usernameEl.insertAdjacentElement('afterend', badge);
+  }
 
   const list = $('#chapter-list');
   list.textContent = '';
@@ -1999,6 +2095,10 @@ function renderSettingsScreen() {
   const maxNumInput = $('#max-number-input');
   const maxNumVal   = $('#max-number-val');
   const divToggle   = $('#allow-division-input');
+  const lightningDurInput  = $('#lightning-duration-input');
+  const lightningDurVal    = $('#lightning-duration-val');
+  const lightningPassInput = $('#lightning-pass-input');
+  const lightningPassVal   = $('#lightning-pass-val');
 
   timerInput.value  = s.timerDuration;
   timerVal.textContent = `${s.timerDuration}s`;
@@ -2007,6 +2107,33 @@ function renderSettingsScreen() {
   maxNumVal.textContent = s.maxNumber;
 
   divToggle.checked = s.allowDivision;
+
+  if (lightningDurInput) {
+    lightningDurInput.value = s.lightningDuration;
+    lightningDurVal.textContent = `${s.lightningDuration}s`;
+  }
+  if (lightningPassInput) {
+    lightningPassInput.value = s.lightningPassCount;
+    lightningPassVal.textContent = s.lightningPassCount;
+  }
+
+  // Show all-time lightning best score
+  const bestEl = $('#lightning-best-score');
+  if (bestEl) {
+    const user = getUserProgress(userName);
+    const best = user ? (user.bestLightningCorrect || 0) : 0;
+    bestEl.textContent = best > 0 ? `🏆 All-time best: ${best} correct` : 'No lightning rounds played yet';
+  }
+
+  // Dev mode toggle (local-only, never synced) — only visible for DEV_MODE_ALLOWED_USER
+  const devCard = $('.dev-mode-card');
+  if (devCard) {
+    devCard.style.display = userName === DEV_MODE_ALLOWED_USER ? '' : 'none';
+  }
+  const devToggle = $('#dev-mode-input');
+  if (devToggle) {
+    devToggle.checked = state.devMode;
+  }
 }
 
 
@@ -2068,6 +2195,7 @@ function renderStoryScreen(newlyUnlockedChapter) {
     card.classList.add(unlocked ? 'unlocked' : 'locked');
     if (chProgress.completed) card.classList.add('completed');
     if (ch.id === newlyUnlockedChapter) card.classList.add('newly-unlocked');
+    if (ch.lightning) card.classList.add('lightning-chapter');
 
     // ── Header row
     const header = document.createElement('div');
@@ -2080,6 +2208,12 @@ function renderStoryScreen(newlyUnlockedChapter) {
     const titleEl = document.createElement('div');
     titleEl.className = 'chapter-title';
     titleEl.textContent = ch.title;
+    if (ch.lightning) {
+      const lightningBadge = document.createElement('span');
+      lightningBadge.className = 'chapter-lightning-badge';
+      lightningBadge.textContent = '⚡ Lightning';
+      titleEl.appendChild(lightningBadge);
+    }
 
     const badgeEl = document.createElement('div');
     badgeEl.className = 'chapter-status-badge';
@@ -2106,7 +2240,15 @@ function renderStoryScreen(newlyUnlockedChapter) {
         s.textContent = i < earned ? '⭐' : '☆';
         starsEl.appendChild(s);
       }
-      if (chProgress.bestPct !== null) {
+      if (ch.lightning) {
+        // Show lightning best score instead of percentage
+        if (chProgress.lightningBestCorrect > 0) {
+          const bestEl = document.createElement('span');
+          bestEl.className = 'chapter-best-pct';
+          bestEl.textContent = `⚡ Best: ${chProgress.lightningBestCorrect} correct`;
+          starsEl.appendChild(bestEl);
+        }
+      } else if (chProgress.bestPct !== null) {
         const bestEl = document.createElement('span');
         bestEl.className = 'chapter-best-pct';
         bestEl.textContent = `Best: ${chProgress.bestPct}%`;
@@ -2122,10 +2264,20 @@ function renderStoryScreen(newlyUnlockedChapter) {
       storyEl.textContent = ch.story;
       card.insertBefore(storyEl, starsEl);
 
+      // Lightning round description blurb
+      if (ch.lightning) {
+        const lightningDesc = document.createElement('p');
+        lightningDesc.className = 'chapter-lightning-desc';
+        lightningDesc.textContent = `⚡ Lightning Round! Answer as many questions as you can in ${state.settings.lightningDuration} seconds. Get ${state.settings.lightningPassCount} correct to pass!`;
+        card.insertBefore(lightningDesc, starsEl);
+      }
+
       const playBtn = document.createElement('button');
-      playBtn.className = 'btn btn-primary chapter-play-btn';
+      playBtn.className = `btn btn-primary chapter-play-btn${ch.lightning ? ' lightning-play-btn' : ''}`;
       playBtn.setAttribute('type', 'button');
-      playBtn.textContent = chProgress.completed ? '🔄 Play Again' : '▶ Play';
+      playBtn.textContent = chProgress.completed
+        ? (ch.lightning ? '⚡ Play Again' : '🔄 Play Again')
+        : (ch.lightning ? '⚡ Start Lightning Round' : '▶ Play');
       playBtn.addEventListener('click', () => startChapter(ch.id));
       card.appendChild(playBtn);
     }
@@ -2147,8 +2299,9 @@ function renderStoryScreen(newlyUnlockedChapter) {
 
 function startChapter(chapterId) {
   const ch = CHAPTERS[chapterId];
-  state.storyMode  = true;
-  state.chapterId  = chapterId;
+  state.storyMode   = true;
+  state.chapterId   = chapterId;
+  state.lightningMode = !!ch.lightning;
 
   // Set player name and mode in the DOM so startGame() can read them,
   // then launch directly into the game without showing the start screen.
@@ -2203,18 +2356,96 @@ function handleStoryCompletion(pct) {
   return { passed, newlyUnlockedChapter, newlyUnlockedCharacter };
 }
 
+// ── Lightning round completion ────────────────────────────────
+function handleLightningCompletion(correct) {
+  const ch     = CHAPTERS[state.chapterId];
+  const needed = state.settings.lightningPassCount;
+  const passed = correct >= needed;
+
+  const userName = getCurrentUser();
+  const user = getUserProgress(userName);
+  if (!user) return { newlyUnlockedChapter: null, newlyUnlockedCharacter: null };
+
+  const charProgress = user.storyProgress[ch.character];
+  const chProgress   = charProgress.chapters[ch.charIdx];
+  const wasCompleted = chProgress.completed;
+
+  // Update per-chapter lightning best
+  chProgress.lightningBestCorrect = Math.max(chProgress.lightningBestCorrect || 0, correct);
+  chProgress.lightningBestScore   = Math.max(chProgress.lightningBestScore   || 0, state.score);
+
+  // Update all-time user best
+  user.bestLightningCorrect = Math.max(user.bestLightningCorrect || 0, correct);
+  user.bestLightningScore   = Math.max(user.bestLightningScore   || 0, state.score);
+
+  if (passed) {
+    chProgress.completed = true;
+    chProgress.stars     = Math.max(chProgress.stars || 0, lightningStars(correct, needed));
+    chProgress.bestScore = Math.max(chProgress.bestScore || 0, state.score);
+    user.lastPlayed = Date.now();
+  }
+
+  saveUserProgress(user);
+
+  // Detect newly unlocked chapter / character
+  let newlyUnlockedChapter   = null;
+  let newlyUnlockedCharacter = null;
+  if (passed && !wasCompleted) {
+    const nextChapter = CHAPTERS.find(
+      c => c.character === ch.character && c.charIdx === ch.charIdx + 1 && c.theme === ch.theme
+    );
+    if (nextChapter) {
+      newlyUnlockedChapter = nextChapter.id;
+    } else {
+      const themeChars     = getThemeCharacters(ch.theme);
+      const currentCharIdx = themeChars.findIndex(c => c.id === ch.character);
+      if (currentCharIdx >= 0 && currentCharIdx + 1 < themeChars.length) {
+        newlyUnlockedCharacter = themeChars[currentCharIdx + 1].id;
+      }
+    }
+  }
+
+  return { newlyUnlockedChapter, newlyUnlockedCharacter };
+}
+
 // ── Game flow ─────────────────────────────────────────────────
 function startGame() {
   const nameInput = $('#name-input').value.trim();
   state.playerName = nameInput || 'Player';
   state.mode       = getSelectedMode();
-  state.questions  = buildRound(state.mode);
   state.index      = 0;
   state.score      = 0;
   state.streak     = 0;
   state.history    = [];
+  state.resultsShown = false;
+
+  // Lightning mode is only valid within story mode; reset for free play
+  if (!state.storyMode) {
+    state.lightningMode = false;
+  }
+
+  if (state.lightningMode) {
+    // Lightning round: generate questions on the fly; start with one
+    state.lightningCount    = 0;
+    state.lightningCorrect  = 0;
+    state.lightningTimeLeft = state.settings.lightningDuration;
+    state.questions = [generateQuestion(state.mode)];
+  } else {
+    state.questions = buildRound(state.mode);
+  }
 
   showScreen('#game-screen');
+
+  // Show/hide lightning HUD banner
+  const lightningBanner = $('#lightning-hud-banner');
+  if (lightningBanner) {
+    lightningBanner.style.display = state.lightningMode ? 'flex' : 'none';
+  }
+
+  if (state.lightningMode) {
+    startLightningTimer();
+  }
+
   loadQuestion();
 }
 
@@ -2226,15 +2457,31 @@ function getSelectedMode() {
 function loadQuestion() {
   const q = state.questions[state.index];
   state.answered = false;
+  state.lightningQuestionStart = Date.now();
 
   // HUD
-  $('#hud-score').textContent   = state.score;
-  $('#hud-streak').textContent  = state.streak === 0 ? '—' : `🔥${state.streak}`;
-  $('#hud-q').textContent       = `${state.index + 1}/${QUESTIONS_PER_ROUND}`;
+  $('#hud-score').textContent  = state.score;
+  $('#hud-streak').textContent = state.streak === 0 ? '—' : `🔥${state.streak}`;
+
+  if (state.lightningMode) {
+    $('#hud-q').textContent = `✓ ${state.lightningCorrect}`;
+    const hudLabel = $('#hud-q-lbl');
+    if (hudLabel) hudLabel.textContent = 'Correct';
+  } else {
+    $('#hud-q').textContent = `${state.index + 1}/${QUESTIONS_PER_ROUND}`;
+    const hudLabel = $('#hud-q-lbl');
+    if (hudLabel) hudLabel.textContent = 'Question';
+  }
 
   // Progress bar
-  const pct = (state.index / QUESTIONS_PER_ROUND) * 100;
-  $('#progress-bar').style.width = `${pct}%`;
+  if (state.lightningMode) {
+    // Progress bar tracks time elapsed (updated by lightning timer interval)
+    const elapsed = state.settings.lightningDuration - state.lightningTimeLeft;
+    $('#progress-bar').style.width = `${(elapsed / state.settings.lightningDuration) * 100}%`;
+  } else {
+    const pct = (state.index / QUESTIONS_PER_ROUND) * 100;
+    $('#progress-bar').style.width = `${pct}%`;
+  }
 
   // Question
   $('#question-type-badge').textContent = q.type === 'multiply' ? '✖ Multiplication' : '➗ Division';
@@ -2251,16 +2498,23 @@ function loadQuestion() {
     btn.blur();
   });
 
-  // Timer
-  startTimer();
+  // Timer – only start per-question timer in normal mode
+  if (!state.lightningMode) {
+    startTimer();
+  }
 }
 
 function handleAnswer(chosen) {
   if (state.answered) return;
   state.answered = true;
-  stopTimer();
 
-  const elapsed = (state.settings.timerDuration - state.timeLeft);
+  if (!state.lightningMode) {
+    stopTimer();
+  }
+
+  const elapsed = state.lightningMode
+    ? (Date.now() - state.lightningQuestionStart) / 1000
+    : (state.settings.timerDuration - state.timeLeft);
   const q       = state.questions[state.index];
   const correct = chosen === q.answer;
 
@@ -2273,13 +2527,16 @@ function handleAnswer(chosen) {
   });
 
   if (correct) {
-    state.score  += scorePoints(elapsed);
+    state.score  += scorePoints(elapsed, state.lightningMode);
     state.streak += 1;
+    if (state.lightningMode) state.lightningCorrect += 1;
     showToast(streakMessage(state.streak));
   } else {
     state.streak = 0;
     showToast(`Nope! Answer: ${q.answer}`, true);
   }
+
+  if (state.lightningMode) state.lightningCount += 1;
 
   state.history.push({
     question: q.display + ' = ?',
@@ -2292,6 +2549,11 @@ function handleAnswer(chosen) {
   // Update score display immediately
   $('#hud-score').textContent  = state.score;
   $('#hud-streak').textContent = state.streak === 0 ? '—' : `🔥${state.streak}`;
+  if (state.lightningMode) {
+    $('#hud-q').textContent = `✓ ${state.lightningCorrect}`;
+    const hudLabel = $('#hud-q-lbl');
+    if (hudLabel) hudLabel.textContent = 'Correct';
+  }
 
   setTimeout(nextQuestion, 900);
 }
@@ -2300,10 +2562,12 @@ function handleTimeout() {
   handleAnswer(TIMEOUT_ANSWER);
 }
 
-function scorePoints(elapsed) {
-  // MAX_POINTS pts for the fastest answers, scaling down to MIN_POINTS at timerDuration
+function scorePoints(elapsed, lightning = false) {
+  // For lightning rounds: LIGHTNING_REF_SECS is the reference for max points (fast answers rewarded more)
+  const refDuration = lightning ? LIGHTNING_REF_SECS : state.settings.timerDuration;
+  // MAX_POINTS pts for the fastest answers, scaling down to MIN_POINTS at refDuration
   const range = MAX_POINTS - MIN_POINTS;
-  const base  = Math.round(MAX_POINTS - Math.min(range, elapsed * range / state.settings.timerDuration));
+  const base  = Math.round(MAX_POINTS - Math.min(range, elapsed * range / refDuration));
   return Math.max(MIN_POINTS, base);
 }
 
@@ -2314,9 +2578,28 @@ function streakMessage(streak) {
   return '✓ Correct!';
 }
 
+/**
+ * Calculate stars for a lightning round.
+ * 1 star = passed, 2 stars = 25% over needed, 3 stars = 50% over needed.
+ */
+function lightningStars(correct, needed) {
+  if (correct < needed)          return 0;
+  if (correct >= needed * 1.5)   return 3;
+  if (correct >= needed * 1.25)  return 2;
+  return 1;
+}
+
 function nextQuestion() {
   state.index += 1;
-  if (state.index >= QUESTIONS_PER_ROUND) {
+  if (state.lightningMode) {
+    if (state.lightningTimeLeft <= 0) {
+      showResults();
+    } else {
+      // Generate the next question on the fly for lightning rounds
+      state.questions[state.index] = generateQuestion(state.mode);
+      loadQuestion();
+    }
+  } else if (state.index >= QUESTIONS_PER_ROUND) {
     showResults();
   } else {
     loadQuestion();
@@ -2325,7 +2608,20 @@ function nextQuestion() {
 
 // ── Results screen ────────────────────────────────────────────
 function showResults() {
+  // Guard against double invocation (e.g. timer fires while nextQuestion() timeout is pending)
+  if (state.resultsShown) return;
+  state.resultsShown = true;
+
+  // Stop any active timers
+  stopLightningTimer();
+  stopTimer();
+
   showScreen('#results-screen');
+
+  if (state.lightningMode) {
+    showLightningResults();
+    return;
+  }
 
   const correct  = state.history.filter(h => h.correct).length;
   const pct      = Math.round((correct / QUESTIONS_PER_ROUND) * 100);
@@ -2402,6 +2698,100 @@ function showResults() {
     }
 
     banner.append(chapterLabel, resultLine);
+    banner.style.display = 'block';
+    backBtn.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+    backBtn.style.display = 'none';
+    state.newlyUnlockedChapter = null;
+  }
+}
+
+// ── Lightning results ─────────────────────────────────────────
+function showLightningResults() {
+  const correct   = state.lightningCorrect;
+  const attempted = state.lightningCount;
+  const needed    = state.settings.lightningPassCount;
+  const passed    = correct >= needed;
+  const accuracy  = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+  const avgMs     = state.history.length > 0
+    ? Math.round(state.history.reduce((sum, h) => sum + h.ms, 0) / state.history.length)
+    : 0;
+  const stars     = lightningStars(correct, needed);
+
+  // Trophy emoji based on stars
+  const trophies = ['😅', '🥉', '🥈', '🏆'];
+  $('#result-trophy').textContent = trophies[stars];
+  $('#result-name').textContent   = `Well done, ${state.playerName}!`;
+  $('#result-sub').textContent    = `⚡ ${correct} correct in ${state.settings.lightningDuration}s!`;
+
+  // Stars
+  $('#result-stars').innerHTML = Array.from({ length: 3 }, (_, i) =>
+    `<span>${i < stars ? '⭐' : '☆'}</span>`
+  ).join('');
+
+  // Stats – reuse existing stat elements
+  $('#stat-score').textContent    = state.score;
+  $('#stat-maxscore').textContent = '';
+  $('#stat-correct').textContent  = `${correct}/${attempted}`;
+  $('#stat-avgtime').textContent  = avgMs > 0 ? `${(avgMs / 1000).toFixed(1)}s` : '—';
+
+  // History log
+  const list = $('#history-list');
+  list.textContent = '';
+  state.history.forEach(h => {
+    const row = document.createElement('div');
+    row.className = `history-item ${h.correct ? 'ok' : 'bad'}`;
+
+    const qEl = document.createElement('span');
+    qEl.className = 'hi-q';
+    qEl.textContent = h.question;
+
+    const aEl = document.createElement('span');
+    aEl.className = 'hi-a';
+    aEl.textContent = h.correct ? '✓' : `✗ (ans: ${h.expected})`;
+
+    const tEl = document.createElement('span');
+    tEl.className = 'hi-t';
+    tEl.textContent = `${(h.ms / 1000).toFixed(1)}s`;
+
+    row.append(qEl, aEl, tEl);
+    list.appendChild(row);
+  });
+
+  // ── Story mode banner
+  const banner  = $('#story-result-banner');
+  const backBtn = $('#back-to-story-btn');
+
+  if (state.storyMode) {
+    const ch = CHAPTERS[state.chapterId];
+    const { newlyUnlockedChapter, newlyUnlockedCharacter } = handleLightningCompletion(correct);
+    state.newlyUnlockedChapter    = newlyUnlockedChapter;
+    state.newlyUnlockedCharacter  = newlyUnlockedCharacter;
+
+    banner.textContent = '';
+
+    const chapterLabel = document.createElement('div');
+    chapterLabel.className = 'srb-chapter';
+    chapterLabel.textContent = `⚡ ${ch.emoji} ${ch.title} — Lightning Round!`;
+
+    const resultLine = document.createElement('div');
+    resultLine.className = `srb-result ${passed ? 'srb-passed' : 'srb-failed'}`;
+    if (passed) {
+      resultLine.textContent = `✅ Round complete! ${correct}/${attempted} correct (need ${needed})`;
+    } else {
+      resultLine.textContent = `❌ Not quite… ${correct} correct, need ${needed} to pass. Try again!`;
+    }
+
+    // Best score line
+    const bestLine = document.createElement('div');
+    bestLine.className = 'srb-best';
+    const userName = getCurrentUser();
+    const user = getUserProgress(userName);
+    const userBest = user ? (user.bestLightningCorrect || 0) : 0;
+    bestLine.textContent = `🏆 All-time best: ${userBest} correct`;
+
+    banner.append(chapterLabel, resultLine, bestLine);
     banner.style.display = 'block';
     backBtn.style.display = 'flex';
   } else {
@@ -2536,6 +2926,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const timerVal    = $('#timer-duration-val');
   const maxNumInput = $('#max-number-input');
   const maxNumVal   = $('#max-number-val');
+  const lightningDurInput  = $('#lightning-duration-input');
+  const lightningDurVal    = $('#lightning-duration-val');
+  const lightningPassInput = $('#lightning-pass-input');
+  const lightningPassVal   = $('#lightning-pass-val');
 
   timerInput.addEventListener('input', () => {
     timerVal.textContent = `${timerInput.value}s`;
@@ -2545,19 +2939,44 @@ document.addEventListener('DOMContentLoaded', () => {
     maxNumVal.textContent = maxNumInput.value;
   });
 
+  if (lightningDurInput) {
+    lightningDurInput.addEventListener('input', () => {
+      lightningDurVal.textContent = `${lightningDurInput.value}s`;
+    });
+  }
+
+  if (lightningPassInput) {
+    lightningPassInput.addEventListener('input', () => {
+      lightningPassVal.textContent = lightningPassInput.value;
+    });
+  }
+
   $('#back-from-settings-btn').addEventListener('click', () => {
     showScreen('#chapter-screen');
   });
 
   $('#save-settings-btn').addEventListener('click', () => {
     const newSettings = {
-      timerDuration: Number(timerInput.value),
-      maxNumber:     Number(maxNumInput.value),
-      allowDivision: $('#allow-division-input').checked,
+      timerDuration:      Number(timerInput.value),
+      maxNumber:          Number(maxNumInput.value),
+      allowDivision:      $('#allow-division-input').checked,
+      lightningDuration:  lightningDurInput  ? Number(lightningDurInput.value)  : DEFAULT_SETTINGS.lightningDuration,
+      lightningPassCount: lightningPassInput ? Number(lightningPassInput.value) : DEFAULT_SETTINGS.lightningPassCount,
     };
     state.settings = newSettings;
     saveUserSettings(getCurrentUser(), newSettings);
+
+    // Dev mode is local-only — saved to a separate key, never synced to cloud
+    // Only available for DEV_MODE_ALLOWED_USER
+    const devModeInput = $('#dev-mode-input');
+    if (devModeInput && getCurrentUser() === DEV_MODE_ALLOWED_USER) {
+      const devEnabled = devModeInput.checked;
+      setDevMode(getCurrentUser(), devEnabled);
+      state.devMode = devEnabled;
+    }
+
     showToast('✓ Settings saved!');
+    renderChapterScreen();
     showScreen('#chapter-screen');
   });
 
