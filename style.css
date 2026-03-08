@@ -1381,3 +1381,27 @@ input[type="text"]:focus {
   color: #d97706;
   font-weight: 600;
 }
+
+/* ── Dev Mode ────────────────────────────────────────────── */
+
+/* Dev mode card — visually subtle, tucked below save button */
+.dev-mode-card {
+  border: 1.5px dashed #d1d5db;
+  background: #fafafa;
+  margin-top: 4px;
+}
+
+/* Badge shown next to username when dev mode is on */
+.dev-mode-badge {
+  display: inline-block;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 8px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}

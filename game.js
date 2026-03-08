@@ -1432,6 +1432,7 @@ let state = {
   newlyUnlockedChapter: null,       // chapter id unlocked after last completion
   newlyUnlockedCharacter: null,     // character id unlocked after last completion
   settings:             { ...DEFAULT_SETTINGS }, // active user's settings
+  devMode:              false,      // local-only testing flag — never synced to cloud
   // Lightning round state
   lightningMode:        false,      // true when playing a lightning round
   lightningTimeLeft:    0,          // remaining seconds in the full-round countdown
@@ -1461,6 +1462,23 @@ function getCurrentUser() {
 }
 function setCurrentUser(name) {
   localStorage.setItem('mathgenius_currentUser', name);
+}
+
+// ── Dev mode helpers (local-only — never synced to cloud) ─────
+const DEV_MODE_KEY_PREFIX = 'mathgenius_devmode_';
+
+function getDevMode(userName) {
+  if (!userName) return false;
+  return localStorage.getItem(DEV_MODE_KEY_PREFIX + userName) === 'true';
+}
+
+function setDevMode(userName, enabled) {
+  if (!userName) return;
+  if (enabled) {
+    localStorage.setItem(DEV_MODE_KEY_PREFIX + userName, 'true');
+  } else {
+    localStorage.removeItem(DEV_MODE_KEY_PREFIX + userName);
+  }
 }
 
 // ── User settings helpers ─────────────────────────────────────
@@ -1510,6 +1528,7 @@ function saveUserProgress(user) {
 }
 
 function isChapterUnlocked(ch, progress) {
+  if (state.devMode) return true;
   if (ch.charIdx === 0) return true;
   // First chapter of theme 2 (charIdx === 5) unlocks when the last chapter
   // of theme 1 (charIdx === 4) is completed — this falls out naturally below.
@@ -1523,6 +1542,7 @@ function isChapterUnlocked(ch, progress) {
  *  theme-specific order are completed, so characters unlock independently
  *  per theme. */
 function isCharacterUnlocked(charId, progress, themeId) {
+  if (state.devMode) return true;
   const themeChars = getThemeCharacters(themeId);
   const charIndex = themeChars.findIndex(c => c.id === charId);
   if (charIndex <= 0) return true;
@@ -1540,6 +1560,7 @@ function isCharacterUnlocked(charId, progress, themeId) {
  * Chapter 2 requires ALL Chapter-1 stories to be complete across ALL characters.
  */
 function isGlobalChapterUnlocked(themeId, progress) {
+  if (state.devMode) return true;
   if (themeId === 1) return true;
   const theme1Chapters = CHAPTERS.filter(ch => ch.theme === 1);
   return theme1Chapters.length > 0 && theme1Chapters.every(ch => {
@@ -1793,6 +1814,7 @@ function loginUser(name) {
     saveUsers(users);
   }
   state.settings = getUserSettings(name);
+  state.devMode = getDevMode(name);
   state.selectedCharacter = null;
   state.selectedTheme = null;
   state.newlyUnlockedCharacter = null;
@@ -1822,7 +1844,17 @@ function renderChapterScreen() {
   const user = getUserProgress(userName);
   const progress = user ? user.storyProgress : {};
 
-  $('#chapter-screen-username').textContent = userName || '';
+  // Show dev mode badge next to username when active
+  const usernameEl = $('#chapter-screen-username');
+  usernameEl.textContent = userName || '';
+  const existingBadge = usernameEl.parentElement.querySelector('.dev-mode-badge');
+  if (existingBadge) existingBadge.remove();
+  if (state.devMode) {
+    const badge = document.createElement('span');
+    badge.className = 'dev-mode-badge';
+    badge.textContent = '🧪 Dev Mode';
+    usernameEl.insertAdjacentElement('afterend', badge);
+  }
 
   const list = $('#chapter-list');
   list.textContent = '';
@@ -2053,6 +2085,12 @@ function renderSettingsScreen() {
     const user = getUserProgress(userName);
     const best = user ? (user.bestLightningCorrect || 0) : 0;
     bestEl.textContent = best > 0 ? `🏆 All-time best: ${best} correct` : 'No lightning rounds played yet';
+  }
+
+  // Dev mode toggle (local-only, never synced)
+  const devToggle = $('#dev-mode-input');
+  if (devToggle) {
+    devToggle.checked = state.devMode;
   }
 }
 
@@ -2874,7 +2912,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     state.settings = newSettings;
     saveUserSettings(getCurrentUser(), newSettings);
+
+    // Dev mode is local-only — saved to a separate key, never synced to cloud
+    const devModeInput = $('#dev-mode-input');
+    if (devModeInput) {
+      const devEnabled = devModeInput.checked;
+      setDevMode(getCurrentUser(), devEnabled);
+      state.devMode = devEnabled;
+    }
+
     showToast('✓ Settings saved!');
+    renderChapterScreen();
     showScreen('#chapter-screen');
   });
 
