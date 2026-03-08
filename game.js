@@ -2378,6 +2378,17 @@ function showResults() {
 // not re-fire DOMContentLoaded; pageshow fires with event.persisted = true).
 // Re-render the login screen if active and ensure the modal is properly
 // dismissed so that user-card click events are never blocked by a stale modal state.
+
+// If a cloud session is active, pull the latest progress from the cloud and
+// re-render the login screen so that progress saved on other devices is
+// immediately visible to the user.
+function syncCloudIfLoggedIn() {
+  if (typeof PlayFabManager !== 'undefined' && PlayFabManager.isLoggedIn
+      && typeof CloudSync !== 'undefined') {
+    CloudSync.syncFromCloud(() => renderLoginScreen());
+  }
+}
+
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
     // Always hide the modal – it may have been left open if the user was
@@ -2393,6 +2404,7 @@ window.addEventListener('pageshow', (event) => {
         PlayFabManager.initialize();
       }
       renderLoginScreen();
+      syncCloudIfLoggedIn();
     }
   }
 });
@@ -2410,6 +2422,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Login screen
   renderLoginScreen();
+
+  // If a session was restored from localStorage, sync progress from the cloud
+  // immediately so that progress made on other devices is visible right away.
+  syncCloudIfLoggedIn();
 
   $('#add-player-btn').addEventListener('click', () => {
     const input = $('#add-player-input');
