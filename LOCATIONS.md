@@ -55,7 +55,25 @@ Kiki's experiments have permanently altered the neighborhood in several memorabl
 
 ## The Volcano
 
-*Coming soon.*
+The volcano is not active, so the town is never in danger from it erupting. The donut river flows all the way from the neighborhood to the volcano's base.
+
+### The Rock Giants
+
+Boulder-shaped giants live at and inside the volcano. The main characters the friends interact with are **Giganta** and **Lligen**. These rock giants eat rocks as part of their normal diet, and they also feast on the donuts that float down the donut river.
+
+Rock giants travel large distances by leaping into the air and flying many miles at a time. When they land, the earth shakes beneath them. They sound scary, but they are usually quite friendly. Because of the size difference, it's hard for them to see or hear many of the friends from the neighborhood, which sometimes leads to funny interactions. They also tend to address people by their animal type, since everyone looks very small to them. For instance, they greet Humphrey by saying **"Hello Heffalump!"**
+
+### The Volcano Village
+
+There is a whole village of rock giants that lives inside the volcano. They feast on rocks and the donuts from the donut river. On occasion, **Giri** will make them a special dessert: rocks that are still rocks, but colored like chocolate. These are considered a delicacy among the rock giants.
+
+The volcano village is very hot, being right next to the lava. When the friends go to visit, Kiki has to supply them with special suits that can resist the heat. Without them, it's even too hot for a Heffalump.
+
+### Interactions with the Neighborhood
+
+Lligen is small enough that she can visit certain parts of the neighborhood without causing too much disruption, but the friends usually interact with the giants in the field between the volcano and the neighborhood.
+
+Kiki has given them a cell phone so she can call them from her Iron Man suit whenever they need help. Sometimes when villains come to the neighborhood, Lligen or Giganta jump in after a phone call from Kiki and land in just the right spot, foiling the villains' plans.
 
 ---
 
