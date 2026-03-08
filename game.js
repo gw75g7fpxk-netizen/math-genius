@@ -129,6 +129,8 @@ const THEME_CHARACTERS = {
   // Chapter 2 – The Neighbourhood: Giri out, Bermione in; minor shuffle
   2: ['kiki', 'humphrey', 'fluffy', 'roo', 'margret', 'thumper',
       'maggie', 'tigey_avinia', 'tigey', 'vaporeon', 'bermione'],
+  // Villain Encounter – The Submarine: story-narrative order
+  3: ['margret', 'tigey_avinia', 'vaporeon', 'humphrey', 'fluffy', 'bermione', 'roo'],
 };
 
 /** Returns the ordered array of character objects for the given theme. */
@@ -1392,10 +1394,106 @@ const CHAPTERS = [
     unlockAt: 3,
     passPct: 80,
   },
+
+  // ── Villain Encounter: The Submarine ─────────────────────────
+  // These chapters sit between Theme 2 Chapter 2 (charIdx 6) and
+  // Chapter 3 (charIdx 7) for each of the seven characters involved.
+  // charIdx 10 keeps them out of the regular 5–9 range while remaining
+  // safely addressable as array indices (the progress array is padded to
+  // maxCharIdx + 1 for each character).
+  {
+    id: 110,
+    character: 'margret',
+    charIdx: 10,
+    villainEncounter: true,
+    title: "Villain Encounter: Bubbles at the Lake",
+    emoji: "🫧",
+    story: "While building the most magnificent sandcastle the lake has ever seen, Humphrey tugs on Margret's arm — \"Look at the water!\" he gasps. The lake is bubbling! Big clusters of bubbles are rising up from somewhere deep below the surface. Something is definitely going on down there. Help Humphrey and Margret use multiplication to count the bubble clusters and work out exactly how many are rising up from the mysterious depths below!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 111,
+    character: 'tigey_avinia',
+    charIdx: 10,
+    villainEncounter: true,
+    title: "Villain Encounter: Into the Deep",
+    emoji: "🌊",
+    story: "\"Zut alors — zat is no ordinary bubble, mon ami!\" exclaims Tigey Avinia, peering at the water very seriously in her very best fake French accent. \"Something is under ze water — I can feel eet in my whiskers!\" Vaporeon and the mermaids dive immediately beneath the surface to investigate. The murky, bubbly water makes navigation très difficile! Help them use multiplication and division to navigate through the cloudy underwater currents and track down the source of the bubbles.",
+    mode: "both",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 112,
+    character: 'vaporeon',
+    charIdx: 10,
+    villainEncounter: true,
+    title: "Villain Encounter: The Submarine Surfaces!",
+    emoji: "🐢",
+    story: "VAPOREON! Vaporeon and the mermaids rocket back out of the water! \"LOOK OUT — IT'S BOWSER!\" they shout — and just then, with a deafening BOOM, a giant turtle-shaped submarine explodes up from below the surface! \"MUA HA HA HA HA!\" Bowser's voice booms from his loudspeaker. \"THEY NEVER SAW ME COMING FROM UNDER SEA!\" The submarine churns towards shore and its hatch pops open, beginning to unload trooper forces! Help Vaporeon use multiplication to count the trooper groups moving towards the beach before they get too close!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 113,
+    character: 'humphrey',
+    charIdx: 10,
+    villainEncounter: true,
+    title: "Villain Encounter: Frisbee Strike",
+    emoji: "🥏",
+    story: "Humphrey sets his jaw with the most determined look a Heffalump has ever worn. He reaches into his bag and pulls out his treasured Captain America frisbee — a tool he has used many times in battle. He winds up, drawing on every last drop of his legendary Heffalump strength, and LAUNCHES it full force toward the submarine! Help Humphrey use multiplication to calculate the frisbee's trajectory and power so he can aim the perfect strike at just the right moment!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 114,
+    character: 'fluffy',
+    charIdx: 10,
+    villainEncounter: true,
+    title: "Villain Encounter: Roll!",
+    emoji: "🛡️",
+    story: "The frisbee hits the submarine with a cheerful little *ping* and bounces harmlessly off into the lake. Then — CRASH! Two enormous Bowser arms burst from the sides of the submarine and begin smashing the beautiful sandcastles everyone worked so hard on! \"ROLL!\" screams Fluffy, and every friend dives and tumbles out of the way! Help Fluffy use multiplication and division to calculate the fastest escape routes and make sure every friend gets clear before the next enormous smash!",
+    mode: "both",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 115,
+    character: 'bermione',
+    charIdx: 10,
+    villainEncounter: true,
+    title: "Villain Encounter: Sand in My Sammich",
+    emoji: "🪄",
+    story: "A big glob of sand lands SPLAT right on Bermione — right on top of her sammich. Bermione stares at it. She picks it up. She looks at the submarine. She sets down the remains of her sammich very, very slowly. \"Sand,\" she says quietly. \"In. My. SAMMICH.\" Her horn begins to glow an ominous green and she lowers into a magical crouch, whispering her ancient unicorn spell. Help Bermione use division to channel her spell power precisely — the magic must be exactly right, or this could get very, very large.",
+    mode: "divide",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 116,
+    character: 'roo',
+    charIdx: 10,
+    villainEncounter: true,
+    lightning: true,
+    title: "Villain Encounter: The Pouch Protocol",
+    emoji: "🧸",
+    story: "Bermione's horn flares brilliant green and the spell LAUNCHES the entire submarine up, up, and away over the horizon! \"NOT AGAIN!\" echoes Bowser's voice as they disappear into the sky. But Bermione is now trembling with pent-up magical energy — her eyes are glowing, her horn is sparking, and she looks about five seconds from blasting the Ice Cream Hill into orbit! Roo springs into action, diving into her pouch for calming supplies and her most trusty cosy blanket! LIGHTNING ROUND — help Roo rapidly distribute emergency snacks and cosy wraps to calm Bermione before her magic goes haywire!",
+    mode: "both",
+    unlockAt: 0,
+    passPct: 80,
+  },
 ];
 
-// Tag every chapter with its story theme (1 = Friends, 2 = The Neighbourhood)
-CHAPTERS.forEach(ch => { ch.theme = ch.charIdx <= 4 ? 1 : 2; });
+// Tag every chapter with its story theme.
+// Villain-encounter chapters are theme 3 (their charIdx is 10, outside 0–9).
+// For all other chapters: charIdx 0–4 → theme 1, charIdx 5–9 → theme 2.
+CHAPTERS.forEach(ch => {
+  ch.theme = ch.villainEncounter ? 3 : ch.charIdx <= 4 ? 1 : 2;
+});
 
 // ── Story themes ──────────────────────────────────────────────
 const STORY_THEMES = [
@@ -1410,6 +1508,12 @@ const STORY_THEMES = [
     title: 'Chapter 2: The Neighbourhood',
     emoji: '🏘️',
     description: 'Explore the magical neighbourhood — the Ice Cream Hill, the Cheese Tree Forest, the Hot Chocolate Spring, the Donut River, and more!',
+  },
+  {
+    id: 3,
+    title: 'Villain Encounter: The Submarine',
+    emoji: '⚔️',
+    description: 'A mysterious submarine has surfaced at the lake! Join the friends as they face Bowser and his trooper forces in this special villain encounter.',
   },
 ];
 
@@ -1525,7 +1629,14 @@ function getUserProgress(userName) {
   CHARACTERS.forEach(char => {
     user.storyProgress[char.id] = user.storyProgress[char.id] || { chapters: [] };
     const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
-    while (user.storyProgress[char.id].chapters.length < charChapters.length) {
+    // Pad the progress array to (maxCharIdx + 1) so that progress[charIdx] is
+    // always a valid index even when charIdx values are non-contiguous (e.g.
+    // villain-encounter chapters at charIdx 10, or Bermione whose chapters
+    // start at charIdx 5 with no preceding Theme 1 chapters).
+    const neededLen = charChapters.length > 0
+      ? Math.max(...charChapters.map(c => c.charIdx)) + 1
+      : 0;
+    while (user.storyProgress[char.id].chapters.length < neededLen) {
       user.storyProgress[char.id].chapters.push({
         completed: false, stars: 0, bestScore: null, bestPct: null,
       });
@@ -1543,13 +1654,20 @@ function saveUserProgress(user) {
 
 function isChapterUnlocked(ch, progress) {
   if (state.devMode) return true;
-  if (ch.charIdx === 0) return true;
-  // First chapter of theme 2 (charIdx === 5) unlocks when the last chapter
-  // of theme 1 (charIdx === 4) is completed — this falls out naturally below.
+  // Only consider chapters in the same theme when checking for a preceding
+  // chapter. This prevents Theme-2 chapters (charIdx 5–9) from accidentally
+  // gating Theme-3 Villain Encounter chapters (charIdx 10), and naturally
+  // handles first-chapter-of-theme auto-unlocking (e.g. Bermione's first
+  // Theme-2 chapter at charIdx 5, or each VE chapter at charIdx 10 which
+  // has no preceding charIdx-9 chapter within theme 3).
+  const hasPrecedingChapter = CHAPTERS.some(
+    c => c.character === ch.character && c.charIdx === ch.charIdx - 1 && c.theme === ch.theme
+  );
+  if (!hasPrecedingChapter) return true;
   const charProgress = progress[ch.character];
   if (!charProgress) return false;
   const prev = charProgress.chapters[ch.charIdx - 1];
-  return prev && prev.completed;
+  return !!(prev && prev.completed);
 }
 
 /** Returns true when all chapters of the character before charId in the
@@ -1570,14 +1688,15 @@ function isCharacterUnlocked(charId, progress, themeId) {
 
 /**
  * Returns true when the given chapter (theme) is accessible globally.
- * Chapter 1 is always unlocked.
- * Chapter 2 requires ALL Chapter-1 stories to be complete across ALL characters.
+ * Theme 1 is always unlocked.
+ * Any subsequent theme requires ALL chapters of the preceding theme to be
+ * complete across all characters in that theme.
  */
 function isGlobalChapterUnlocked(themeId, progress) {
   if (state.devMode) return true;
   if (themeId === 1) return true;
-  const theme1Chapters = CHAPTERS.filter(ch => ch.theme === 1);
-  return theme1Chapters.length > 0 && theme1Chapters.every(ch => {
+  const prevThemeChapters = CHAPTERS.filter(ch => ch.theme === themeId - 1);
+  return prevThemeChapters.length > 0 && prevThemeChapters.every(ch => {
     const cp = progress[ch.character];
     return cp && cp.chapters[ch.charIdx] && cp.chapters[ch.charIdx].completed;
   });
@@ -1980,7 +2099,10 @@ function renderCharacterScreen(newlyUnlockedCharacterId) {
   CHARACTERS.forEach(char => {
     progress[char.id] = progress[char.id] || { chapters: [] };
     const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
-    while (progress[char.id].chapters.length < charChapters.length) {
+    const neededLen = charChapters.length > 0
+      ? Math.max(...charChapters.map(c => c.charIdx)) + 1
+      : 0;
+    while (progress[char.id].chapters.length < neededLen) {
       progress[char.id].chapters.push({ completed: false, stars: 0, bestScore: null, bestPct: null });
     }
   });
@@ -2175,7 +2297,10 @@ function renderStoryScreen(newlyUnlockedChapter) {
   if (char) {
     progress[char.id] = progress[char.id] || { chapters: [] };
     const charChapters = CHAPTERS.filter(ch => ch.character === char.id);
-    while (progress[char.id].chapters.length < charChapters.length) {
+    const neededLen = charChapters.length > 0
+      ? Math.max(...charChapters.map(c => c.charIdx)) + 1
+      : 0;
+    while (progress[char.id].chapters.length < neededLen) {
       progress[char.id].chapters.push({ completed: false, stars: 0, bestScore: null, bestPct: null });
     }
   }
@@ -2188,7 +2313,7 @@ function renderStoryScreen(newlyUnlockedChapter) {
 
   charChapters.forEach(ch => {
     const unlocked = isChapterUnlocked(ch, progress);
-    const chProgress = charProgress.chapters[ch.charIdx];
+    const chProgress = charProgress.chapters[ch.charIdx] || {};
 
     const card = document.createElement('div');
     card.className = 'chapter-card';
@@ -2196,6 +2321,7 @@ function renderStoryScreen(newlyUnlockedChapter) {
     if (chProgress.completed) card.classList.add('completed');
     if (ch.id === newlyUnlockedChapter) card.classList.add('newly-unlocked');
     if (ch.lightning) card.classList.add('lightning-chapter');
+    if (ch.villainEncounter) card.classList.add('villain-encounter-chapter');
 
     // ── Header row
     const header = document.createElement('div');
@@ -2208,6 +2334,12 @@ function renderStoryScreen(newlyUnlockedChapter) {
     const titleEl = document.createElement('div');
     titleEl.className = 'chapter-title';
     titleEl.textContent = ch.title;
+    if (ch.villainEncounter) {
+      const veBadge = document.createElement('span');
+      veBadge.className = 'chapter-villain-badge';
+      veBadge.textContent = '⚔️ Villain Encounter';
+      titleEl.appendChild(veBadge);
+    }
     if (ch.lightning) {
       const lightningBadge = document.createElement('span');
       lightningBadge.className = 'chapter-lightning-badge';
@@ -2273,11 +2405,11 @@ function renderStoryScreen(newlyUnlockedChapter) {
       }
 
       const playBtn = document.createElement('button');
-      playBtn.className = `btn btn-primary chapter-play-btn${ch.lightning ? ' lightning-play-btn' : ''}`;
+      playBtn.className = `btn btn-primary chapter-play-btn${ch.lightning ? ' lightning-play-btn' : ''}${ch.villainEncounter && !ch.lightning ? ' villain-play-btn' : ''}`;
       playBtn.setAttribute('type', 'button');
       playBtn.textContent = chProgress.completed
         ? (ch.lightning ? '⚡ Play Again' : '🔄 Play Again')
-        : (ch.lightning ? '⚡ Start Lightning Round' : '▶ Play');
+        : (ch.lightning ? '⚡ Start Lightning Round' : ch.villainEncounter ? '⚔️ Start Villain Encounter' : '▶ Play');
       playBtn.addEventListener('click', () => startChapter(ch.id));
       card.appendChild(playBtn);
     }
@@ -2340,7 +2472,9 @@ function handleStoryCompletion(pct) {
   let newlyUnlockedChapter = null;
   let newlyUnlockedCharacter = null;
   if (passed && !wasCompleted) {
-    const nextChapter = CHAPTERS.find(c => c.character === ch.character && c.charIdx === ch.charIdx + 1 && c.theme === ch.theme);
+    const nextChapter = CHAPTERS.find(
+      c => c.character === ch.character && c.charIdx === ch.charIdx + 1 && c.theme === ch.theme
+    );
     if (nextChapter) {
       newlyUnlockedChapter = nextChapter.id;
     } else {
