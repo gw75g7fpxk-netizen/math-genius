@@ -129,6 +129,8 @@ const THEME_CHARACTERS = {
   // Chapter 2 – The Neighbourhood: Giri out, Bermione in; minor shuffle
   2: ['kiki', 'humphrey', 'fluffy', 'roo', 'margret', 'thumper',
       'maggie', 'tigey_avinia', 'tigey', 'vaporeon', 'bermione'],
+  // Villain Encounter – The Submarine: story-narrative order
+  3: ['margret', 'tigey_avinia', 'vaporeon', 'humphrey', 'fluffy', 'bermione', 'roo'],
 };
 
 /** Returns the ordered array of character objects for the given theme. */
@@ -1486,8 +1488,12 @@ const CHAPTERS = [
   },
 ];
 
-// Tag every chapter with its story theme (1 = Friends, 2 = The Neighbourhood)
-CHAPTERS.forEach(ch => { ch.theme = ch.charIdx <= 4 ? 1 : 2; });
+// Tag every chapter with its story theme.
+// Villain-encounter chapters are theme 3 (their charIdx is 10, outside 0–9).
+// For all other chapters: charIdx 0–4 → theme 1, charIdx 5–9 → theme 2.
+CHAPTERS.forEach(ch => {
+  ch.theme = ch.villainEncounter ? 3 : ch.charIdx <= 4 ? 1 : 2;
+});
 
 // ── Story themes ──────────────────────────────────────────────
 const STORY_THEMES = [
@@ -1502,6 +1508,12 @@ const STORY_THEMES = [
     title: 'Chapter 2: The Neighbourhood',
     emoji: '🏘️',
     description: 'Explore the magical neighbourhood — the Ice Cream Hill, the Cheese Tree Forest, the Hot Chocolate Spring, the Donut River, and more!',
+  },
+  {
+    id: 3,
+    title: 'Villain Encounter: The Submarine',
+    emoji: '⚔️',
+    description: 'A mysterious submarine has surfaced at the lake! Join the friends as they face Bowser and his trooper forces in this special villain encounter.',
   },
 ];
 
@@ -1642,41 +1654,18 @@ function saveUserProgress(user) {
 
 function isChapterUnlocked(ch, progress) {
   if (state.devMode) return true;
-  if (ch.charIdx === 0) return true;
-
-  // If no chapter exists with the immediately preceding charIdx for this
-  // character, this chapter is the first in a new section (e.g. Bermione's
-  // Theme-2 Chapter 1 at charIdx 5 with no Theme-1 chapters, or any future
-  // first-chapter-of-theme) — treat it as always unlocked.
+  // Only consider chapters in the same theme when checking for a preceding
+  // chapter. This prevents Theme-2 chapters (charIdx 5–9) from accidentally
+  // gating Theme-3 Villain Encounter chapters (charIdx 10), and naturally
+  // handles first-chapter-of-theme auto-unlocking (e.g. Bermione's first
+  // Theme-2 chapter at charIdx 5, or each VE chapter at charIdx 10 which
+  // has no preceding charIdx-9 chapter within theme 3).
   const hasPrecedingChapter = CHAPTERS.some(
-    c => c.character === ch.character && c.charIdx === ch.charIdx - 1
+    c => c.character === ch.character && c.charIdx === ch.charIdx - 1 && c.theme === ch.theme
   );
   if (!hasPrecedingChapter) return true;
-
   const charProgress = progress[ch.character];
   if (!charProgress) return false;
-
-  // Villain-encounter chapters unlock after Theme-2 Chapter 2 (charIdx 6).
-  if (ch.villainEncounter) {
-    const prev = charProgress.chapters[6];
-    return !!(prev && prev.completed);
-  }
-
-  // Theme-2 Chapter 3 (charIdx 7): for villain-encounter characters this
-  // chapter requires the villain encounter to be completed first.
-  if (ch.charIdx === 7) {
-    const veChapter = CHAPTERS.find(
-      c => c.character === ch.character && c.villainEncounter
-    );
-    if (veChapter) {
-      const veProg = charProgress.chapters[veChapter.charIdx];
-      return !!(veProg && veProg.completed);
-    }
-  }
-
-  // Default: the previous chapter (by charIdx) must be completed.
-  // First chapter of theme 2 (charIdx === 5) unlocks when the last chapter
-  // of theme 1 (charIdx === 4) is completed — this falls out naturally below.
   const prev = charProgress.chapters[ch.charIdx - 1];
   return !!(prev && prev.completed);
 }
@@ -1699,14 +1688,15 @@ function isCharacterUnlocked(charId, progress, themeId) {
 
 /**
  * Returns true when the given chapter (theme) is accessible globally.
- * Chapter 1 is always unlocked.
- * Chapter 2 requires ALL Chapter-1 stories to be complete across ALL characters.
+ * Theme 1 is always unlocked.
+ * Any subsequent theme requires ALL chapters of the preceding theme to be
+ * complete across all characters in that theme.
  */
 function isGlobalChapterUnlocked(themeId, progress) {
   if (state.devMode) return true;
   if (themeId === 1) return true;
-  const theme1Chapters = CHAPTERS.filter(ch => ch.theme === 1);
-  return theme1Chapters.length > 0 && theme1Chapters.every(ch => {
+  const prevThemeChapters = CHAPTERS.filter(ch => ch.theme === themeId - 1);
+  return prevThemeChapters.length > 0 && prevThemeChapters.every(ch => {
     const cp = progress[ch.character];
     return cp && cp.chapters[ch.charIdx] && cp.chapters[ch.charIdx].completed;
   });
@@ -2315,15 +2305,9 @@ function renderStoryScreen(newlyUnlockedChapter) {
     }
   }
 
-  // Filter chapters to the selected character AND selected theme, sorted so
-  // villain-encounter chapters (charIdx 10) appear between charIdx 6 and 7.
+  // Filter chapters to the selected character AND selected theme
   const charChapters = char
-    ? CHAPTERS
-        .filter(ch => ch.character === char.id && ch.theme === state.selectedTheme)
-        .sort((a, b) => {
-          const key = c => c.villainEncounter ? 6.5 : c.charIdx;
-          return key(a) - key(b);
-        })
+    ? CHAPTERS.filter(ch => ch.character === char.id && ch.theme === state.selectedTheme)
     : [];
   const charProgress = char ? (progress[char.id] || { chapters: [] }) : { chapters: [] };
 
@@ -2379,12 +2363,7 @@ function renderStoryScreen(newlyUnlockedChapter) {
     if (!unlocked) {
       const lockNote = document.createElement('span');
       lockNote.className = 'chapter-locked-note';
-      // Give a context-specific hint for chapters that require the villain encounter.
-      const requiresVE = ch.charIdx === 7 &&
-        CHAPTERS.some(c => c.character === char.id && c.villainEncounter);
-      lockNote.textContent = requiresVE
-        ? 'Complete the Villain Encounter to unlock'
-        : 'Complete the previous chapter to unlock';
+      lockNote.textContent = 'Complete the previous chapter to unlock';
       starsEl.appendChild(lockNote);
     } else {
       const earned = chProgress.stars || 0;
@@ -2442,18 +2421,10 @@ function renderStoryScreen(newlyUnlockedChapter) {
     // Chapter id equals its index in CHAPTERS, so direct access is O(1)
     const ch = CHAPTERS[newlyUnlockedChapter];
     if (ch) {
-      let toastMsg;
-      if (ch.villainEncounter) {
-        toastMsg = `⚔️ ${ch.emoji} Villain Encounter unlocked!`;
-      } else {
-        // Show 1-based story number within its theme (excluding villain encounters)
-        const nonVeThemeChapters = CHAPTERS.filter(
-          c => c.character === ch.character && c.theme === ch.theme && !c.villainEncounter
-        );
-        const themeIdx = nonVeThemeChapters.findIndex(c => c.id === ch.id);
-        toastMsg = `🎉 ${ch.emoji} Story ${themeIdx + 1} unlocked!`;
-      }
-      setTimeout(() => showToast(toastMsg), NEWLY_UNLOCKED_TOAST_DELAY_MS);
+      // Show 1-based story number within its theme
+      const themeIdx = CHAPTERS.filter(c => c.character === ch.character && c.theme === ch.theme)
+        .findIndex(c => c.id === ch.id);
+      setTimeout(() => showToast(`🎉 ${ch.emoji} Story ${themeIdx + 1} unlocked!`), NEWLY_UNLOCKED_TOAST_DELAY_MS);
     }
   }
 }
@@ -2501,26 +2472,9 @@ function handleStoryCompletion(pct) {
   let newlyUnlockedChapter = null;
   let newlyUnlockedCharacter = null;
   if (passed && !wasCompleted) {
-    let nextChapter;
-    if (ch.villainEncounter) {
-      // Villain encounter completion unlocks Theme-2 Chapter 3 (charIdx 7).
-      nextChapter = CHAPTERS.find(
-        c => c.character === ch.character && c.charIdx === 7 && !c.villainEncounter
-      );
-    } else if (ch.charIdx === 6) {
-      // Theme-2 Chapter 2 completion: if this character has a villain encounter,
-      // unlock the villain encounter next instead of charIdx 7.
-      const veChapter = CHAPTERS.find(
-        c => c.character === ch.character && c.villainEncounter
-      );
-      nextChapter = veChapter ||
-        CHAPTERS.find(c => c.character === ch.character && c.charIdx === 7 && c.theme === ch.theme);
-    } else {
-      nextChapter = CHAPTERS.find(
-        c => c.character === ch.character && c.charIdx === ch.charIdx + 1 && c.theme === ch.theme
-      );
-    }
-
+    const nextChapter = CHAPTERS.find(
+      c => c.character === ch.character && c.charIdx === ch.charIdx + 1 && c.theme === ch.theme
+    );
     if (nextChapter) {
       newlyUnlockedChapter = nextChapter.id;
     } else {
@@ -2571,25 +2525,9 @@ function handleLightningCompletion(correct) {
   let newlyUnlockedChapter   = null;
   let newlyUnlockedCharacter = null;
   if (passed && !wasCompleted) {
-    let nextChapter;
-    if (ch.villainEncounter) {
-      // Villain encounter (lightning) completion unlocks Theme-2 Chapter 3 (charIdx 7).
-      nextChapter = CHAPTERS.find(
-        c => c.character === ch.character && c.charIdx === 7 && !c.villainEncounter
-      );
-    } else if (ch.charIdx === 6) {
-      // Theme-2 Chapter 2 completion: unlock villain encounter next if one exists.
-      const veChapter = CHAPTERS.find(
-        c => c.character === ch.character && c.villainEncounter
-      );
-      nextChapter = veChapter ||
-        CHAPTERS.find(c => c.character === ch.character && c.charIdx === 7 && c.theme === ch.theme);
-    } else {
-      nextChapter = CHAPTERS.find(
-        c => c.character === ch.character && c.charIdx === ch.charIdx + 1 && c.theme === ch.theme
-      );
-    }
-
+    const nextChapter = CHAPTERS.find(
+      c => c.character === ch.character && c.charIdx === ch.charIdx + 1 && c.theme === ch.theme
+    );
     if (nextChapter) {
       newlyUnlockedChapter = nextChapter.id;
     } else {
