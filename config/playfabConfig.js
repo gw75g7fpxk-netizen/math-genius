@@ -137,10 +137,12 @@ const PlayFabManager = {
         if (!this.isLoggedIn || typeof PlayFabClientSDK === 'undefined') return;
         this.loadUsersFromCloud((loadError, cloudUsers) => {
             if (loadError) {
-                // Abort rather than blindly overwrite — the local save already
-                // persisted progress to localStorage, so no data is lost here.
-                console.warn('PlayFab: Cloud save aborted (could not read current state) —', loadError.message);
-                return;
+                // Could not read the current cloud state — fall back to saving
+                // local data directly rather than aborting.  The merge step is
+                // skipped but no local progress is lost; the next successful
+                // read-modify-write will re-merge with any other devices' data.
+                console.warn('PlayFab: Cloud read failed before save — saving local data directly —', loadError.message);
+                // cloudUsers is null here; the merge below will use `users` as-is.
             }
             if (typeof CloudSync === 'undefined') {
                 console.warn('PlayFab: CloudSync unavailable — merge skipped, saving local data only');
