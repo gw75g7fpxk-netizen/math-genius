@@ -1432,6 +1432,18 @@ let state = {
 function getUsers() {
   return JSON.parse(localStorage.getItem('mathgenius_users') || '[]');
 }
+// Write users to localStorage only, without triggering a cloud save.
+// Use this instead of saveUsers() in situations where the startup cloud sync
+// may still be in-flight and we don't want to overwrite newer cloud data with
+// a stale local snapshot.  The cloud is updated by the next call to saveUsers()
+// from a meaningful user action (level completion, settings save, etc.).
+function saveUsersLocally(users) {
+  try {
+    localStorage.setItem('mathgenius_users', JSON.stringify(users));
+  } catch (e) {
+    console.warn('Failed to write users to localStorage —', e);
+  }
+}
 function saveUsers(users) {
   localStorage.setItem('mathgenius_users', JSON.stringify(users));
   if (typeof PlayFabManager !== 'undefined' && PlayFabManager.isLoggedIn) {
@@ -1622,7 +1634,21 @@ function showToast(text, isWrong = false) {
   setTimeout(() => t.classList.remove('show'), 900);
 }
 
-// ── Timer ─────────────────────────────────────────────────────
+// Shows a cloud-sync status message at the bottom of the screen.
+// Error toasts stay for 5 s so users have time to read them;
+// success toasts clear after 3 s.
+let _cloudToastTimerId = null;
+function showCloudToast(text, isError = false) {
+  const t = $('#cloud-toast');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.toggle('error', isError);
+  t.classList.add('show');
+  clearTimeout(_cloudToastTimerId);
+  _cloudToastTimerId = setTimeout(() => t.classList.remove('show'), isError ? 5000 : 3000);
+}
+
+
 function startTimer() {
   const duration = state.settings.timerDuration;
   state.timeLeft = duration;
@@ -1728,7 +1754,14 @@ function loginUser(name) {
   const user = users.find(u => u.name === name);
   if (user) {
     user.lastPlayed = Date.now();
-    saveUsers(users);
+    // Use saveUsersLocally instead of saveUsers — the startup cloud sync may
+    // still be in-flight, and calling saveUsers() here would push whatever is
+    // currently in localStorage to the cloud, permanently overwriting any
+    // newer progress from another device before it can be merged in.
+    // The cloud is updated by the next meaningful action (level completion,
+    // settings save, etc.), by which time the sync will have completed and
+    // localStorage will hold the fully-merged best-of-all-devices data.
+    saveUsersLocally(users);
   }
   state.settings = getUserSettings(name);
   state.selectedCharacter = null;
@@ -1750,7 +1783,10 @@ function addPlayer(rawName) {
   }
 
   users.push({ name, created: Date.now(), lastPlayed: Date.now() });
-  saveUsers(users);
+  // Use saveUsersLocally — same reasoning as loginUser above.
+  // The new profile will be included in the next saveUsers() call triggered
+  // by the user completing a level or saving settings.
+  saveUsersLocally(users);
   loginUser(name);
 }
 
@@ -2387,7 +2423,18 @@ function showResults() {
 function syncCloudIfLoggedIn() {
   if (typeof PlayFabManager !== 'undefined' && PlayFabManager.isLoggedIn
       && typeof CloudSync !== 'undefined') {
-    CloudSync.syncFromCloud(() => renderLoginScreen());
+    CloudSync.syncFromCloud(() => {
+      renderLoginScreen();
+      // Re-render whichever data-dependent screen is currently visible so
+      // that merged cloud progress is reflected immediately, even if the
+      // user navigated to that screen before the async sync completed.
+      const activeEl = document.querySelector('.screen.active');
+      if (activeEl) {
+        if      (activeEl.id === 'chapter-screen')   renderChapterScreen();
+        else if (activeEl.id === 'character-screen') renderCharacterScreen(null);
+        else if (activeEl.id === 'story-screen')     renderStoryScreen(null);
+      }
+    });
   }
 }
 

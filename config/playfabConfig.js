@@ -35,7 +35,18 @@ const PlayFabManager = {
                 this.displayName = data.displayName || null;
                 this.isLoggedIn = true;
                 if (typeof PlayFab !== 'undefined') {
+                    // The PlayFab JS SDK authenticates API calls via
+                    // PlayFab._internalSettings.sessionTicket — not the public
+                    // PlayFab.settings.sessionTicket.  Both must be set when
+                    // restoring a persisted session after a page reload, otherwise
+                    // every API call throws "Must be logged in to call this method"
+                    // (the SDK throws a bare string, not an Error, which is why the
+                    // error shows as "GetUserData threw: undefined" in the toast —
+                    // strings have no .message property).
                     PlayFab.settings.sessionTicket = this.sessionTicket;
+                    if (PlayFab._internalSettings) {
+                        PlayFab._internalSettings.sessionTicket = this.sessionTicket;
+                    }
                 }
                 console.log('PlayFab: Session restored for', this.playFabId);
             }
@@ -65,6 +76,9 @@ const PlayFabManager = {
         this.isLoggedIn = true;
         if (typeof PlayFab !== 'undefined') {
             PlayFab.settings.sessionTicket = sessionTicket;
+            if (PlayFab._internalSettings) {
+                PlayFab._internalSettings.sessionTicket = sessionTicket;
+            }
         }
         this._persistSession();
     },
@@ -152,14 +166,19 @@ const PlayFabManager = {
                         renderCloudLoginStatus();
                     }
                 }
+                if (typeof showCloudToast === 'function') {
+                    showCloudToast('⚠️ Save error: ' + (error.errorMessage || 'Save failed'), true);
+                }
             } else {
                 console.log('PlayFab: Players saved to cloud');
             }
         });
     },
 
-    // Load the users array from PlayFab cloud
-    loadUsersFromCloud(callback) {
+    // Load the users array from PlayFab cloud.
+    // _retried is internal — prevents infinite retry loops when silent re-auth
+    // was attempted but the refreshed session also fails immediately.
+    loadUsersFromCloud(callback, _retried = false) {
         if (!this.isLoggedIn || typeof PlayFabClientSDK === 'undefined') {
             callback(new Error('Not logged in'), null);
             return;
@@ -170,6 +189,28 @@ const PlayFabManager = {
             }, (result, error) => {
                 if (error) {
                     if (this._isSessionError(error)) {
+                        if (!_retried) {
+                            // Session ticket expired.  Try a silent Google re-auth so the
+                            // user doesn't have to manually tap "Sign in with Google" again.
+                            this.silentRefreshWithGoogle((refreshErr) => {
+                                if (refreshErr) {
+                                    // Silent re-auth failed (e.g. browser blocks third-party
+                                    // requests, or the user is not signed into Google).
+                                    // Log out and show sign-in UI so they can reconnect.
+                                    console.warn('PlayFab: Silent re-auth failed —', refreshErr.message);
+                                    this.logout();
+                                    if (typeof renderCloudLoginStatus === 'function') {
+                                        renderCloudLoginStatus();
+                                    }
+                                    callback(new Error(error.errorMessage || 'Cloud load failed'), null);
+                                } else {
+                                    // Fresh session obtained — retry the load exactly once.
+                                    this.loadUsersFromCloud(callback, true);
+                                }
+                            });
+                            return;
+                        }
+                        // Already retried with a fresh session and still failing — log out.
                         this.logout();
                         if (typeof renderCloudLoginStatus === 'function') {
                             renderCloudLoginStatus();
@@ -191,10 +232,55 @@ const PlayFabManager = {
             });
         } catch (e) {
             // Guard against synchronous throws from the PlayFab SDK (e.g. when the
-            // SDK is in an invalid state).  Treat as a non-fatal error so callers
-            // can continue; the try-catch in saveUsers already covers UpdateUserData.
+            // SDK throws a bare string like "Must be logged in to call this method"
+            // rather than an Error object).
+            const msg = (e && e.message) ? e.message : String(e);
             console.warn('PlayFab: GetUserData threw synchronously —', e);
-            callback(new Error('GetUserData threw: ' + e.message), null);
+            callback(new Error('GetUserData threw: ' + msg), null);
+        }
+    },
+
+    // Attempt to silently get a fresh Google access token and re-authenticate
+    // with PlayFab.  Uses prompt:'none' so no popup or consent dialog is shown.
+    // Succeeds transparently when the user is still signed into Google and their
+    // consent is still valid.  Fails immediately (calling callback with an error)
+    // if user interaction would be required (e.g. iOS Safari with ITP, user
+    // signed out of Google, or consent revoked) — callers fall back to showing
+    // the "Sign in with Google" UI.
+    // Calls callback(error) — error is null on success.
+    silentRefreshWithGoogle(callback) {
+        if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+            callback(new Error('Google SDK unavailable'));
+            return;
+        }
+        // Guard against the callback being invoked multiple times by the SDK.
+        let settled = false;
+        const done = (err) => {
+            if (settled) return;
+            settled = true;
+            callback(err || null);
+        };
+        try {
+            const client = google.accounts.oauth2.initTokenClient({
+                client_id: this.GOOGLE_CLIENT_ID,
+                scope: 'openid profile email',
+                prompt: 'none',
+                callback: (response) => {
+                    if (response.error) {
+                        done(new Error(response.error_description || response.error));
+                        return;
+                    }
+                    this._playfabLoginGoogle(response.access_token, (loginErr) => {
+                        done(loginErr || null);
+                    });
+                },
+                error_callback: (err) => {
+                    done(new Error((err && err.message) || 'Silent refresh failed'));
+                },
+            });
+            client.requestAccessToken();
+        } catch (e) {
+            done(new Error('Silent refresh threw: ' + e.message));
         }
     },
 
