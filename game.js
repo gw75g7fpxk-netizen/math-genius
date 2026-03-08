@@ -1430,6 +1430,18 @@ let state = {
 function getUsers() {
   return JSON.parse(localStorage.getItem('mathgenius_users') || '[]');
 }
+// Write users to localStorage only, without triggering a cloud save.
+// Use this instead of saveUsers() in situations where the startup cloud sync
+// may still be in-flight and we don't want to overwrite newer cloud data with
+// a stale local snapshot.  The cloud is updated by the next call to saveUsers()
+// from a meaningful user action (level completion, settings save, etc.).
+function saveUsersLocally(users) {
+  try {
+    localStorage.setItem('mathgenius_users', JSON.stringify(users));
+  } catch (e) {
+    console.warn('Failed to write users to localStorage —', e);
+  }
+}
 function saveUsers(users) {
   localStorage.setItem('mathgenius_users', JSON.stringify(users));
   if (typeof PlayFabManager !== 'undefined' && PlayFabManager.isLoggedIn) {
@@ -1726,7 +1738,14 @@ function loginUser(name) {
   const user = users.find(u => u.name === name);
   if (user) {
     user.lastPlayed = Date.now();
-    saveUsers(users);
+    // Use saveUsersLocally instead of saveUsers — the startup cloud sync may
+    // still be in-flight, and calling saveUsers() here would push whatever is
+    // currently in localStorage to the cloud, permanently overwriting any
+    // newer progress from another device before it can be merged in.
+    // The cloud is updated by the next meaningful action (level completion,
+    // settings save, etc.), by which time the sync will have completed and
+    // localStorage will hold the fully-merged best-of-all-devices data.
+    saveUsersLocally(users);
   }
   state.settings = getUserSettings(name);
   state.selectedCharacter = null;
@@ -1748,7 +1767,10 @@ function addPlayer(rawName) {
   }
 
   users.push({ name, created: Date.now(), lastPlayed: Date.now() });
-  saveUsers(users);
+  // Use saveUsersLocally — same reasoning as loginUser above.
+  // The new profile will be included in the next saveUsers() call triggered
+  // by the user completing a level or saving settings.
+  saveUsersLocally(users);
   loginUser(name);
 }
 
