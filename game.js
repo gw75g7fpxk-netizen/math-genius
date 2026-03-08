@@ -2425,7 +2425,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // If a session was restored from localStorage, sync progress from the cloud
   // immediately so that progress made on other devices is visible right away.
-  syncCloudIfLoggedIn();
+  // Wrapped in try-catch: a synchronous throw from the PlayFab SDK must not
+  // abort DOMContentLoaded and leave button event listeners unregistered.
+  try {
+    syncCloudIfLoggedIn();
+  } catch (e) {
+    console.warn('Cloud sync on startup failed —', e);
+  }
 
   $('#add-player-btn').addEventListener('click', () => {
     const input = $('#add-player-input');
