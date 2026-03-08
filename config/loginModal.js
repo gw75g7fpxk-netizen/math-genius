@@ -81,6 +81,9 @@ const CloudSync = {
         PlayFabManager.loadUsersFromCloud((error, cloudUsers) => {
             if (error) {
                 console.warn('PlayFab: Failed to load cloud players —', error.message);
+                if (typeof showCloudToast === 'function') {
+                    showCloudToast('⚠️ Cloud sync failed — working offline', true);
+                }
                 if (callback) callback();
                 return;
             }
@@ -108,6 +111,9 @@ const CloudSync = {
                 console.warn('PlayFab: Failed to write merged data back to cloud —', e);
             }
             console.log('PlayFab: Players synced from cloud');
+            if (typeof showCloudToast === 'function') {
+                showCloudToast('☁️ Progress synced from cloud');
+            }
             if (callback) callback();
         });
     },

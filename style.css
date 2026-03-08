@@ -362,6 +362,31 @@ input[type="text"]:focus {
   background: var(--danger);
 }
 
+/* ── Cloud sync toast (bottom of screen) ─────────────────── */
+.cloud-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--success);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  z-index: 998;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0,0,0,.2);
+}
+.cloud-toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+.cloud-toast.error {
+  background: var(--danger);
+}
+
 /* ── Results screen ──────────────────────────────────────── */
 .result-hero {
   text-align: center;

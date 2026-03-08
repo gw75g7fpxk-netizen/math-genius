@@ -152,6 +152,9 @@ const PlayFabManager = {
                         renderCloudLoginStatus();
                     }
                 }
+                if (typeof showCloudToast === 'function') {
+                    showCloudToast('⚠️ Cloud save failed', true);
+                }
             } else {
                 console.log('PlayFab: Players saved to cloud');
             }

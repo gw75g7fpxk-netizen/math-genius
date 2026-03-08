@@ -1632,7 +1632,21 @@ function showToast(text, isWrong = false) {
   setTimeout(() => t.classList.remove('show'), 900);
 }
 
-// ── Timer ─────────────────────────────────────────────────────
+// Shows a cloud-sync status message at the bottom of the screen.
+// Error toasts stay for 5 s so users have time to read them;
+// success toasts clear after 3 s.
+let _cloudToastTimerId = null;
+function showCloudToast(text, isError = false) {
+  const t = $('#cloud-toast');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.toggle('error', isError);
+  t.classList.add('show');
+  clearTimeout(_cloudToastTimerId);
+  _cloudToastTimerId = setTimeout(() => t.classList.remove('show'), isError ? 5000 : 3000);
+}
+
+
 function startTimer() {
   const duration = state.settings.timerDuration;
   state.timeLeft = duration;

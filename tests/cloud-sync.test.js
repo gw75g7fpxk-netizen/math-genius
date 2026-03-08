@@ -21,6 +21,7 @@ function buildCloudSync({
     PlayFabManager   = undefined,
     getUsers         = () => [],
     localStorage     = buildLocalStorage(),
+    showCloudToast   = jest.fn(),
 } = {}) {
     const src = fs.readFileSync(
         path.join(__dirname, '..', 'config', 'loginModal.js'), 'utf8'
@@ -34,6 +35,7 @@ function buildCloudSync({
         PlayFabManager,
         getUsers,
         localStorage,
+        showCloudToast,
         __result__: undefined,
         // Stubs for LoginModal UI calls that are not under test
         renderCloudLoginStatus: () => {},
@@ -41,7 +43,7 @@ function buildCloudSync({
         console,
     });
     vm.runInContext(srcWithExport, context);
-    return context.__result__;
+    return { CloudSync: context.__result__, showCloudToast };
 }
 
 /** Simple in-memory localStorage mock. */
@@ -82,7 +84,7 @@ function buildPlayFabManager({
 
 describe('CloudSync.mergeUsers', () => {
     let cs;
-    beforeEach(() => { cs = buildCloudSync(); });
+    beforeEach(() => { ({ CloudSync: cs } = buildCloudSync()); });
 
     test('returns local unchanged when cloud is null', () => {
         const alice = { name: 'Alice', created: 1, lastPlayed: 2, storyProgress: {} };
@@ -190,13 +192,13 @@ describe('CloudSync.mergeUsers', () => {
 
 describe('CloudSync.syncFromCloud', () => {
     test('calls callback immediately when PlayFabManager is undefined', done => {
-        const cs = buildCloudSync({ PlayFabManager: undefined });
+        const { CloudSync: cs } = buildCloudSync({ PlayFabManager: undefined });
         cs.syncFromCloud(() => done());
     });
 
     test('calls callback immediately when not logged in', done => {
         const mgr = buildPlayFabManager({ isLoggedIn: false });
-        const cs  = buildCloudSync({ PlayFabManager: mgr });
+        const { CloudSync: cs } = buildCloudSync({ PlayFabManager: mgr });
         cs.syncFromCloud(() => done());
     });
 
@@ -214,7 +216,7 @@ describe('CloudSync.syncFromCloud', () => {
         }];
         ls.setItem('mathgenius_users', JSON.stringify(local));
         const mgr = buildPlayFabManager({ cloudData: cloud });
-        const cs  = buildCloudSync({
+        const { CloudSync: cs } = buildCloudSync({
             PlayFabManager: mgr,
             getUsers: () => JSON.parse(ls.getItem('mathgenius_users') || '[]'),
             localStorage: ls,
@@ -237,7 +239,7 @@ describe('CloudSync.syncFromCloud', () => {
             ] } },
         }];
         const mgr = buildPlayFabManager({ cloudData: cloud, saveSpy });
-        const cs  = buildCloudSync({
+        const { CloudSync: cs } = buildCloudSync({
             PlayFabManager: mgr,
             getUsers: () => local,
         });
@@ -270,7 +272,7 @@ describe('CloudSync.syncFromCloud', () => {
             ] } },
         }];
         const mgr = buildPlayFabManager({ cloudData: staleCloud, saveSpy });
-        const cs  = buildCloudSync({
+        const { CloudSync: cs } = buildCloudSync({
             PlayFabManager: mgr,
             getUsers: () => betterLocal,
         });
@@ -296,7 +298,7 @@ describe('CloudSync.syncFromCloud', () => {
         }];
         // cloudData: null → cloud has no save for this account
         const mgr = buildPlayFabManager({ cloudData: null, saveSpy });
-        const cs  = buildCloudSync({
+        const { CloudSync: cs } = buildCloudSync({
             PlayFabManager: mgr,
             getUsers: () => local,
         });
@@ -315,7 +317,7 @@ describe('CloudSync.syncFromCloud', () => {
         const local   = [{ name: 'Alice', created: 1, lastPlayed: 1, storyProgress: {} }];
         ls.setItem('mathgenius_users', JSON.stringify(local));
         const mgr = buildPlayFabManager({ loadError: new Error('Network failure'), saveSpy });
-        const cs  = buildCloudSync({
+        const { CloudSync: cs } = buildCloudSync({
             PlayFabManager: mgr,
             getUsers: () => JSON.parse(ls.getItem('mathgenius_users') || '[]'),
             localStorage: ls,
@@ -355,7 +357,7 @@ describe('CloudSync.syncFromCloud', () => {
         ];
         ls.setItem('mathgenius_users', JSON.stringify(local));
         const mgr = buildPlayFabManager({ cloudData: cloud, saveSpy });
-        const cs  = buildCloudSync({
+        const { CloudSync: cs } = buildCloudSync({
             PlayFabManager: mgr,
             getUsers: () => JSON.parse(ls.getItem('mathgenius_users') || '[]'),
             localStorage: ls,
@@ -376,6 +378,42 @@ describe('CloudSync.syncFromCloud', () => {
             expect(saveSpy).toHaveBeenCalledTimes(1);
             const pushed = saveSpy.mock.calls[0][0];
             expect(pushed.map(u => u.name).sort()).toEqual(['Alice', 'Bob', 'Charlie'].sort());
+            done();
+        });
+    });
+
+    // ── Toast notification tests ──────────────────────────────────
+
+    test('shows a success toast on successful sync', done => {
+        const toastSpy = jest.fn();
+        const mgr = buildPlayFabManager({ cloudData: [] });
+        const { CloudSync: cs } = buildCloudSync({
+            PlayFabManager: mgr,
+            showCloudToast: toastSpy,
+        });
+
+        cs.syncFromCloud(() => {
+            expect(toastSpy).toHaveBeenCalledTimes(1);
+            const [text, isError] = toastSpy.mock.calls[0];
+            expect(text).toBe('☁️ Progress synced from cloud');
+            expect(isError).toBeFalsy();
+            done();
+        });
+    });
+
+    test('shows an error toast when cloud load fails', done => {
+        const toastSpy = jest.fn();
+        const mgr = buildPlayFabManager({ loadError: new Error('offline') });
+        const { CloudSync: cs } = buildCloudSync({
+            PlayFabManager: mgr,
+            showCloudToast: toastSpy,
+        });
+
+        cs.syncFromCloud(() => {
+            expect(toastSpy).toHaveBeenCalledTimes(1);
+            const [text, isError] = toastSpy.mock.calls[0];
+            expect(text).toBe('⚠️ Cloud sync failed — working offline');
+            expect(isError).toBe(true);
             done();
         });
     });
