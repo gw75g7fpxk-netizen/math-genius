@@ -161,6 +161,11 @@
   ══════════════════════════════════════════════════════════ -->
   <div id="game-screen" class="screen">
 
+    <!-- Lightning round banner (hidden in normal play) -->
+    <div id="lightning-hud-banner" class="lightning-hud-banner" style="display:none">
+      ⚡ Lightning Round — answer as many as you can!
+    </div>
+
     <!-- HUD -->
     <div class="hud">
       <div class="hud-item">
@@ -173,7 +178,7 @@
       </div>
       <div class="hud-item">
         <div id="hud-q" class="hud-val">1/20</div>
-        <div class="hud-lbl">Question</div>
+        <div id="hud-q-lbl" class="hud-lbl">Question</div>
       </div>
     </div>
 
@@ -311,6 +316,31 @@
           <input id="allow-division-input" type="checkbox" checked />
           <span class="toggle-slider"></span>
         </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>⚡ Lightning Round</label>
+      <div class="settings-row">
+        <span class="settings-hint">Round duration</span>
+        <span id="lightning-duration-val" class="settings-val">60s</span>
+      </div>
+      <input id="lightning-duration-input" type="range" min="30" max="120" step="5" value="60" class="settings-range" />
+      <div class="settings-range-labels">
+        <span>30s (short)</span>
+        <span>120s (long)</span>
+      </div>
+      <div class="settings-row" style="margin-top:12px">
+        <span class="settings-hint">Correct answers to pass</span>
+        <span id="lightning-pass-val" class="settings-val">20</span>
+      </div>
+      <input id="lightning-pass-input" type="range" min="5" max="40" step="1" value="20" class="settings-range" />
+      <div class="settings-range-labels">
+        <span>5 (easy)</span>
+        <span>40 (hard)</span>
+      </div>
+      <div class="settings-row" style="margin-top:8px">
+        <span id="lightning-best-score" class="lightning-best-score-text">No lightning rounds played yet</span>
       </div>
     </div>
 

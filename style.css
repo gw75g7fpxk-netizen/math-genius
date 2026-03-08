@@ -1286,3 +1286,98 @@ input[type="text"]:focus {
   background: #e2e8f0;
   opacity: 1;
 }
+
+/* ── Lightning Round ─────────────────────────────────────── */
+
+/* HUD banner at the top of game screen */
+.lightning-hud-banner {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #1e1b4b;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 8px 16px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+  animation: lightning-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes lightning-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.8; }
+}
+
+/* Lightning timer ring — amber/gold colour */
+.timer-ring.lightning-timer .ring-fg {
+  stroke: #f59e0b;
+}
+.timer-ring.lightning-timer.urgent .ring-fg {
+  stroke: var(--danger);
+}
+.timer-ring.lightning-timer .timer-num {
+  color: #d97706;
+}
+.timer-ring.lightning-timer.urgent .timer-num {
+  color: var(--danger);
+}
+
+/* Chapter card with lightning flag */
+.chapter-card.lightning-chapter {
+  border-left: 4px solid #f59e0b;
+}
+
+.chapter-card.lightning-chapter .chapter-header {
+  background: linear-gradient(135deg, rgba(245,158,11,0.08), transparent);
+  border-radius: 8px 8px 0 0;
+}
+
+/* Lightning badge next to chapter title */
+.chapter-lightning-badge {
+  display: inline-block;
+  background: #f59e0b;
+  color: #1e1b4b;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 8px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* Lightning round description blurb */
+.chapter-lightning-desc {
+  font-size: 0.85rem;
+  color: #d97706;
+  font-weight: 600;
+  background: rgba(245,158,11,0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 4px 0 8px;
+}
+
+/* Play button for lightning chapters */
+.lightning-play-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: #1e1b4b !important;
+}
+.lightning-play-btn:hover {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+}
+
+/* Story result banner: best score line */
+.srb-best {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* Settings: lightning best score display */
+.lightning-best-score-text {
+  font-size: 0.9rem;
+  color: #d97706;
+  font-weight: 600;
+}
