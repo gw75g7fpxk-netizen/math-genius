@@ -403,7 +403,8 @@ describe('CloudSync.syncFromCloud', () => {
 
     test('shows an error toast when cloud load fails', done => {
         const toastSpy = jest.fn();
-        const mgr = buildPlayFabManager({ loadError: new Error('offline') });
+        const loadError = new Error('offline');
+        const mgr = buildPlayFabManager({ loadError });
         const { CloudSync: cs } = buildCloudSync({
             PlayFabManager: mgr,
             showCloudToast: toastSpy,
@@ -412,7 +413,7 @@ describe('CloudSync.syncFromCloud', () => {
         cs.syncFromCloud(() => {
             expect(toastSpy).toHaveBeenCalledTimes(1);
             const [text, isError] = toastSpy.mock.calls[0];
-            expect(text).toBe('⚠️ Cloud sync failed — working offline');
+            expect(text).toBe('⚠️ Sync error: ' + loadError.message);
             expect(isError).toBe(true);
             done();
         });

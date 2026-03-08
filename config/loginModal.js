@@ -82,7 +82,7 @@ const CloudSync = {
             if (error) {
                 console.warn('PlayFab: Failed to load cloud players —', error.message);
                 if (typeof showCloudToast === 'function') {
-                    showCloudToast('⚠️ Cloud sync failed — working offline', true);
+                    showCloudToast('⚠️ Sync error: ' + error.message, true);
                 }
                 if (callback) callback();
                 return;

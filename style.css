@@ -371,13 +371,15 @@ input[type="text"]:focus {
   background: var(--success);
   color: #fff;
   padding: 10px 24px;
-  border-radius: 99px;
+  border-radius: 16px;
   font-weight: 600;
   font-size: 0.9rem;
   pointer-events: none;
   transition: transform .3s cubic-bezier(.34,1.56,.64,1);
   z-index: 998;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: min(90vw, 420px);
+  text-align: center;
   box-shadow: 0 4px 14px rgba(0,0,0,.2);
 }
 .cloud-toast.show {
