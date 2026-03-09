@@ -1965,7 +1965,7 @@ const STORY_THEMES = [
   {
     id: 3,
     title: 'Villain Encounter: The Submarine',
-    emoji: '⚔️',
+    emoji: '🤿',
     description: 'A mysterious submarine has surfaced at the lake! Join the friends as they face Bowser and his trooper forces in this special villain encounter.',
   },
   {
