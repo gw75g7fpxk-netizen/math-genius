@@ -1890,7 +1890,7 @@ const CHAPTERS = [
     charIdx: 18,
     villainEncounter: true,
     title: "Villain Encounter: Maximum Laser Capacity",
-    emoji: "🔫",
+    emoji: "⚡",
     story: "Kiki's Iron Man suit and Humphrey's laser glasses immediately fire their most powerful beams at Lego Rock Humphrey — but every blast bounces off harmlessly! Lego Humphrey had always found their combined laser power overwhelming in his original plastic form, so he had made sure his rock upgrade could withstand it. Humphrey adjusts his glasses and squints determinedly. Help Humphrey use multiplication to calculate the total laser blasts fired and figure out just how many times they are going to need to try something different!",
     mode: "multiply",
     unlockAt: 0,
