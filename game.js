@@ -1566,7 +1566,7 @@ const CHAPTERS = [
     charIdx: 11,
     title: "Chapter 1: The Volcanic Prairie",
     emoji: "🌾",
-    story: "Humphrey extends his morning walk further than ever before — past the end of the street, past Giri's chocolate shop, and all the way out onto the vast grassy prairie that stretches toward the volcano. He's never been this far from the neighborhood! The prairie is huge and the volcano looks distant but magnificent on the horizon. Help Humphrey use multiplication to figure out how many steps it takes to cross the different sections of the volcanic prairie!",
+    story: "Humphrey extends his morning walk all the way out onto the vast grassy prairie that stretches toward the volcano — past the end of the street, past Giri's chocolate shop, and out into the wide open prairie beyond. The prairie is huge and the volcano looks distant but magnificent on the horizon. Help Humphrey use multiplication to figure out how many steps it takes to cross the different sections of the volcanic prairie!",
     mode: "multiply",
     unlockAt: 0,
     passPct: 80,
@@ -1737,7 +1737,7 @@ const CHAPTERS = [
     charIdx: 11,
     title: "Chapter 1: Flying to the Volcano",
     emoji: "🦄",
-    story: "While the others surf the Donut River and trek across the prairie, Hermione simply spreads her wings and flies. The view from above is breathtaking — the donut river glittering in the sun below, the volcanic prairie stretching out in every direction, and the volcano growing larger ahead. Hermione scouts the best landing spot and the safest path for the others to follow. Help Hermione calculate the distances and heights as she maps out the perfect approach to the volcano!",
+    story: "While the others surf the Donut River and trek across the prairie, Hermione casts a flight spell and soars ahead of the group. The view from above is breathtaking — the donut river glittering in the sun below, the volcanic prairie stretching out in every direction, and the volcano growing larger ahead. Hermione scouts the best landing spot and the safest path for the others to follow. Help Hermione calculate the distances and heights as she maps out the perfect approach to the volcano!",
     mode: "multiply",
     unlockAt: 0,
     passPct: 80,
@@ -1825,10 +1825,10 @@ const CHAPTERS = [
     id: 145,
     character: 'lligen',
     charIdx: 14,
-    title: "Chapter 4: Roo's Enormous Snack Pack and Thumper's Trap",
+    title: "Chapter 4: Roo's Giant Snack Pack",
     emoji: "🥕",
-    story: "Roo has heroically decided to pack snacks for Lligen from her endless pouch — which requires some very creative mathematics, since Lligen is about forty times bigger than everyone else. Meanwhile, Thumper has set an ENORMOUS trap across the path, convinced she can fool even a rock giant. When Lligen steps right over it without noticing (she's just too tall), Thumper stares in disbelief — then bursts out: \"kekekekeke!\" and admits it was actually hilarious. Help Roo multiply the snack quantities to the right giant-sized amounts so Lligen is properly fed!",
-    mode: "both",
+    story: "Roo has heroically decided to pack snacks for Lligen from her endless pouch — which requires some very creative mathematics, since Lligen is about forty times bigger than everyone else. Roo pulls out bags of snacks, multiplies every portion, and re-sorts everything into appropriately massive piles. Lligen watches the whole process with great fascination, crouching down to peer at the tiny pouch that somehow produces so many things. Help Roo multiply the snack quantities to the right giant-sized amounts so Lligen is properly fed!",
+    mode: "multiply",
     unlockAt: 2,
     passPct: 80,
   },
@@ -1836,11 +1836,33 @@ const CHAPTERS = [
     id: 146,
     character: 'lligen',
     charIdx: 15,
-    title: "Chapter 5: The Lake and the Mermaids",
-    emoji: "🧜",
-    story: "Lligen visits the lake, and discovers it is one of the only places in the neighbourhood where she can actually sit down comfortably — she wades in and settles with a great wave of water, perfectly content. Giri arrives at the lakeshore with a special delivery: chocolate-covered rocks in giant size, the most prized delicacy from the volcano village! While Lligen is happily eating her rocks-chocolat, the water begins to shimmer — and through the magical portal, the mermaid friends pop up to the surface. They stare at Lligen. Lligen stares at them. \"HELLO SMALL WATER FRIENDS!\" Help Lligen and the mermaids calculate how many chocolate rocks to share with everyone at the lake!",
-    mode: "both",
+    title: "Chapter 5: Thumper's Big Trap",
+    emoji: "🐰",
+    story: "Thumper has spent the entire morning constructing the most enormous trap she has ever built — a rope, three buckets, a net, and a very large pile of leaves — convinced she can fool even a rock giant. When Lligen comes strolling down the street, Thumper holds her breath. Lligen steps right over the entire contraption without noticing (she's simply too tall). Thumper stares. Lligen looks around, completely unaware anything was there. Then Thumper bursts out: \"kekekekeke!\" It's the funniest thing that's ever happened. Help Thumper calculate the exact measurements of the trap she built so she can tell the story properly later!",
+    mode: "divide",
     unlockAt: 3,
+    passPct: 80,
+  },
+  {
+    id: 147,
+    character: 'lligen',
+    charIdx: 16,
+    title: "Chapter 6: Giri's Chocolate Rocks",
+    emoji: "🍫",
+    story: "Giri has been preparing something very special ever since she heard Lligen was coming to the neighbourhood. She arrives at the lakeshore carrying an enormous crate: chocolate-covered rocks made to giant size — the most prized delicacy from the volcano village, crafted especially for Lligen. Lligen's eyes go very wide. \"ROCKS-CHOCOLAT!\" she rumbles with great reverence. Giri beams. Help Giri calculate the number of giant chocolate rocks she made and how many are in each portion so Lligen can savour every one!",
+    mode: "multiply",
+    unlockAt: 4,
+    passPct: 80,
+  },
+  {
+    id: 148,
+    character: 'lligen',
+    charIdx: 17,
+    title: "Chapter 7: Hello Small Water Friends!",
+    emoji: "🧜",
+    story: "Lligen wades into the lake and settles down comfortably — it's the one spot in the neighbourhood where she actually fits. She is happily nibbling her chocolate rocks when the water begins to shimmer with a familiar glow. Through Margret's magical portal, two mermaid friends pop up to the surface: Anna and Annabell, blinking in surprise at the enormous rock giant sitting in their lake. They stare at Lligen. Lligen stares at them. \"HELLO SMALL WATER FRIENDS!\" she booms. Anna and Annabell dissolve into laughter and swim over immediately. Help Lligen, Anna, and Annabell calculate how to share the remaining chocolate rocks — there is plenty for everyone!",
+    mode: "both",
+    unlockAt: 5,
     passPct: 80,
   },
 ];
@@ -1848,7 +1870,7 @@ const CHAPTERS = [
 // Tag every chapter with its story theme.
 // Villain-encounter chapters are theme 3 (their charIdx is 10, outside 0–9).
 // For all other chapters: charIdx 0–4 → theme 1, charIdx 5–9 → theme 2,
-// charIdx 11–15 → theme 4 (The Volcano).
+// charIdx 11+ → theme 4 (The Volcano).
 CHAPTERS.forEach(ch => {
   ch.theme = ch.villainEncounter ? 3 : ch.charIdx <= 4 ? 1 : ch.charIdx <= 9 ? 2 : 4;
 });

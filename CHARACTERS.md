@@ -113,10 +113,11 @@ He often stops by Kiki's lab or runs into her along the way. He sometimes encoun
 
 ---
 
-## Mermaid Friends (unnamed group)
+## Mermaid Friends
 **Species:** Mermaids  
+**Names:** Anna and Annabell  
 **Home:** The ocean  
-**Connection:** Friends of Margret. They travel to the neighborhood via a magical portal that connects to any body of water large enough for them to fit in — most often Margret's backyard swimming pool.
+**Connection:** Friends of Margret. They travel to the neighbourhood via a magical portal that connects to any body of water large enough for them to fit in — most often Margret's backyard swimming pool.
 
 ---
 
