@@ -7,7 +7,7 @@ A mobile-friendly JavaScript game to help children practise multiplication and d
 - **Story mode** – Play through narrative chapters with characters like Kiki the Mad Scientist, Humphrey the Heffalump, Fluffy, Roo, and many more
 - **Multiple user profiles** – Each player has their own saved progress and settings, stored locally in the browser
 - **Chapter unlocking** – Complete a chapter with 80 % or higher to unlock the next one
-- **Two story themes** – *Friends* (Theme 1) and *The Neighbourhood* (Theme 2), each with chapters for every character
+- **Two story themes** – *Friends* (Theme 1) and *The Neighborhood* (Theme 2), each with chapters for every character
 - **Three game modes** – Multiplication only, Division only, or a mix of both
 - **20 questions per round** with multiple-choice answers (4 options)
 - **Countdown timer** per question – faster answers earn more points (timer duration adjustable in Settings)
@@ -32,6 +32,6 @@ A mobile-friendly JavaScript game to help children practise multiplication and d
 | `index.html` | App markup – Login, Chapter Select, Character Select, Story Map, Game, Results, and Settings screens |
 | `style.css` | Mobile-first stylesheet |
 | `game.js` | All app logic – user profiles, story chapters, question generation, timer, scoring, and settings |
-| `CHARACTERS.md` | Character profiles for all playable characters and neighbourhood friends |
+| `CHARACTERS.md` | Character profiles for all playable characters and neighborhood friends |
 | `LOCATIONS.md` | Descriptions of the story world locations |
 | `VILLAINS.md` | Profiles of the recurring villains |
