@@ -73,7 +73,7 @@ He often stops by Kiki's lab or runs into her along the way. He sometimes encoun
 ## Margret
 **Species:** Tiger  
 **Relation:** Maggie's older sister  
-**Personality:** Warm and hospitable. Margret has a swimming pool in her backyard that the neighborhood friends use regularly. Her mermaid friends visit sometimes from the ocean — they are able to travel through a magical portal that can teleport them to any body of water large enough for them to fit in.
+**Personality:** Warm and hospitable. Margret has a swimming pool in her backyard that the neighborhood friends use regularly. Her mermaid friends visit sometimes from the ocean — they use their own mermaid magic to travel through any body of water large enough for them to fit in.
 
 ---
 
@@ -107,6 +107,7 @@ He often stops by Kiki's lab or runs into her along the way. He sometimes encoun
 
 ## Giri
 **Species:** Giraffe  
+**Gender:** He/him  
 **Occupation:** Chocolatier  
 **Location:** Chocolate shop at the end of the street  
 **Personality:** Giri makes delicious chocolate treats of all kinds. The shop is a beloved destination at the end of Humphrey's morning walk.
@@ -117,7 +118,7 @@ He often stops by Kiki's lab or runs into her along the way. He sometimes encoun
 **Species:** Mermaids  
 **Names:** Anna and Annabell  
 **Home:** The ocean  
-**Connection:** Friends of Margret. They travel to the neighbourhood via a magical portal that connects to any body of water large enough for them to fit in — most often Margret's backyard swimming pool.
+**Connection:** Friends of Margret. They travel to the neighbourhood using their own mermaid magic — a portal that can open through any body of water large enough for them to fit in — most often Margret's backyard swimming pool.
 
 ---
 
