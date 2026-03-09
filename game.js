@@ -121,7 +121,7 @@ const CHARACTERS = [
     id: 'lligen',
     name: 'Lligen',
     emoji: '🪨',
-    image: null,
+    image: 'assets/images/lligen.png',
     description: 'A friendly rock giant from the volcano — small enough among her kind to visit parts of the neighborhood without causing too much disruption. She travels by leaping great distances, and her landings make the earth shake. She is endlessly fascinated by the tiny neighbourhood friends and their tiny neighbourhood things.',
   },
 ];
