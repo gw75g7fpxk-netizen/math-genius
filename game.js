@@ -140,6 +140,8 @@ const THEME_CHARACTERS = {
   3: ['margret', 'tigey_avinia', 'vaporeon', 'humphrey', 'fluffy', 'bermione', 'roo'],
   // Chapter 3 – The Volcano: friends who visit + Lligen visiting the neighbourhood
   4: ['kiki', 'humphrey', 'maggie', 'fluffy', 'hermione', 'lligen'],
+  // Villain Encounter – The Rock Monster: story-narrative order
+  5: ['kiki', 'humphrey', 'maggie', 'fluffy', 'hermione'],
 };
 
 /** Returns the ordered array of character objects for the given theme. */
@@ -1865,15 +1867,86 @@ const CHAPTERS = [
     unlockAt: 5,
     passPct: 80,
   },
+
+  // ── Villain Encounter: The Rock Monster ───────────────────────
+  // charIdx 18 keeps these chapters distinct from the volcano range (11–17)
+  // and from the Submarine villain encounter (charIdx 10).
+  // Theme assignment: ch.villainEncounter && ch.charIdx !== 10 → theme 5.
+  {
+    id: 149,
+    character: 'kiki',
+    charIdx: 18,
+    villainEncounter: true,
+    title: "Villain Encounter: Something in the Mountain",
+    emoji: "🕳️",
+    story: "While studying the Rock Giant City with Giganta, Kiki spots an unusually shaped hole cut into the side of the mountain — too small for Giganta to have noticed, but just the right size for curious friends. They follow a long dark tunnel and discover a vast underground cave packed with machinery! The lava is powering a factory that assembles enormous LEGO bricks made of solid rock — and before anyone can react, the bricks start snapping together into a colossal LEGO Humphrey! Kiki's suit sensors are going wild. Help Kiki use multiplication to calculate the machinery output and count exactly how many rock-LEGO bricks have been assembled!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 150,
+    character: 'humphrey',
+    charIdx: 18,
+    villainEncounter: true,
+    title: "Villain Encounter: Maximum Laser Capacity",
+    emoji: "🔫",
+    story: "Kiki's Iron Man suit and Humphrey's laser glasses immediately fire their most powerful beams at Lego Rock Humphrey — but every blast bounces off harmlessly! Lego Humphrey had always found their combined laser power overwhelming in his original plastic form, so he had made sure his rock upgrade could withstand it. Humphrey adjusts his glasses and squints determinedly. Help Humphrey use multiplication to calculate the total laser blasts fired and figure out just how many times they are going to need to try something different!",
+    mode: "multiply",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 151,
+    character: 'maggie',
+    charIdx: 18,
+    villainEncounter: true,
+    title: "Villain Encounter: Boulder Strike",
+    emoji: "🪨",
+    story: "Maggie grabs the biggest boulder she can find and launches it at the monster with a powerful kick — it bounces off harmlessly. Lego Rock Humphrey takes one enormous step out of the lava pool, shaking the cave floor, and begins advancing towards them. Maggie plants her feet and starts calculating: what is this thing made of, and where might the weak spots be? Help Maggie use multiplication and division to analyse the monster's movements and find every angle that might actually make a difference!",
+    mode: "both",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 152,
+    character: 'fluffy',
+    charIdx: 18,
+    villainEncounter: true,
+    title: "Villain Encounter: Distraction Bounce",
+    emoji: "🧸",
+    story: "Lego Rock Humphrey swings at Fluffy — but Fluffy just bounces out of the way with a cheerful BOING! Fluffy rolls left, right, and off the cave walls, drawing the monster's attention away from everyone else and buying precious moments. Every second counts while Hermione quietly charges her spell! Help Fluffy use multiplication and division to calculate the fastest escape routes and keep bouncing and rolling just out of reach!",
+    mode: "both",
+    unlockAt: 0,
+    passPct: 80,
+  },
+  {
+    id: 153,
+    character: 'hermione',
+    charIdx: 18,
+    villainEncounter: true,
+    lightning: true,
+    title: "Villain Encounter: Volcano Ice Beam",
+    emoji: "❄️",
+    story: "The moment they had entered the cave, Hermione had quietly begun casting — and Lego Rock Humphrey had been so focused on the others that he never noticed. Now, amplified by the extraordinary power of the volcano itself, Hermione releases an incredibly powerful ice beam! The lava between the monster's rock LEGO bricks freezes instantly, hardens to solid rock, and locks every brick in place — Lego Humphrey is defeated! LIGHTNING ROUND — help Hermione channel the final surge of ice magic to freeze every last crack solid before Lego Humphrey can break free!",
+    mode: "both",
+    unlockAt: 0,
+    passPct: 80,
+  },
 ];
 
 // Tag every chapter with its story theme.
-// Villain-encounter chapters are theme 3 (their charIdx is 10, outside 0–9).
+// Submarine villain-encounter chapters (charIdx 10) → theme 3.
+// Rock Monster villain-encounter chapters (charIdx 18) → theme 5.
 // For all other chapters: charIdx 0–4 → theme 1, charIdx 5–9 → theme 2,
-// charIdx 11+ → theme 4 (The Volcano).
-CHAPTERS.forEach(ch => {
-  ch.theme = ch.villainEncounter ? 3 : ch.charIdx <= 4 ? 1 : ch.charIdx <= 9 ? 2 : 4;
-});
+// charIdx 11–17 → theme 4 (The Volcano).
+function assignChapterTheme(ch) {
+  if (ch.villainEncounter) return ch.charIdx === 10 ? 3 : 5;
+  if (ch.charIdx <= 4)     return 1;
+  if (ch.charIdx <= 9)     return 2;
+  return 4;
+}
+CHAPTERS.forEach(ch => { ch.theme = assignChapterTheme(ch); });
 
 // ── Story themes ──────────────────────────────────────────────
 const STORY_THEMES = [
@@ -1900,6 +1973,12 @@ const STORY_THEMES = [
     title: 'Chapter 3: The Volcano',
     emoji: '🌋',
     description: 'A visit to the volcano! Join Kiki, Humphrey, Maggie, Fluffy, and Hermione as they trek to meet the rock giants — and follow Lligen, the friendly rock giant, as she makes her first visit to the neighbourhood.',
+  },
+  {
+    id: 5,
+    title: 'Villain Encounter: The Rock Monster',
+    emoji: '🪨',
+    description: 'Deep inside the volcano, a secret underground factory has been building something terrible — a giant LEGO Humphrey made entirely of rock! Join Kiki, Humphrey, Maggie, Fluffy, and Hermione as they face the Rock Monster.',
   },
 ];
 
