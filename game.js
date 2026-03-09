@@ -2501,7 +2501,7 @@ function renderChapterScreen() {
 
     const emojiEl = document.createElement('div');
     emojiEl.className = 'theme-card-emoji';
-    emojiEl.textContent = unlocked ? theme.emoji : '🔒';
+    emojiEl.textContent = theme.emoji;
 
     const body = document.createElement('div');
     body.className = 'theme-card-body';
