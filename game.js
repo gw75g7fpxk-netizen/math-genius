@@ -1952,7 +1952,7 @@ CHAPTERS.forEach(ch => { ch.theme = assignChapterTheme(ch); });
 const STORY_THEMES = [
   {
     id: 1,
-    title: 'Chapter 1: Friends',
+    title: 'Chapter 1: The Friends',
     emoji: '👫',
     description: 'Play alongside your neighbourhood friends in their everyday adventures!',
   },
