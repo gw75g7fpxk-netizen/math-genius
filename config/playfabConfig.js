@@ -11,10 +11,17 @@ const PlayFabManager = {
     TITLE_ID: '1934FB',
     GOOGLE_CLIENT_ID: '959296849138-3n2bpfspbkr04kk2s23p8era65fol16i.apps.googleusercontent.com',
 
+    // PlayFab session tickets expire after ~24 h.  Attempt a proactive silent
+    // refresh once the stored session is older than this threshold so the daily
+    // "please sign in again" popup never appears.
+    SESSION_REFRESH_THRESHOLD_MS: 23 * 60 * 60 * 1000,  // 23 hours
+
     isLoggedIn: false,
     playFabId: null,
     sessionTicket: null,
     displayName: null,
+    googleEmail: null,        // stored as login_hint for silent re-auth
+    sessionObtainedAt: null,  // ms epoch; used to detect near-expiry sessions
 
     // Initialize PlayFab SDK and restore any existing session
     initialize() {
@@ -22,6 +29,11 @@ const PlayFabManager = {
             PlayFab.settings.titleId = this.TITLE_ID;
         }
         this._restoreSession();
+        // Proactively refresh a near-expiry session in the background so the
+        // user is never shown the "please sign in again" popup mid-session.
+        if (this.isLoggedIn) {
+            this._maybeProactiveRefresh();
+        }
     },
 
     _restoreSession() {
@@ -33,6 +45,8 @@ const PlayFabManager = {
                 this.playFabId = data.playFabId;
                 this.sessionTicket = data.sessionTicket;
                 this.displayName = data.displayName || null;
+                this.googleEmail = data.googleEmail || null;
+                this.sessionObtainedAt = data.sessionObtainedAt || null;
                 this.isLoggedIn = true;
                 if (typeof PlayFab !== 'undefined') {
                     // The PlayFab JS SDK authenticates API calls via
@@ -63,16 +77,20 @@ const PlayFabManager = {
                 playFabId: this.playFabId,
                 sessionTicket: this.sessionTicket,
                 displayName: this.displayName,
+                googleEmail: this.googleEmail,
+                sessionObtainedAt: this.sessionObtainedAt,
             }));
         } catch (e) {
             console.warn('PlayFab: Failed to persist session', e);
         }
     },
 
-    _applySession(playFabId, sessionTicket, displayName) {
+    _applySession(playFabId, sessionTicket, displayName, googleEmail) {
         this.playFabId = playFabId;
         this.sessionTicket = sessionTicket;
         this.displayName = displayName || null;
+        this.googleEmail = googleEmail || null;
+        this.sessionObtainedAt = Date.now();
         this.isLoggedIn = true;
         if (typeof PlayFab !== 'undefined') {
             PlayFab.settings.sessionTicket = sessionTicket;
@@ -103,6 +121,9 @@ const PlayFabManager = {
             const client = google.accounts.oauth2.initTokenClient({
                 client_id: this.GOOGLE_CLIENT_ID,
                 scope: 'openid profile email',
+                // Provide the stored email as a hint so returning users don't
+                // have to pick their account from a list every time.
+                login_hint: this.googleEmail || undefined,
                 callback: (response) => {
                     if (response.error) {
                         callback(new Error(response.error_description || response.error), null);
@@ -136,8 +157,15 @@ const PlayFabManager = {
                 callback(new Error(error.errorMessage || 'PlayFab Google login failed'), null);
                 return;
             }
-            const name = result.data.InfoResultPayload?.AccountInfo?.TitleInfo?.DisplayName || null;
-            this._applySession(result.data.PlayFabId, result.data.SessionTicket, name);
+            const name  = result.data.InfoResultPayload?.AccountInfo?.TitleInfo?.DisplayName || null;
+            // Prefer the Google-linked email; fall back to the PlayFab private email.
+            // Stored so it can be passed as login_hint on silent re-auth, which helps
+            // the Google Identity Services library identify the account without any
+            // user interaction — preventing the daily "sign in again" popup.
+            const email = result.data.InfoResultPayload?.AccountInfo?.GoogleInfo?.GoogleEmail
+                       || result.data.InfoResultPayload?.AccountInfo?.PrivateInfo?.Email
+                       || null;
+            this._applySession(result.data.PlayFabId, result.data.SessionTicket, name, email);
             callback(null, result.data);
         });
     },
@@ -242,6 +270,10 @@ const PlayFabManager = {
 
     // Attempt to silently get a fresh Google access token and re-authenticate
     // with PlayFab.  Uses prompt:'none' so no popup or consent dialog is shown.
+    // Passes login_hint (the user's stored Google email) to help the Google
+    // Identity Services library identify the correct account without any user
+    // interaction — this is the key fix for the daily "sign in again" popup on
+    // mobile, where GIS cannot use third-party cookies to determine the account.
     // Succeeds transparently when the user is still signed into Google and their
     // consent is still valid.  Fails immediately (calling callback with an error)
     // if user interaction would be required (e.g. iOS Safari with ITP, user
@@ -265,6 +297,10 @@ const PlayFabManager = {
                 client_id: this.GOOGLE_CLIENT_ID,
                 scope: 'openid profile email',
                 prompt: 'none',
+                // login_hint tells GIS which Google account to re-authenticate
+                // without asking the user to pick.  Critical for mobile browsers
+                // (iOS Safari) where third-party cookies are blocked.
+                login_hint: this.googleEmail || undefined,
                 callback: (response) => {
                     if (response.error) {
                         done(new Error(response.error_description || response.error));
@@ -282,6 +318,30 @@ const PlayFabManager = {
         } catch (e) {
             done(new Error('Silent refresh threw: ' + e.message));
         }
+    },
+
+    // Proactively refresh the PlayFab session in the background when it is
+    // near expiry (older than SESSION_REFRESH_THRESHOLD_MS).  Called once at
+    // startup with a small delay so the Google Identity Services script has
+    // time to finish loading.  If the refresh fails the session is left as-is;
+    // the existing per-call retry in loadUsersFromCloud acts as a safety net.
+    _maybeProactiveRefresh() {
+        if (!this.sessionObtainedAt) return;
+        const age = Date.now() - this.sessionObtainedAt;
+        if (age < this.SESSION_REFRESH_THRESHOLD_MS) return;
+        // Defer slightly so the Google Identity Services SDK can finish loading.
+        setTimeout(() => {
+            console.log('PlayFab: Session is older than 23 h — attempting background refresh');
+            this.silentRefreshWithGoogle((err) => {
+                if (err) {
+                    console.warn('PlayFab: Background refresh failed —', err.message);
+                    // Leave the session intact; the next API call will trigger
+                    // its own silent-refresh via loadUsersFromCloud's retry logic.
+                } else {
+                    console.log('PlayFab: Session refreshed in background');
+                }
+            });
+        }, 3000);
     },
 
     // Returns true when a PlayFab error indicates an invalid or expired session.
